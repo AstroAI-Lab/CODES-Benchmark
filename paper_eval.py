@@ -22,7 +22,7 @@ from codes.benchmark import (
 from codes.utils import download_data, nice_print, read_yaml_config
 
 # Hardcoded device override for all evaluations
-DEVICE = "cuda:2"
+DEVICE = "cuda:6"
 
 # Training IDs to evaluate
 TRAINING_IDS = [

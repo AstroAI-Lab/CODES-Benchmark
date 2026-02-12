@@ -251,6 +251,8 @@ def evaluate_accuracy(
     median_absolute_error_log = np.median(absolute_errors_log)
     mean_absolute_error_log = np.mean(absolute_errors_log)
     percentile_absolute_error_log = np.percentile(absolute_errors_log, percentile)
+    maximum_absolute_error_log = np.max(absolute_errors_log)
+    temp_absolute_error_log = np.mean(absolute_errors_log[:,:,0])
 
     # Obtain real-space predictions and targets
     preds, targets = model.predict(data_loader=test_loader, leave_log=False)
@@ -327,6 +329,8 @@ def evaluate_accuracy(
         "median_absolute_error_real": median_absolute_error_real,
         "mean_absolute_error_real": mean_absolute_error_real,
         "percentile_absolute_error_real": percentile_absolute_error_real,
+        "maximum_absolute_error_log": maximum_absolute_error_log,
+        "temp_absolute_error_log": temp_absolute_error_log,
         "median_relative_error": median_relative_error,
         "mean_relative_error": mean_relative_error,
         "percentile_relative_error": percentile_relative_error,
@@ -1676,6 +1680,20 @@ def tabular_comparison(all_metrics: dict, config: dict) -> None:
         "paelog": {
             "label": f"{percentile}th Perc. AE (log)",
             "path": ("accuracy", "percentile_absolute_error_log"),
+            "fmt": lambda v: format_value(v, "dex"),
+            "highlight": "min",
+            "required": True,
+        },
+        "maxaelog": {
+            "label": "Max AE (log)",
+            "path": ("accuracy", "maximum_absolute_error_log"),
+            "fmt": lambda v: format_value(v, "dex"),
+            "highlight": "min",
+            "required": True,
+        },
+        "tempaelog": {
+            "label": "Temp. AE (log)",
+            "path": ("accuracy", "temp_absolute_error_log"),
             "fmt": lambda v: format_value(v, "dex"),
             "highlight": "min",
             "required": True,
