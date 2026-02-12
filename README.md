@@ -3,6 +3,7 @@
 [![codecov](https://codecov.io/github/robin-janssen/CODES-Benchmark/branch/main/graph/badge.svg?token=TNF9ISCAJK)](https://codecov.io/github/robin-janssen/CODES-Benchmark)
 ![Static Badge](https://img.shields.io/badge/license-GPLv3-blue)
 ![Static Badge](https://img.shields.io/badge/NeurIPS-2024-green)
+[![All Contributors](https://img.shields.io/github/all-contributors/AstroAI-Lab/CODES-Benchmark?color=ee8449&style=flat-square)](#contributors)
 
 🎉 CODES was accepted to the ML4PS workshop @ NeurIPS2024 🎉
 
@@ -174,3 +175,15 @@ pip install -r requirements.txt
 The installation is now complete. To be able to run and evaluate the benchmark, you need to first set up a configuration YAML file. There is one provided, but it should be configured. For more information, check the [configuration page](https://robin-janssen.github.io/CODES-Benchmark/documentation.html#config). There, we also offer an interactive Config-Generator tool with some explanations to help you set up your benchmark.
 
 You can also add your own datasets and models to the benchmark to evaluate them against each other or some of our baseline models. For more information on how to do this, please refer to the [documentation](https://robin-janssen.github.io/CODES-Benchmark/documentation.html).
+
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
