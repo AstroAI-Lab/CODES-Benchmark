@@ -149,7 +149,7 @@ def run_all_studies(config: dict, main_study_name: str, db_url: str):
                 base_cfg = get_model_config(arch_name, config)
                 fine_space = build_fine_optuna_params(base_cfg)
                 n_fine = len(fine_space)
-                n_trials_override = max(10 * n_fine, 10)
+                trials = max(10 * n_fine, 10)
 
                 # CLI confirmation
                 print(
@@ -157,11 +157,11 @@ def run_all_studies(config: dict, main_study_name: str, db_url: str):
                 )
                 for k, spec in fine_space.items():
                     print(f"  - {k}: [{spec['low']:.3g}, {spec['high']:.3g}] (log)")
-                print(f"  -> running for {n_trials_override} trials\n")
+                print(f"  -> running for {trials} trials\n")
 
                 # stash for YAML and pass along to run_single_study
                 fine_report[arch_name] = {
-                    "trials": int(n_trials_override),
+                    "trials": int(trials),
                     "params": {
                         k: {
                             "low": float(v["low"]),
@@ -181,18 +181,18 @@ def run_all_studies(config: dict, main_study_name: str, db_url: str):
                     else:
                         local[name] = opts
                 surr["optuna_params"] = local
+                trials = surr.get("trials", config.get("trials", None))
 
             arch_name = surr["name"]
             study_name = f"{main_study_name}_{arch_name.lower()}"
             arch_pbar.set_postfix({"study": study_name})
 
-            trials = surr.get("trials", config.get("trials", None))
             sub_config = {
                 "batch_size": surr["batch_size"],
                 "dataset": config["dataset"],
                 "devices": config["devices"],
                 "epochs": surr["epochs"],
-                "n_trials": trials if not n_trials_override else n_trials_override,
+                "n_trials": trials,
                 "seed": config["seed"],
                 "surrogate": {"name": arch_name},
                 "optuna_params": surr.get("optuna_params", {}),
