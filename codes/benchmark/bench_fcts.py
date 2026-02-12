@@ -654,15 +654,34 @@ def evaluate_compute(
     training_id = conf["training_id"]
     model.load(training_id, surr_name, model_identifier=f"{surr_name.lower()}_main")
 
-    device = getattr(model, "device", torch.device("cpu"))
+    device = torch.device(getattr(model, "device", torch.device("cpu")))
     memory_footprint = {}
-    if torch.cuda.is_available() and torch.device(device).type == "cuda":
-        inputs = next(iter(test_loader))
-        memory_footprint, model = measure_memory_footprint(model, inputs, device)
+
+    if torch.cuda.is_available():
+        try:
+            inputs = next(iter(test_loader))
+        except StopIteration:
+            inputs = None
+
+        if inputs is None:
+            print(
+                "Skipping GPU memory profiling for compute evaluation "
+                "(test loader provided no samples)."
+            )
+        else:
+            try:
+                memory_footprint, model = measure_memory_footprint(
+                    model, inputs, device
+                )
+            except RuntimeError as exc:
+                print(
+                    "Skipping GPU memory profiling for compute evaluation "
+                    f"(reason: {exc})."
+                )
     else:
         print(
             "Skipping GPU memory profiling for compute evaluation "
-            "(requested device is not CUDA)."
+            "(CUDA not available)."
         )
 
     # Count the number of trainable parameters

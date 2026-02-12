@@ -148,9 +148,14 @@ def test_time_inference(monkeypatch):
 
 
 def test_evaluate_compute(monkeypatch):
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA unavailable, skipping measure_memory_footprint test.")
+
     # patch memory footprint and parameter count
     fake_mem = {"model_memory": 100, "forward_memory_nograd": 50}
-    monkeypatch.setattr(bf, "measure_memory_footprint", lambda m, inp: (fake_mem, m))
+    monkeypatch.setattr(
+        bf, "measure_memory_footprint", lambda m, inp, device: (fake_mem, m)
+    )
     monkeypatch.setattr(bf, "count_trainable_parameters", lambda m: 12345)
 
     # test_loader yields one tuple of inputs
