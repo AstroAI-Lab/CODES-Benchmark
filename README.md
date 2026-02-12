@@ -66,7 +66,7 @@ Pull requests are welcome! Please include documentation updates, add or update t
 ```bash
 uv pip install --group dev
 pytest
-sphinx-build -b html docs/ docs/_build
+sphinx-build -b html docs/source/ docs/_build/html
 ```
 
 If you publish a new surrogate or dataset, document it under `docs/guides` / `docs/reference` so users can adopt it quickly. For questions, open an issue on GitHub.

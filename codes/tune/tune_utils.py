@@ -57,7 +57,6 @@ def prepare_workspace(master_cfg_path: Path, config: dict) -> dict:
     run_dir.mkdir(parents=True, exist_ok=True)
     dst_cfg = run_dir / "optuna_config.yaml"
 
-    effective_config = config
     config["_overwrite_run"] = False
 
     if dst_cfg.exists():

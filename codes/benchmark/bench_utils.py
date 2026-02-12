@@ -263,7 +263,7 @@ def count_trainable_parameters(model: torch.nn.Module) -> int:
 
 def measure_memory_footprint(
     model: torch.nn.Module, inputs: tuple, device: torch.device
-) -> dict:
+) -> tuple[dict, torch.nn.Module]:
     """
     Measure peak GPU memory usage for forward/backward passes.
 

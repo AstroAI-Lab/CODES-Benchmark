@@ -9,6 +9,11 @@ on:
     branches:
       - main
       - develop
+    types: 
+      - opened
+      - synchronize
+      - reopened
+      - closed
 
 permissions:
   contents: write
@@ -113,10 +118,13 @@ jobs:
           fail_ci_if_error: true # Optional, ensures the CI fails if Codecov upload fails
 
   docs:
+    name: Docs
     runs-on: ubuntu-latest
     permissions:
-      contents: write          # needed to push to gh-pages
-      pull-requests: write     # needed to comment on PRs (preview link)
+      contents: write   # needed to push to gh-pages
+
+    # Only build+deploy docs when main is updated (i.e., after PR merge)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     strategy:
       matrix:
@@ -156,58 +164,12 @@ jobs:
           source .venv/bin/activate
           sphinx-build -b html docs/source docs/_build/html
 
-      # ----------------------------
-      # Production deploy (main only)
-      # ----------------------------
-      - name: Deploy docs to gh-pages (production)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Deploy docs to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build
+          publish_dir: docs/_build/html
           publish_branch: gh-pages
           user_name: "GitHub Actions"
           user_email: "actions@github.com"
           force_orphan: false
-
-      # ----------------------------
-      # PR preview deploy (PRs only, same-repo only)
-      # ----------------------------
-      - name: Deploy docs preview to gh-pages (PR)
-        if: |
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.base.repo.full_name == github.repository &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build
-          publish_branch: gh-pages
-          destination_dir: pr-${{ github.event.pull_request.number }}
-          user_name: "GitHub Actions"
-          user_email: "actions@github.com"
-
-      - name: Comment preview URL on PR
-        if: |
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.base.repo.full_name == github.repository &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = context.payload.pull_request.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            // GitHub Pages project URL: https://<owner>.github.io/<repo>/
-            const base = `https://${owner}.github.io/${repo}/`;
-            const url = `${base}pr-${prNumber}/`;
-
-            const body = `📚 Docs preview: ${url}`;
-
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: prNumber,
-              body
-            });

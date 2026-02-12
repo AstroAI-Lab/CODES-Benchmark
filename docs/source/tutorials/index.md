@@ -12,10 +12,10 @@ To execute a notebook locally:
 
 ```bash
 pip install -r requirements.txt  # ensures docs dependencies
-jupyter lab docs/tutorials/benchmark_quickstart.ipynb
+jupyter lab docs/source/tutorials/benchmark_quickstart.ipynb
 ```
 
-When building the docs (`sphinx-build`), notebooks are parsed but not executed. You can enable execution later by setting `nb_execution_mode = "auto"` in `docs/conf.py`.
+When building the docs (`sphinx-build`), notebooks are parsed but not executed. You can enable execution later by setting `nb_execution_mode = "auto"` in `docs/source/conf.py`.
 
 ```{toctree}
 :maxdepth: 1

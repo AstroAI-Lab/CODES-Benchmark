@@ -52,5 +52,5 @@ class AbstractSurrogateBaseConfig:
         Otherwise, it returns the loss function as is.
         """
         if isinstance(self.loss_function, nn.SmoothL1Loss):
-            return self.loss_function(beta=self.beta)
+            return nn.SmoothL1Loss(beta=self.beta)
         return self.loss_function
