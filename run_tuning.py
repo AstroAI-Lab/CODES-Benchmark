@@ -56,7 +56,9 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
     if not config.get("optuna_logging", False):
         optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-    if config.get("multi_objective", False):
+    multi_objective = config.get("multi_objective", False)
+
+    if multi_objective:
         sampler = optuna.samplers.NSGAIISampler(
             seed=config["seed"], population_size=config["population_size"]
         )
@@ -151,7 +153,7 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
         try:
             study.optimize(
                 objective_fn,
-                n_trials=n_trials * 2 if config["multi_objective"] else n_trials,
+                n_trials=n_trials,
                 n_jobs=n_jobs,
                 callbacks=[
                     MaxValidTrialsCallback(n_trials),

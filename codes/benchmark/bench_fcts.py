@@ -103,7 +103,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         log=dataset_conf.get("log10_transform", True),
         log_params=dataset_conf.get("log10_transform_params", True),
         normalisation_mode=dataset_conf.get("normalise", "minmax"),
-        tolerance=dataset_conf.get("tolerance", 1e-25),
+        tolerance=dataset_conf.get("tolerance", None),
         per_species=dataset_conf.get("normalise_per_species", False),
     )
 

@@ -91,7 +91,7 @@ dataset:
   log10_transform_params: true
   normalise: "minmax"
   normalise_per_species: false
-  tolerance: 1e-25
+  tolerance: null
   subset_factor: 1
   log_timesteps: false
   use_optimal_params: true

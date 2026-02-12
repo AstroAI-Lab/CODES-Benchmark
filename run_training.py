@@ -35,8 +35,10 @@ def main(args):
     torch.use_deterministic_algorithms(True)
     config = load_and_save_config(config_path=args.config, save=False)
 
-    if torch.cuda.is_available():
-        print(torch.cuda.device_count(), torch.cuda.current_device())
+    if torch.cuda.is_available() and config.get("verbose", False):
+        nice_print(
+            f"CUDA devices detected: count={torch.cuda.device_count()}, current={torch.cuda.current_device()}"
+        )
 
     download_data(config["dataset"]["name"], verbose=config.get("verbose", False))
     task_list_filepath, copy_config = check_training_status(config)

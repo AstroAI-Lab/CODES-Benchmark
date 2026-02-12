@@ -258,7 +258,7 @@ def training_run(
         log=dataset_cfg.get("log10_transform", True),
         log_params=dataset_cfg.get("log10_transform_params", True),
         normalisation_mode=dataset_cfg.get("normalise", "minmax"),
-        tolerance=dataset_cfg.get("tolerance", 1e-25),
+        tolerance=dataset_cfg.get("tolerance", None),
         per_species=dataset_cfg.get("normalise_per_species", False),
     )
 

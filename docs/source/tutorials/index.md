@@ -11,7 +11,7 @@ Interactive tutorials live in this folder so they can be rendered directly on th
 To execute a notebook locally:
 
 ```bash
-pip install -r requirements.txt  # ensures docs dependencies
+uv pip install --group dev  # installs docs + notebook deps
 jupyter lab docs/source/tutorials/benchmark_quickstart.ipynb
 ```
 

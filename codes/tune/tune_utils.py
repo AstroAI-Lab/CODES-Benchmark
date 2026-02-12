@@ -96,7 +96,7 @@ def apply_tuning_defaults(config: dict) -> dict:
     dataset.setdefault("log10_transform_params", True)
     dataset.setdefault("normalise", "minmax")
     dataset.setdefault("normalise_per_species", False)
-    dataset.setdefault("tolerance", 1e-25)
+    dataset.setdefault("tolerance", None)
     dataset.setdefault("subset_factor", 1)
     dataset.setdefault("log_timesteps", False)
     cfg["dataset"] = dataset

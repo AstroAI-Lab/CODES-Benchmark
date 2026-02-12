@@ -147,18 +147,20 @@ def test_time_inference(monkeypatch):
     assert result["mean_inference_time_per_prediction"] == pytest.approx(3.0 / 2)
 
 
-def test_evaluate_compute(monkeypatch):
-    if not torch.cuda.is_available():
-        pytest.skip("CUDA unavailable, skipping measure_memory_footprint test.")
+def test_evaluate_compute_cpu_path(monkeypatch):
+    # Force non-CUDA execution
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
 
-    # patch memory footprint and parameter count
-    fake_mem = {"model_memory": 100, "forward_memory_nograd": 50}
-    monkeypatch.setattr(
-        bf, "measure_memory_footprint", lambda m, inp, device: (fake_mem, m)
-    )
+    # measure_memory_footprint should not be called
+    called = {"mem": False}
+
+    def fake_measure(model, inputs, device):
+        called["mem"] = True
+        return {}, model
+
+    monkeypatch.setattr(bf, "measure_memory_footprint", fake_measure)
     monkeypatch.setattr(bf, "count_trainable_parameters", lambda m: 12345)
 
-    # test_loader yields one tuple of inputs
     class DummyLoader:
         def __iter__(self):
             yield ("inp",)
@@ -168,7 +170,33 @@ def test_evaluate_compute(monkeypatch):
     surr = "SurrB"
     conf = {"training_id": "TID"}
     out = bf.evaluate_compute(model, surr, test_loader=loader, conf=conf)
-    # load main was invoked
+    assert model.load_calls == [("TID", surr, f"{surr.lower()}_main")]
+    assert out["num_trainable_parameters"] == 12345
+    assert out["memory_footprint"] == {}
+    assert not called["mem"]
+
+
+@pytest.mark.skipif(
+    not torch.cuda.is_available(), reason="CUDA unavailable for memory profiling test."
+)
+def test_evaluate_compute_cuda_path(monkeypatch):
+    fake_mem = {"model_memory": 100, "forward_memory_nograd": 50}
+
+    def fake_measure(model, inputs, device):
+        return fake_mem, model
+
+    monkeypatch.setattr(bf, "measure_memory_footprint", fake_measure)
+    monkeypatch.setattr(bf, "count_trainable_parameters", lambda m: 12345)
+
+    class DummyLoader:
+        def __iter__(self):
+            yield ("inp",)
+
+    loader = DummyLoader()
+    model = FakeModel()
+    surr = "SurrB"
+    conf = {"training_id": "TID"}
+    out = bf.evaluate_compute(model, surr, test_loader=loader, conf=conf)
     assert model.load_calls == [("TID", surr, f"{surr.lower()}_main")]
     assert out["num_trainable_parameters"] == 12345
     assert out["memory_footprint"] is fake_mem
