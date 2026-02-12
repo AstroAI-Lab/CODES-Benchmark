@@ -460,7 +460,9 @@ def evaluate_iterative_predictions(
         # We predict steps 1..(chunk_len-1) relative to the provided init state (index 0).
         # Map these to global indices [start+1 .. end] inclusively.
         if i == 0:
-            iterative_preds[:, start : end + 1, :] = preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+            iterative_preds[:, start : end + 1, :] = (
+                preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+            )
         iterative_preds[:, start + 1 : end + 1, :] = (
             preds_chunk[:, 1 : model.n_timesteps, :].detach().cpu().numpy()
         )

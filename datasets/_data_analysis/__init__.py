@@ -4,5 +4,5 @@ __all__ = [
     "get_data_subset",
     "create_dataset",
     "normalize_data",
-    "download_data"
+    "download_data",
 ]
