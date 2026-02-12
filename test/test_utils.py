@@ -1,26 +1,27 @@
 import os
-import time
 import random
-import yaml
-import torch
+import time
+
 import numpy as np
 import pytest
+import torch
+import yaml
 
 from codes.utils import (
-    read_yaml_config,
-    time_execution,
+    batch_factor_to_float,
+    check_training_status,
     create_model_dir,
+    determine_batch_size,
     get_progress_bar,
     load_and_save_config,
-    set_random_seeds,
-    nice_print,
-    make_description,
-    worker_init_fn,
-    save_task_list,
     load_task_list,
-    check_training_status,
-    determine_batch_size,
-    batch_factor_to_float,
+    make_description,
+    nice_print,
+    read_yaml_config,
+    save_task_list,
+    set_random_seeds,
+    time_execution,
+    worker_init_fn,
 )
 
 
