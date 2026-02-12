@@ -1,0 +1,684 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hyperparameter Tuning &#8212; CODES  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/running-benchmarks/tuning';</script>
+    <link rel="icon" href="../../_static/favicon-96x96.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Training Surrogates" href="training.html" />
+    <link rel="prev" title="Running Benchmarks" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://arxiv.org/abs/2410.20886" title="CODES Paper" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES Paper</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uncertainty.html">Uncertainty Quantification</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.utils.html">codes.utils package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/guides/running-benchmarks/tuning.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Hyperparameter Tuning</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace-layout">Workspace layout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-anatomy">Config anatomy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-sections">Key sections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-run-tuning-py-does">What <code class="docutils literal notranslate"><span class="pre">run_tuning.py</span></code> does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#capturing-the-best-hyperparameters">Capturing the best hyperparameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-options">Advanced options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#postgres-storage">Postgres storage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fine-tuning-stage">Fine-tuning stage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-parameter-sampling">Conditional parameter sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-based-pruning">Time-based pruning</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="hyperparameter-tuning">
+<h1>Hyperparameter Tuning<a class="headerlink" href="#hyperparameter-tuning" title="Link to this heading">#</a></h1>
+<p>Optuna powers the tuning stage. Each study runs inside <code class="docutils literal notranslate"><span class="pre">run_tuning.py</span></code>, which manages device pools, Optuna storage, and all surrogate-specific settings.</p>
+<section id="workspace-layout">
+<h2>Workspace layout<a class="headerlink" href="#workspace-layout" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Create a config file under <code class="docutils literal notranslate"><span class="pre">configs/tuning/</span></code> (for example <code class="docutils literal notranslate"><span class="pre">configs/tuning/sqlite_quickstart.yaml</span></code>). Each config must contain a unique <code class="docutils literal notranslate"><span class="pre">tuning_id</span></code>.</p></li>
+<li><p>Launch the tuner and pass the config path:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run_tuning.py<span class="w"> </span>--config<span class="w"> </span>configs/tuning/sqlite_quickstart.yaml
+</pre></div>
+</div>
+</li>
+<li><p>CODES copies the config into <code class="docutils literal notranslate"><span class="pre">tuned/&lt;tuning_id&gt;/optuna_config.yaml</span></code> for reproducibility. On subsequent runs it compares the stored copy against the newly provided file and asks whether you want to reuse the stored config, overwrite it (the old one is backed up), or abort.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">tuning_id</span></code> becomes the prefix for all Optuna studies (e.g., <code class="docutils literal notranslate"><span class="pre">primordial_MultiONet</span></code>). The script also creates <code class="docutils literal notranslate"><span class="pre">tuned/&lt;tuning_id&gt;/models/</span></code> to store intermediate checkpoints when you enable pruning.</p>
+</section>
+<section id="config-anatomy">
+<h2>Config anatomy<a class="headerlink" href="#config-anatomy" title="Link to this heading">#</a></h2>
+<p>Below is a condensed version of <code class="docutils literal notranslate"><span class="pre">configs/tuning/sqlite_quickstart.yaml</span></code> using SQLite storage for zero setup. Adjust datasets/surrogates as needed.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+<span class="nt">tuning_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;primordial&quot;</span>
+<span class="nt">dataset</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">primordial</span>
+<span class="w">  </span><span class="nt">log10_transform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">normalise</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">minmax</span>
+<span class="nt">devices</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;cuda:0&quot;</span><span class="p p-Indicator">]</span>
+<span class="nt">prune</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">multi_objective</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">population_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+
+<span class="nt">storage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sqlite&quot;</span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tuned/primordial/primordial.db&quot;</span>
+
+<span class="nt">surrogates</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MultiONet</span>
+<span class="w">    </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="w">    </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8192</span>
+<span class="w">    </span><span class="nt">trials</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<span class="w">    </span><span class="nt">optuna_params</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">activation</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">categorical</span>
+<span class="w">        </span><span class="nt">choices</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;ReLU&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;LeakyReLU&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Tanh&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;GELU&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;Softplus&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">hidden_size</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">int</span>
+<span class="w">        </span><span class="nt">low</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">high</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<span class="w">      </span><span class="nt">learning_rate</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">float</span>
+<span class="w">        </span><span class="nt">low</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0e-6</span>
+<span class="w">        </span><span class="nt">high</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0e-3</span>
+<span class="w">        </span><span class="nt">log</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">output_factor</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">int</span>
+<span class="w">        </span><span class="nt">low</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">        </span><span class="nt">high</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+</pre></div>
+</div>
+<section id="key-sections">
+<h3>Key sections<a class="headerlink" href="#key-sections" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>dataset</strong> — mirrors the training config and ensures Optuna downloads/configures the same data pipeline.</p></li>
+<li><p><strong>devices</strong> — every entry becomes a worker slot. <code class="docutils literal notranslate"><span class="pre">run_tuning.py</span></code> keeps a queue (<code class="docutils literal notranslate"><span class="pre">queue.Queue</span></code>) of device tokens and runs Optuna with <code class="docutils literal notranslate"><span class="pre">n_jobs</span> <span class="pre">=</span> <span class="pre">len(devices)</span></code>. SQLite storage warns about concurrent writers; you can list multiple devices, but heavy parallelism works best with Postgres.</p></li>
+<li><p><strong>storage</strong> — choose between <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> (single-file DB, no external services) and <code class="docutils literal notranslate"><span class="pre">postgres</span></code> (scales to many workers). If omitted, CODES defaults to Postgres for backward compatibility and expects <code class="docutils literal notranslate"><span class="pre">postgres_config</span></code> to be present.</p></li>
+<li><p><strong>postgres_config</strong> — only required when <code class="docutils literal notranslate"><span class="pre">storage.backend:</span> <span class="pre">&quot;postgres&quot;</span></code>. Supports</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode:</span> <span class="pre">local</span></code>: launches/validates a local PostgreSQL instance (binaries in <code class="docutils literal notranslate"><span class="pre">database_folder</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode:</span> <span class="pre">remote</span></code>: connects to an existing server (set <code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">port</span></code>, <code class="docutils literal notranslate"><span class="pre">user</span></code>, and optionally <code class="docutils literal notranslate"><span class="pre">password</span></code> or rely on <code class="docutils literal notranslate"><span class="pre">PGPASSWORD</span></code>).</p></li>
+</ul>
+</li>
+<li><p><strong>surrogates</strong> — per-architecture specs. Each entry sets:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code> / <code class="docutils literal notranslate"><span class="pre">epochs</span></code>: used to build the objective.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trials</span></code>: maximum valid trials for that surrogate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optuna_params</span></code>: the search space. The keys correspond to attributes on the surrogate’s config dataclass; Optuna writes the sampled values into that config before training.</p></li>
+</ul>
+</li>
+</ul>
+<p>You can add <code class="docutils literal notranslate"><span class="pre">global_optuna_params</span></code> for common parameters, enable <code class="docutils literal notranslate"><span class="pre">fine:</span> <span class="pre">true</span></code> for automatic “around-the-best” refinement, or toggle between single-objective (<code class="docutils literal notranslate"><span class="pre">direction=&quot;minimize&quot;</span></code>) and dual-objective (<code class="docutils literal notranslate"><span class="pre">directions=[&quot;minimize&quot;,&quot;minimize&quot;]</span></code>) mode. In multi-objective runs we typically optimize log-space accuracy (LAE$_{99}$) and inference time, but you can choose any pair of metrics.</p>
+</section>
+</section>
+<section id="what-run-tuning-py-does">
+<h2>What <code class="docutils literal notranslate"><span class="pre">run_tuning.py</span></code> does<a class="headerlink" href="#what-run-tuning-py-does" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Loads the YAML and copies it into <code class="docutils literal notranslate"><span class="pre">tuned/&lt;tuning_id&gt;/</span></code> (via <code class="docutils literal notranslate"><span class="pre">prepare_workspace</span></code>).</p></li>
+<li><p>Initializes the Optuna database (SQLite file or Postgres), prompting if a study with the same <code class="docutils literal notranslate"><span class="pre">tuning_id</span></code> already exists.</p></li>
+<li><p>Downloads the dataset once per run.
+4. Iterates over the <code class="docutils literal notranslate"><span class="pre">surrogates</span></code> list. For each surrogate it:
+- Builds a study name (<code class="docutils literal notranslate"><span class="pre">&lt;tuning_id&gt;_&lt;surrogate&gt;</span></code>).
+- Selects the sampler/pruner (<code class="docutils literal notranslate"><span class="pre">TPESampler</span></code> + Hyperband or NSGA-II with no pruning).
+- Creates a device queue and <code class="docutils literal notranslate"><span class="pre">objective_fn</span> <span class="pre">=</span> <span class="pre">create_objective(...)</span></code>.</p>
+<ul class="simple">
+<li><p>Calls <code class="docutils literal notranslate"><span class="pre">study.optimize()</span></code> with <code class="docutils literal notranslate"><span class="pre">n_jobs=len(devices)</span></code>. Each Optuna worker pulls a device token, trains a model with the sampled hyperparameters, and returns the objective(s).</p></li>
+<li><p>Tracks ETA via <code class="docutils literal notranslate"><span class="pre">tqdm</span></code>. The helper <code class="docutils literal notranslate"><span class="pre">MaxValidTrialsCallback</span></code> stops once enough successful trials finished (OOM and time-pruned trials are ignored).</p></li>
+</ul>
+</li>
+</ol>
+<p>You can resume a study by rerunning the same command; Optuna reuses the storage and continues sampling until <code class="docutils literal notranslate"><span class="pre">n_trials</span></code> valid runs exist. Trial budgets are usually sized heuristically (e.g., <code class="docutils literal notranslate"><span class="pre">~15</span> <span class="pre">×</span></code> the number of tuned hyperparameters), but you can override per surrogate via the <code class="docutils literal notranslate"><span class="pre">trials</span></code> field.</p>
+</section>
+<section id="capturing-the-best-hyperparameters">
+<h2>Capturing the best hyperparameters<a class="headerlink" href="#capturing-the-best-hyperparameters" title="Link to this heading">#</a></h2>
+<p>CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect studies:</p>
+<ul>
+<li><p>Python REPL / script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">optuna</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span>
+    <span class="n">study_name</span><span class="o">=</span><span class="s2">&quot;primordial_MultiONet&quot;</span><span class="p">,</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;postgresql+psycopg2://optuna_user@localhost:5432/primordial&quot;</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;minimize&quot;</span><span class="p">,</span>
+    <span class="n">load_if_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">study</span><span class="o">.</span><span class="n">best_trial</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><a class="reference external" href="https://optuna.github.io/optuna-dashboard/">Optuna Dashboard</a> or <code class="docutils literal notranslate"><span class="pre">optuna.visualization</span></code>.</p></li>
+</ul>
+<p>Dual-objective runs produce Pareto fronts like the ones shown in the paper excerpt. You can manually pick a “knee point” trade-off (accuracy vs. latency) or script your own selection rule. Whatever you choose, feed the accepted settings back into <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under <code class="docutils literal notranslate"><span class="pre">surrogate_configs</span></code> or store dataset-specific defaults in <code class="docutils literal notranslate"><span class="pre">datasets/&lt;name&gt;/surrogates_config.py</span></code> (dataclasses). Those defaults load automatically when <code class="docutils literal notranslate"><span class="pre">dataset.use_optimal_params</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>; setting <code class="docutils literal notranslate"><span class="pre">use_optimal_params:</span> <span class="pre">false</span></code> switches back to plain config-defined hyperparameters.</p>
+</section>
+<section id="advanced-options">
+<h2>Advanced options<a class="headerlink" href="#advanced-options" title="Link to this heading">#</a></h2>
+<section id="postgres-storage">
+<h3>Postgres storage<a class="headerlink" href="#postgres-storage" title="Link to this heading">#</a></h3>
+<p>For large-scale or multi-GPU sweeps, switch the storage block to Postgres:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">storage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;postgres&quot;</span>
+
+<span class="nt">postgres_config</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;local&quot;</span><span class="w">         </span><span class="c1"># or &quot;remote&quot;</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;localhost&quot;</span>
+<span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;optuna_user&quot;</span>
+<span class="w">  </span><span class="nt">database_folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/postgres/&quot;</span>
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">storage</span></code> section is omitted entirely, CODES assumes <code class="docutils literal notranslate"><span class="pre">backend:</span> <span class="pre">&quot;postgres&quot;</span></code> to remain backward compatible. Postgres handles concurrent writers gracefully, so <code class="docutils literal notranslate"><span class="pre">devices</span></code> can list many GPUs without hitting <code class="docutils literal notranslate"><span class="pre">database</span> <span class="pre">is</span> <span class="pre">locked</span></code> errors.</p>
+</section>
+<section id="fine-tuning-stage">
+<h3>Fine-tuning stage<a class="headerlink" href="#fine-tuning-stage" title="Link to this heading">#</a></h3>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">fine:</span> <span class="pre">true</span></code> tells CODES to derive a narrow search space around the best-known configuration for each surrogate (taken from previous runs or dataset defaults):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">fine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>The first run (with <code class="docutils literal notranslate"><span class="pre">fine:</span> <span class="pre">false</span></code>) explores the full search space and establishes a good baseline. The optional fine stage then:</p>
+<ol class="arabic simple">
+<li><p>Builds tight bounds around every tunable scalar (log-space ±factor) using <code class="docutils literal notranslate"><span class="pre">build_fine_optuna_params</span></code>.</p></li>
+<li><p>Overrides the trial budget to <code class="docutils literal notranslate"><span class="pre">max(10</span> <span class="pre">×</span> <span class="pre">N,</span> <span class="pre">10)</span></code> where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of fine-tunable parameters.</p></li>
+<li><p>Prints the refined ranges per surrogate and stores them in <code class="docutils literal notranslate"><span class="pre">tuned/&lt;tuning_id&gt;/fine_summary.yaml</span></code>.</p></li>
+</ol>
+<p>This two-step process saves compute by spending most trials in promising regions rather than re-sampling the entire space.</p>
+</section>
+<section id="conditional-parameter-sampling">
+<h3>Conditional parameter sampling<a class="headerlink" href="#conditional-parameter-sampling" title="Link to this heading">#</a></h3>
+<p>Some hyperparameters only matter when a parent switch takes a specific value (e.g., <code class="docutils literal notranslate"><span class="pre">momentum</span></code> is relevant only for SGD, <code class="docutils literal notranslate"><span class="pre">poly_power</span></code> only for the polynomial scheduler). The tuner encodes these relationships in <code class="docutils literal notranslate"><span class="pre">make_optuna_params</span></code>: it samples parent switches first and then conditionally samples child parameters. This prevents Optuna from proposing incompatible combinations (such as a momentum value while using Adam) that would otherwise waste trials or require manual filtering. You can still expose child parameters directly if desired; the helper samples them once the relevant switch is active.</p>
+</section>
+<section id="time-based-pruning">
+<h3>Time-based pruning<a class="headerlink" href="#time-based-pruning" title="Link to this heading">#</a></h3>
+<p>To avoid exceptionally slow trials hogging resources, CODES automatically sets a runtime threshold after the initial warm-up period. Once enough successful trials complete, it computes <code class="docutils literal notranslate"><span class="pre">mean</span> <span class="pre">+</span> <span class="pre">std</span></code> of their durations and prunes future trials whose wall-clock time exceeds that threshold. In multi-objective mode, this applies to both accuracy/time objectives—the accuracy value is capped while the runtime objective records the observed duration.</p>
+<p>Disable this behaviour by adding:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">time_pruning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<p>to your tuning config. When disabled, all trials run to completion unless Optuna’s other pruners intervene.</p>
+<p>Remember that tuning explores unconstrained space—double-check the resulting configs before launching expensive training sweeps.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Running Benchmarks</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="training.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Training Surrogates</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace-layout">Workspace layout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-anatomy">Config anatomy</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-sections">Key sections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-run-tuning-py-does">What <code class="docutils literal notranslate"><span class="pre">run_tuning.py</span></code> does</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#capturing-the-best-hyperparameters">Capturing the best hyperparameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-options">Advanced options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#postgres-storage">Postgres storage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fine-tuning-stage">Fine-tuning stage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-parameter-sampling">Conditional parameter sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-based-pruning">Time-based pruning</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Robin Janssen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, Robin Janssen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

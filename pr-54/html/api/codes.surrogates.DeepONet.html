@@ -1,0 +1,1070 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>codes.surrogates.DeepONet package &#8212; CODES  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/codes.surrogates.DeepONet';</script>
+    <link rel="icon" href="../_static/favicon-96x96.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://arxiv.org/abs/2410.20886" title="CODES Paper" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES Paper</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.utils.html">codes.utils package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/codes.surrogates.DeepONet.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>codes.surrogates.DeepONet package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.deeponet">codes.surrogates.DeepONet.deeponet module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.BranchNet"><code class="docutils literal notranslate"><span class="pre">BranchNet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.BranchNet.forward"><code class="docutils literal notranslate"><span class="pre">BranchNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet"><code class="docutils literal notranslate"><span class="pre">MultiONet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.create_dataloader"><code class="docutils literal notranslate"><span class="pre">MultiONet.create_dataloader()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.post_init_check"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork.post_init_check()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.TrunkNet"><code class="docutils literal notranslate"><span class="pre">TrunkNet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.TrunkNet.forward"><code class="docutils literal notranslate"><span class="pre">TrunkNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.deeponet_config">codes.surrogates.DeepONet.deeponet_config module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.branch_hidden_layers"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.branch_hidden_layers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.hidden_size"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.hidden_size</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.masses"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.masses</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.massloss_factor"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.massloss_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.output_factor"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.output_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.params_branch"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.params_branch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_hidden_layers"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.trunk_hidden_layers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_input_size"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.trunk_input_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.don_utils">codes.surrogates.DeepONet.don_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.FlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FlatBatchIterable</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset"><code class="docutils literal notranslate"><span class="pre">PreBatchedDataset</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory"><code class="docutils literal notranslate"><span class="pre">create_date_based_directory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn"><code class="docutils literal notranslate"><span class="pre">custom_collate_fn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.get_project_path"><code class="docutils literal notranslate"><span class="pre">get_project_path()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.list_pth_files"><code class="docutils literal notranslate"><span class="pre">list_pth_files()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config"><code class="docutils literal notranslate"><span class="pre">read_yaml_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.set_random_seed"><code class="docutils literal notranslate"><span class="pre">set_random_seed()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.train_utils">codes.surrogates.DeepONet.train_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="codes-surrogates-deeponet-package">
+<h1>codes.surrogates.DeepONet package<a class="headerlink" href="#codes-surrogates-deeponet-package" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-codes.surrogates.DeepONet.deeponet">
+<span id="codes-surrogates-deeponet-deeponet-module"></span><h2>codes.surrogates.DeepONet.deeponet module<a class="headerlink" href="#module-codes.surrogates.DeepONet.deeponet" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.BranchNet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.deeponet.</span></span><span class="sig-name descname"><span class="pre">BranchNet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_hidden_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.BranchNet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Class that defines the branch network for the MultiONet model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – The input size for the network.</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – The number of hidden units in each layer.</p></li>
+<li><p><strong>output_size</strong> (<em>int</em>) – The number of output units.</p></li>
+<li><p><strong>num_hidden_layers</strong> (<em>int</em>) – The number of hidden layers.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.BranchNet.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.BranchNet.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the branch network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – The input tensor.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.deeponet.</span></span><span class="sig-name descname"><span class="pre">MultiONet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_quantities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.OperatorNetwork" title="codes.surrogates.DeepONet.deeponet.OperatorNetwork"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorNetwork</span></code></a></p>
+<p>Class that implements the MultiONet model.
+It differs from a standard DeepONet in that it has multiple outputs, which are obtained by
+splitting the outputs of branch and trunk networks and calculating the scalar product of the splits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – The device to use for training (e.g., ‘cpu’, ‘cuda:0’).</p></li>
+<li><p><strong>n_quantities</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of quantities.</p></li>
+<li><p><strong>n_timesteps</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of timesteps.</p></li>
+<li><p><strong>n_parameters</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of fixed parameters. Defaults to 0.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the model.</p></li>
+<li><p><strong>information</strong> (<em>The configuration must provide the following</em>)</p></li>
+<li><p><strong>trunk_input_size</strong> (<em>-</em>) – The input size for the trunk network.</p></li>
+<li><p><strong>hidden_size</strong> (<em>-</em>) – The number of hidden units in each layer of the branch and trunk networks.</p></li>
+<li><p><strong>branch_hidden_layers</strong> (<em>-</em>) – The number of hidden layers in the branch network.</p></li>
+<li><p><strong>trunk_hidden_layers</strong> (<em>-</em>) – The number of hidden layers in the trunk network.</p></li>
+<li><p><strong>output_factor</strong> (<em>-</em>) – The factor by which the number of outputs is multiplied.</p></li>
+<li><p><strong>learning_rate</strong> (<em>-</em>) – The learning rate for the optimizer.</p></li>
+<li><p><strong>schedule</strong> (<em>-</em>) – Whether to use a learning rate schedule.</p></li>
+<li><p><strong>regularization_factor</strong> (<em>-</em>) – The regularization factor for the optimizer.</p></li>
+<li><p><strong>masses</strong> (<em>-</em>) – The masses for mass conservation loss.</p></li>
+<li><p><strong>massloss_factor</strong> (<em>-</em>) – The factor for the mass conservation loss.</p></li>
+<li><p><strong>params_branch</strong> (<em>-</em>) – If True, fixed parameters are concatenated to the branch net;
+if False, to the trunk net.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Invalid configuration for MultiONet model.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.create_dataloader">
+<span class="sig-name descname"><span class="pre">create_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_in_branch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pin_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.create_dataloader" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.epoch">
+<span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.epoch" title="Link to this definition">#</a></dt>
+<dd><p>Perform one training epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_loader</strong> (<em>DataLoader</em>) – The DataLoader object containing the training data.</p></li>
+<li><p><strong>criterion</strong> (<em>nn.Module</em>) – The loss function.</p></li>
+<li><p><strong>optimizer</strong> (<em>torch.optim.Optimizer</em>) – The optimizer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The total loss for the training step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Training</span> <span class="pre">DeepONet'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.fit" title="Link to this definition">#</a></dt>
+<dd><p>Train the MultiONet model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_loader</strong> (<em>DataLoader</em>) – The DataLoader object containing the training data.</p></li>
+<li><p><strong>test_loader</strong> (<em>DataLoader</em>) – The DataLoader object containing the test data.</p></li>
+<li><p><strong>epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of epochs to train the model.</p></li>
+<li><p><strong>position</strong> (<em>int</em>) – The position of the progress bar.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – The description for the progress bar.</p></li>
+<li><p><strong>multi_objective</strong> (<em>bool</em>) – Whether multi-objective optimization is used.
+If True, trial.report is not used (not supported by Optuna).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None. The training loss, test loss, and MAE are stored in the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the MultiONet model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>tuple</em>) – The input tuple containing branch_input, trunk_input, and targets.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model outputs and the targets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.prepare_data">
+<span class="sig-name descname"><span class="pre">prepare_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_train_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.prepare_data" title="Link to this definition">#</a></dt>
+<dd><p>Prepare the data for training, testing, and validation. This method should
+return the DataLoader objects for the training, testing, and validation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_train</strong> (<em>np.ndarray</em>) – The training dataset.</p></li>
+<li><p><strong>dataset_test</strong> (<em>np.ndarray</em>) – The testing dataset.</p></li>
+<li><p><strong>dataset_val</strong> (<em>np.ndarray</em>) – The validation dataset.</p></li>
+<li><p><strong>timesteps</strong> (<em>np.ndarray</em>) – The timesteps.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – The batch size.</p></li>
+<li><p><strong>shuffle</strong> (<em>bool</em>) – Whether to shuffle the data.</p></li>
+<li><p><strong>dummy_timesteps</strong> (<em>bool</em>) – Whether to use dummy timesteps. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The DataLoader objects for the</dt><dd><p>training, testing, and validation data.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[DataLoader, DataLoader, DataLoader]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion">
+<span class="sig-name descname"><span class="pre">setup_criterion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion" title="Link to this definition">#</a></dt>
+<dd><p>Utility function to set up the loss function for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The loss function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.OperatorNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.deeponet.</span></span><span class="sig-name descname"><span class="pre">OperatorNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_quantities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel" title="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a></p>
+<p>Abstract class for operator networks.
+Child classes must implement a forward method and use the branch_net and trunk_net attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – The device to use for training (e.g., ‘cpu’, ‘cuda:0’).</p></li>
+<li><p><strong>n_quantities</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of quantities.</p></li>
+<li><p><strong>n_timesteps</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of timesteps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NotImplementedError</strong> – Child classes must implement a forward method.</p></li>
+<li><p><strong>NotImplementedError</strong> – Child classes must initialize a branch_net and trunk_net.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">branch_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>Any</em>) – The input data as recieved from the dataloader.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model predictions and the targets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Tensor, Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.OperatorNetwork.post_init_check">
+<span class="sig-name descname"><span class="pre">post_init_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.post_init_check" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.TrunkNet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.deeponet.</span></span><span class="sig-name descname"><span class="pre">TrunkNet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_hidden_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.TrunkNet" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Class that defines the trunk network for the MultiONet model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – The input size for the network.</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – The number of hidden units in each layer.</p></li>
+<li><p><strong>output_size</strong> (<em>int</em>) – The number of output units.</p></li>
+<li><p><strong>num_hidden_layers</strong> (<em>int</em>) – The number of hidden layers.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.TrunkNet.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.TrunkNet.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the trunk network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor</em>) – The input tensor.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-codes.surrogates.DeepONet.deeponet_config">
+<span id="codes-surrogates-deeponet-deeponet-config-module"></span><h2>codes.surrogates.DeepONet.deeponet_config module<a class="headerlink" href="#module-codes.surrogates.DeepONet.deeponet_config" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.deeponet_config.</span></span><span class="sig-name descname"><span class="pre">MultiONetBaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adamw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_input_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch_hidden_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_hidden_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massloss_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_branch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig" title="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code></a></p>
+<p>Configuration for the MultiONet surrogate model.</p>
+<p>MultiONet is a physics-inspired architecture that splits the network into a
+trunk and multiple branch networks, designed to represent operator-based systems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>masses</strong> (<em>list[float] | None</em>) – Optional list of particle masses (if used).</p></li>
+<li><p><strong>trunk_input_size</strong> (<em>int</em>) – Size of the input to the trunk network.</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – Number of neurons per hidden layer in both branches and trunk.</p></li>
+<li><p><strong>branch_hidden_layers</strong> (<em>int</em>) – Number of hidden layers in each branch network.</p></li>
+<li><p><strong>trunk_hidden_layers</strong> (<em>int</em>) – Number of hidden layers in the trunk network.</p></li>
+<li><p><strong>output_factor</strong> (<em>int</em>) – Multiplier for the output dimension (neurons = output_factor * num_quantities).</p></li>
+<li><p><strong>massloss_factor</strong> (<em>float</em>) – Additional weight for a mass conservation loss term.</p></li>
+<li><p><strong>params_branch</strong> (<em>bool</em>) – Flag to indicate whether parameters (if present) are passed to the branch or trunk net.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.branch_hidden_layers">
+<span class="sig-name descname"><span class="pre">branch_hidden_layers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.branch_hidden_layers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.hidden_size">
+<span class="sig-name descname"><span class="pre">hidden_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.hidden_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.masses">
+<span class="sig-name descname"><span class="pre">masses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code><span class="pre">]</span> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.masses" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.massloss_factor">
+<span class="sig-name descname"><span class="pre">massloss_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.massloss_factor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.output_factor">
+<span class="sig-name descname"><span class="pre">output_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.output_factor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.params_branch">
+<span class="sig-name descname"><span class="pre">params_branch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.params_branch" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_hidden_layers">
+<span class="sig-name descname"><span class="pre">trunk_hidden_layers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_hidden_layers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_input_size">
+<span class="sig-name descname"><span class="pre">trunk_input_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_input_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-codes.surrogates.DeepONet.don_utils">
+<span id="codes-surrogates-deeponet-don-utils-module"></span><h2>codes.surrogates.DeepONet.don_utils module<a class="headerlink" href="#module-codes.surrogates.DeepONet.don_utils" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.FlatBatchIterable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">FlatBatchIterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">branch_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.FlatBatchIterable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IterableDataset</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.PreBatchedDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">PreBatchedDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">branch_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>Dataset for pre-batched data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>branch_inputs</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed branch input batches.</p></li>
+<li><p><strong>trunk_inputs</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed trunk input batches.</p></li>
+<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed target batches.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.create_date_based_directory">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">create_date_based_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subfolder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory" title="Link to this definition">#</a></dt>
+<dd><p>Create a directory based on the current date (dd-mm format) inside a specified subfolder of the base directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> – The base directory where the subfolder and date-based directory will be created.</p></li>
+<li><p><strong>subfolder</strong> – The subfolder inside the base directory to include before the date-based directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path of the created date-based directory within the specified subfolder.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.custom_collate_fn">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">custom_collate_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn" title="Link to this definition">#</a></dt>
+<dd><p>Custom collate function to ensure tensors are returned in the correct shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch</strong> – A list of tuples from the dataset, where each tuple contains
+(branch_input, trunk_input, targets).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>branch_input: [batch_size, feature_size]</p></li>
+<li><p>trunk_input: [batch_size, feature_size]</p></li>
+<li><p>targets: [batch_size, feature_size]</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tensors with correct shapes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.get_project_path">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">get_project_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.get_project_path" title="Link to this definition">#</a></dt>
+<dd><p>Construct the absolute path to a project resource (data or model) based on a relative path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>relative_path</strong> – A relative path to the resource, e.g., “datasets/dataset100” or “models/02-28/model.pth”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The absolute path to the resource.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.list_pth_files">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">list_pth_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.list_pth_files" title="Link to this definition">#</a></dt>
+<dd><p>List all .pth files in the specified directory without their extensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – The directory to search for .pth files.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of filenames without the .pth extension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.mass_conservation_loss">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">mass_conservation_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss" title="Link to this definition">#</a></dt>
+<dd><p>Replaces the standard MSE loss with a sum of the standard MSE loss and a mass conservation loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>masses</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – A list of masses for the quantities.</p></li>
+<li><p><strong>criterion</strong> – The loss function to use for the standard loss.</p></li>
+<li><p><strong>weights</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></span>) – A 2-tuple of weights for the standard loss and the mass conservation loss.</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code></span>) – The device to use for the loss function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new loss function that includes the mass conservation loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.read_yaml_config">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">read_yaml_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.save_plot_counter">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">save_plot_counter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plots'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.set_random_seed">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">set_random_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gpu_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.set_random_seed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-codes.surrogates.DeepONet.train_utils">
+<span id="codes-surrogates-deeponet-train-utils-module"></span><h2>codes.surrogates.DeepONet.train_utils module<a class="headerlink" href="#module-codes.surrogates.DeepONet.train_utils" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.surrogates.DeepONet.train_utils.mass_conservation_loss">
+<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.train_utils.</span></span><span class="sig-name descname"><span class="pre">mass_conservation_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss" title="Link to this definition">#</a></dt>
+<dd><p>Replaces the standard MSE loss with a sum of the standard MSE loss and a mass conservation loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>masses</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – A list of masses for the quantities.</p></li>
+<li><p><strong>criterion</strong> – The loss function to use for the standard loss.</p></li>
+<li><p><strong>weights</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></span>) – A 2-tuple of weights for the standard loss and the mass conservation loss.</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code></span>) – The device to use for the loss function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new loss function that includes the mass conservation loss.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-codes.surrogates.DeepONet">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-codes.surrogates.DeepONet" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.deeponet">codes.surrogates.DeepONet.deeponet module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.BranchNet"><code class="docutils literal notranslate"><span class="pre">BranchNet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.BranchNet.forward"><code class="docutils literal notranslate"><span class="pre">BranchNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet"><code class="docutils literal notranslate"><span class="pre">MultiONet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.create_dataloader"><code class="docutils literal notranslate"><span class="pre">MultiONet.create_dataloader()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.OperatorNetwork.post_init_check"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork.post_init_check()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.TrunkNet"><code class="docutils literal notranslate"><span class="pre">TrunkNet</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet.TrunkNet.forward"><code class="docutils literal notranslate"><span class="pre">TrunkNet.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.deeponet_config">codes.surrogates.DeepONet.deeponet_config module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.branch_hidden_layers"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.branch_hidden_layers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.hidden_size"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.hidden_size</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.masses"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.masses</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.massloss_factor"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.massloss_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.output_factor"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.output_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.params_branch"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.params_branch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_hidden_layers"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.trunk_hidden_layers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig.trunk_input_size"><code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig.trunk_input_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.don_utils">codes.surrogates.DeepONet.don_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.FlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FlatBatchIterable</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset"><code class="docutils literal notranslate"><span class="pre">PreBatchedDataset</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory"><code class="docutils literal notranslate"><span class="pre">create_date_based_directory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn"><code class="docutils literal notranslate"><span class="pre">custom_collate_fn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.get_project_path"><code class="docutils literal notranslate"><span class="pre">get_project_path()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.list_pth_files"><code class="docutils literal notranslate"><span class="pre">list_pth_files()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config"><code class="docutils literal notranslate"><span class="pre">read_yaml_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.set_random_seed"><code class="docutils literal notranslate"><span class="pre">set_random_seed()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.train_utils">codes.surrogates.DeepONet.train_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Robin Janssen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, Robin Janssen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

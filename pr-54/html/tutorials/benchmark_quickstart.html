@@ -1,0 +1,1143 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Benchmark Quickstart &#8212; CODES  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/benchmark_quickstart';</script>
+    <link rel="icon" href="../_static/favicon-96x96.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference Overview" href="../api-reference.html" />
+    <link rel="prev" title="Tutorials" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://arxiv.org/abs/2410.20886" title="CODES Paper" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-file-alt fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">CODES Paper</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Benchmark Quickstart</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.utils.html">codes.utils package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorials/benchmark_quickstart.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Benchmark Quickstart</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-cli-from-this-notebook">1. Running the CLI from this notebook</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trigger-training">2. Trigger training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-and-collect-metrics">3. Benchmark and collect metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-generated-results">4. Inspect generated results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-evals-comparing-surrogates">5. Additional Evals &amp; Comparing Surrogates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-of-benchmark-quickstart-congratulations">End of Benchmark Quickstart - Congratulations!</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="benchmark-quickstart">
+<h1>Benchmark Quickstart<a class="headerlink" href="#benchmark-quickstart" title="Link to this heading">#</a></h1>
+<p>This notebook mirrors the CLI quickstart flow in an executable format. Use it to
+validate your environment and to inspect the outputs of a short benchmark run.</p>
+<section id="running-the-cli-from-this-notebook">
+<h2>1. Running the CLI from this notebook<a class="headerlink" href="#running-the-cli-from-this-notebook" title="Link to this heading">#</a></h2>
+<p>Because this notebook lives inside the repo, we can invoke the CLI scripts directly. The helper below ensures the kernel’s working directory is the repository root so imports and scripts resolve correctly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_repo_root</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">start</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">&#39;codes&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">&#39;docs&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">path</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not locate repo root; start the kernel from within the project directory.&#39;</span><span class="p">)</span>
+
+<span class="n">repo_root</span> <span class="o">=</span> <span class="n">find_repo_root</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">repo_root</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repo_root</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repo_root</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Working directory set to </span><span class="si">{</span><span class="n">repo_root</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">config_path</span> <span class="o">=</span> <span class="n">repo_root</span> <span class="o">/</span> <span class="s2">&quot;configs&quot;</span> <span class="o">/</span> <span class="s2">&quot;train_eval&quot;</span> <span class="o">/</span> <span class="s2">&quot;config_minimal.yaml&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using config file at </span><span class="si">{</span><span class="n">config_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Configuration:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">training_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;training_id&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Working directory set to /export/home/rjanssen/CODES-Benchmark
+Using config file at /export/home/rjanssen/CODES-Benchmark/configs/train_eval/config_minimal.yaml
+Configuration:
+training_id: example_config_minimal
+surrogates:
+- FullyConnected
+- LatentPoly
+batch_size:
+- 65536
+- 512
+epochs:
+- 20
+- 20
+dataset:
+  name: lotka_volterra
+  tolerance: 1e-15
+devices:
+- cpu
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="trigger-training">
+<h2>2. Trigger training<a class="headerlink" href="#trigger-training" title="Link to this heading">#</a></h2>
+<p>Uncomment the next cell when you want to actually run training from inside the
+notebook. Keeping it as a string prevents accidental long-running jobs when the
+notebook is rendered on the documentation site.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span><span class="s2">&quot;{sys.executable}&quot;</span><span class="w"> </span>run_training.py<span class="w"> </span>--config<span class="w"> </span><span class="o">{</span>config_path<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8 0
+
+--------------------------------------------------------------------------------
+|                              Starting training                               |
+--------------------------------------------------------------------------------
+
+Training models sequentially on device cpu
+Overall Progress                        :   0%|  |   0/2 models trained [elapsed
+FullyConnected main             (cpu)   :   0%|     |     0/20 [00:00&lt;?, ?it/s ]
+FullyConnected main             (cpu)   :   0%| |     0/20 [00:03&lt;?, ?it/s , tra
+FullyConnected main             (cpu)   :   5%| |     1/20 [00:03&lt;01:00,  3.21s/
+FullyConnected main             (cpu)   :  10%| |     2/20 [00:04&lt;00:39,  2.19s/
+FullyConnected main             (cpu)   :  15%|▏|     3/20 [00:06&lt;00:31,  1.86s/
+FullyConnected main             (cpu)   :  20%|▏|     4/20 [00:07&lt;00:27,  1.71s/
+FullyConnected main             (cpu)   :  25%|▎|     5/20 [00:09&lt;00:24,  1.60s/
+FullyConnected main             (cpu)   :  30%|▎|     6/20 [00:10&lt;00:23,  1.65s/
+FullyConnected main             (cpu)   :  35%|▎|     7/20 [00:12&lt;00:22,  1.72s/
+FullyConnected main             (cpu)   :  40%|▍|     8/20 [00:14&lt;00:19,  1.66s/
+FullyConnected main             (cpu)   :  45%|▍|     9/20 [00:16&lt;00:19,  1.74s/
+FullyConnected main             (cpu)   :  50%|▌|    10/20 [00:17&lt;00:16,  1.66s/
+FullyConnected main             (cpu)   :  50%|▌|    10/20 [00:21&lt;00:16,  1.66s/
+FullyConnected main             (cpu)   :  55%|▌|    11/20 [00:21&lt;00:19,  2.20s/
+FullyConnected main             (cpu)   :  60%|▌|    12/20 [00:22&lt;00:16,  2.00s/
+FullyConnected main             (cpu)   :  65%|▋|    13/20 [00:24&lt;00:13,  1.86s/
+FullyConnected main             (cpu)   :  70%|▋|    14/20 [00:25&lt;00:10,  1.75s/
+FullyConnected main             (cpu)   :  75%|▊|    15/20 [00:27&lt;00:08,  1.68s/
+FullyConnected main             (cpu)   :  80%|▊|    16/20 [00:28&lt;00:06,  1.55s/
+FullyConnected main             (cpu)   :  85%|▊|    17/20 [00:29&lt;00:04,  1.55s/
+FullyConnected main             (cpu)   :  90%|▉|    18/20 [00:31&lt;00:03,  1.55s/
+FullyConnected main             (cpu)   :  95%|▉|    19/20 [00:33&lt;00:01,  1.56s/
+FullyConnected main             (cpu)   : 100%|█|    20/20 [00:34&lt;00:00,  1.52s/
+Overall Progress                        :  50%|▌ |   1/2 models trained [elapsed
+LatentPoly     main             (cpu)   :   0%|     |     0/20 [00:00&lt;?, ?it/s ]
+LatentPoly     main             (cpu)   :   0%| |     0/20 [00:08&lt;?, ?it/s , tra
+LatentPoly     main             (cpu)   :   5%| |     1/20 [00:08&lt;02:34,  8.12s/
+LatentPoly     main             (cpu)   :  10%| |     2/20 [00:12&lt;01:48,  6.04s/
+LatentPoly     main             (cpu)   :  15%|▏|     3/20 [00:17&lt;01:34,  5.55s/
+LatentPoly     main             (cpu)   :  20%|▏|     4/20 [00:25&lt;01:44,  6.50s/
+LatentPoly     main             (cpu)   :  25%|▎|     5/20 [00:30&lt;01:30,  6.05s/
+LatentPoly     main             (cpu)   :  30%|▎|     6/20 [00:35&lt;01:18,  5.62s/
+LatentPoly     main             (cpu)   :  35%|▎|     7/20 [00:40&lt;01:10,  5.45s/
+LatentPoly     main             (cpu)   :  40%|▍|     8/20 [00:45&lt;01:02,  5.21s/
+LatentPoly     main             (cpu)   :  45%|▍|     9/20 [00:50&lt;00:55,  5.05s/
+LatentPoly     main             (cpu)   :  50%|▌|    10/20 [00:55&lt;00:52,  5.21s/
+LatentPoly     main             (cpu)   :  50%|▌|    10/20 [01:05&lt;00:52,  5.21s/
+LatentPoly     main             (cpu)   :  55%|▌|    11/20 [01:05&lt;01:00,  6.70s/
+LatentPoly     main             (cpu)   :  60%|▌|    12/20 [01:13&lt;00:57,  7.14s/
+LatentPoly     main             (cpu)   :  65%|▋|    13/20 [01:21&lt;00:51,  7.41s/
+LatentPoly     main             (cpu)   :  70%|▋|    14/20 [01:26&lt;00:39,  6.57s/
+LatentPoly     main             (cpu)   :  75%|▊|    15/20 [01:32&lt;00:31,  6.29s/
+LatentPoly     main             (cpu)   :  80%|▊|    16/20 [01:39&lt;00:26,  6.59s/
+LatentPoly     main             (cpu)   :  85%|▊|    17/20 [01:45&lt;00:19,  6.46s/
+LatentPoly     main             (cpu)   :  90%|▉|    18/20 [01:53&lt;00:13,  6.76s/
+LatentPoly     main             (cpu)   :  95%|▉|    19/20 [02:01&lt;00:07,  7.19s/
+LatentPoly     main             (cpu)   : 100%|█|    20/20 [02:05&lt;00:00,  6.43s/
+Overall Progress                        : 100%|█ |   2/2 models trained [elapsed
+
+
+
+--------------------------------------------------------------------------------
+|                              Training completed                              |
+--------------------------------------------------------------------------------
+
+2 Models saved in /trained/example_config_minimal/
+Total training time: 0:02:41 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Sorry for the suboptimal formatting of the progress bars - they look much nicer in the terminal, and we even have stacked and organised progress bars for parallel training runs there.</p>
+</section>
+<section id="benchmark-and-collect-metrics">
+<h2>3. Benchmark and collect metrics<a class="headerlink" href="#benchmark-and-collect-metrics" title="Link to this heading">#</a></h2>
+<p>After training finishes, call <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> with the same configuration file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span><span class="s2">&quot;{sys.executable}&quot;</span><span class="w"> </span>run_eval.py<span class="w"> </span>--config<span class="w"> </span><span class="o">{</span>config_path<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Checking benchmark configuration...
+Configuration check passed successfully.
+
+--------------------------------------------------------------------------------
+|                     Running benchmark for FullyConnected                     |
+--------------------------------------------------------------------------------
+
+All required models for surrogate FullyConnected are present.
+Running accuracy benchmark...
+
+--------------------------------------------------------------------------------
+|                       Running benchmark for LatentPoly                       |
+--------------------------------------------------------------------------------
+
+All required models for surrogate LatentPoly are present.
+Running accuracy benchmark...
+
+--------------------------------------------------------------------------------
+|                            Evaluation completed.                             |
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="inspect-generated-results">
+<h2>4. Inspect generated results<a class="headerlink" href="#inspect-generated-results" title="Link to this heading">#</a></h2>
+<p>Let us investigate the files that were created during training and evaluation!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use tree visualization if available</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="n">tree_cmd</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;tree&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">tree_cmd</span><span class="p">:</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>trained/<span class="o">{</span>training_id<span class="o">}</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>results/<span class="o">{</span>training_id<span class="o">}</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>plots/<span class="o">{</span>training_id<span class="o">}</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The &#39;tree&#39; command is not available. Please install it to visualize the directory structure.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Blue">trained/example_config_minimal</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">FullyConnected</span>
+│   ├── fullyconnected_main.pth
+│   └── fullyconnected_main.yaml
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">LatentPoly</span>
+│   ├── latentpoly_main.pth
+│   └── latentpoly_main.yaml
+├── completed.txt
+└── config.yaml
+
+3 directories, 6 files
+<span class=" -Color -Color-Bold -Color-Bold-Blue">results/example_config_minimal</span>
+├── fullyconnected_metrics.yaml
+└── latentpoly_metrics.yaml
+
+1 directory, 2 files
+<span class=" -Color -Color-Bold -Color-Bold-Blue">plots/example_config_minimal</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">FullyConnected</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_per_quantity.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_time.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_error_per_quantity.jpg</span>
+│   └── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_errors_time.jpg</span>
+└── <span class=" -Color -Color-Bold -Color-Bold-Blue">LatentPoly</span>
+    ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_per_quantity.jpg</span>
+    ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_time.jpg</span>
+    ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_error_per_quantity.jpg</span>
+    └── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_errors_time.jpg</span>
+
+3 directories, 8 files
+</pre></div>
+</div>
+</div>
+</div>
+<p>Trained models are stored under <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/&lt;surrogate&gt;/</span></code>.
+As you can see, each surrogate has its own subdirectory containing the model (.pth), as well as a YAML file, which contains all model attributes relevant to restore the model later.</p>
+<p>Results from evaluation are stored under <code class="docutils literal notranslate"><span class="pre">results/&lt;training_id&gt;/&lt;surrogate&gt;/</span></code>.
+For each surrogate, a YAML summary file is created, which contains various metrics computed during evaluation.</p>
+<p>Plots generated during evaluation are stored under <code class="docutils literal notranslate"><span class="pre">plots/&lt;training_id&gt;/&lt;surrogate&gt;/</span></code>.
+In this very basic setting, four plots were created for each surrogate we trained.</p>
+<p>Next, let us take a look at the contents of the results yaml files and the generated plots!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_root</span> <span class="o">=</span> <span class="n">repo_root</span> <span class="o">/</span> <span class="s2">&quot;results&quot;</span> <span class="o">/</span> <span class="n">training_id</span>
+<span class="c1"># List all files in results_root</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results_root</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="p">(</span><span class="n">results_root</span> <span class="o">/</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contents of </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>- fullyconnected_metrics.yaml
+Contents of fullyconnected_metrics.yaml:
+n_params: 0
+accuracy:
+  root_mean_squared_error_log: 11.999552726745605
+  median_absolute_error_log: 8.740435600280762
+  mean_absolute_error_log: 11.029707908630371
+  percentile_absolute_error_log: 21.89702796936035
+  root_mean_squared_error_real: 251635024.0
+  median_absolute_error_real: 18.237300872802734
+  mean_absolute_error_real: 115018664.0
+  percentile_absolute_error_real: 617406528.0
+  median_relative_error: 1.0
+  mean_relative_error: 2023090816.0
+  percentile_relative_error: 11246115840.0
+  error_percentile: 99
+  main_model_training_time: 35.57754993438721
+  main_model_epochs: 20
+
+- latentpoly_metrics.yaml
+Contents of latentpoly_metrics.yaml:
+n_params: 0
+accuracy:
+  root_mean_squared_error_log: 2.213813543319702
+  median_absolute_error_log: 1.4329252243041992
+  mean_absolute_error_log: 1.7928467988967896
+  percentile_absolute_error_log: 6.6917595863342285
+  root_mean_squared_error_real: 185.49114990234375
+  median_absolute_error_real: 204.94384765625
+  mean_absolute_error_real: 169.51358032226562
+  percentile_absolute_error_real: 215.49717712402344
+  median_relative_error: 26.082883834838867
+  mean_relative_error: 24715276288.0
+  percentile_relative_error: 4917673.0
+  error_percentile: 99
+  main_model_training_time: 125.99766206741333
+  main_model_epochs: 20
+</pre></div>
+</div>
+</div>
+</div>
+<p>These metrics may be a bit hard to read in raw YAML format. But luckily, we can look at the generated plots as well!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Create figure with 4x2 subplots</span>
+<span class="n">plots_dir</span> <span class="o">=</span> <span class="n">repo_root</span> <span class="o">/</span> <span class="s2">&quot;plots&quot;</span> <span class="o">/</span> <span class="n">training_id</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Displaying plots from </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">col</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">plots_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">plot_file</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading plot </span><span class="si">{</span><span class="n">plot_file</span><span class="si">}</span><span class="s2"> for surrogate </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">col</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Displaying plots from /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal:
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/FullyConnected/accuracy_delta_dex_per_quantity.jpg for surrogate FullyConnected
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/FullyConnected/accuracy_rel_error_per_quantity.jpg for surrogate FullyConnected
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/FullyConnected/accuracy_delta_dex_time.jpg for surrogate FullyConnected
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/FullyConnected/accuracy_rel_errors_time.jpg for surrogate FullyConnected
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/LatentPoly/accuracy_delta_dex_per_quantity.jpg for surrogate LatentPoly
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/LatentPoly/accuracy_rel_error_per_quantity.jpg for surrogate LatentPoly
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/LatentPoly/accuracy_rel_errors_time.jpg for surrogate LatentPoly
+Loading plot /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal/LatentPoly/accuracy_delta_dex_time.jpg for surrogate LatentPoly
+</pre></div>
+</div>
+<img alt="../_images/8acfac92f79491aeb6bce18a0c76157a29a3371bd341dcd7081d255ed57719e2.png" src="../_images/8acfac92f79491aeb6bce18a0c76157a29a3371bd341dcd7081d255ed57719e2.png" />
+</div>
+</div>
+</section>
+<section id="additional-evals-comparing-surrogates">
+<h2>5. Additional Evals &amp; Comparing Surrogates<a class="headerlink" href="#additional-evals-comparing-surrogates" title="Link to this heading">#</a></h2>
+<p>These plots and metrics already provide some insights into the performance of the trained surrogates.
+But since CODES is a benchmark, the crucial part is to compare different surrogates against each other.</p>
+<p>Additionally, we can run some more evaluations even with the two models we trained above (one per surrogate). To do this, let us rerun <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> with modified configuration!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;losses&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;gradients&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;timing&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;compute&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;compare&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;iterative&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="c1"># Replace the saved config file with the updated one</span>
+<span class="n">saved_config_path</span> <span class="o">=</span> <span class="n">repo_root</span> <span class="o">/</span> <span class="s2">&quot;trained&quot;</span> <span class="o">/</span> <span class="n">training_id</span> <span class="o">/</span> <span class="s2">&quot;config.yaml&quot;</span>
+<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">saved_config_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Check contents of updated config file</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated Configuration for Additional Evaluations:&quot;</span><span class="p">)</span>
+<span class="n">config_new</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">saved_config_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config_new</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Updated Configuration for Additional Evaluations:
+training_id: example_config_minimal
+surrogates:
+- FullyConnected
+- LatentPoly
+batch_size:
+- 65536
+- 512
+epochs:
+- 20
+- 20
+dataset:
+  name: lotka_volterra
+  tolerance: 1e-15
+devices:
+- cpu
+losses: true
+gradients: true
+timing: true
+compute: true
+compare: true
+iterative: true
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that we modified the config file which was copied over to the <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/</span></code> directory during training!This is simply because I wanted to avoid creating yet another config file in this quickstart notebook.</p>
+<p>Now, let us evaluate the trained surrogates with these additional eval toggles enabled:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span><span class="s2">&quot;{sys.executable}&quot;</span><span class="w"> </span>run_eval.py<span class="w"> </span>--config<span class="w"> </span><span class="o">{</span>saved_config_path<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Checking benchmark configuration...
+Configuration check passed successfully.
+
+--------------------------------------------------------------------------------
+|                     Running benchmark for FullyConnected                     |
+--------------------------------------------------------------------------------
+
+All required models for surrogate FullyConnected are present.
+Loss plots...
+Running accuracy benchmark...
+Running iterative training benchmark...
+Running gradients benchmark...
+Running timing benchmark...
+Running compute benchmark...
+Skipping GPU memory profiling for compute evaluation (requested device is not CUDA).
+
+--------------------------------------------------------------------------------
+|                       Running benchmark for LatentPoly                       |
+--------------------------------------------------------------------------------
+
+All required models for surrogate LatentPoly are present.
+Loss plots...
+Running accuracy benchmark...
+Running iterative training benchmark...
+Running gradients benchmark...
+Running timing benchmark...
+Running compute benchmark...
+Skipping GPU memory profiling for compute evaluation (requested device is not CUDA).
+
+--------------------------------------------------------------------------------
+|                               Comparing models                               |
+--------------------------------------------------------------------------------
+
+Making comparative plots... 
+
+Figure(700x1000)
+The results are in! Here is a summary of the benchmark metrics:
+
+┌───────────────────────┬────────────────────────┬──────────────────────┐
+│ Metric                │ FullyConnected         │ LatentPoly           │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ RMSE                  │ 2.52e+08               │ * 185 *              │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ MAE                   │ 1.15e+08               │ * 17 *               │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Median AE             │ * 18.2 *               │ 205                  │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ 99th Perc. AE         │ 6.17e+08               │ * 215 *              │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ RMSE (log)            │ 12 dex                 │ * 2.21 dex *         │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ MAE (log)             │ 11 dex                 │ * 1.79 dex *         │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Median AE (log)       │ 8.74 dex               │ * 1.43 dex *         │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ 99th Perc. AE (log)   │ 21.9 dex               │ * 6.69 dex *         │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ MRE                   │ * 2.02e+11 % *         │ 2.47e+12 %           │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Median RE             │ * 1 % *                │ 2608 %               │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ 99th Percentile RE    │ 1.12e+12 %             │ * 4.92e+08 % *       │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Epochs                │ 20                     │ 20                   │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Train Time (hh:mm:ss) │ * 00:00:35 *           │ 00:02:05             │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Inference Times       │ * 97.58 ms ± 6.16 ms * │ 220.90 ms ± 13.85 ms │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Iterative MAE (log)   │ 10.9 dex               │ * 1.79 dex *         │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ Gradient-Error PCC    │ 0.102                  │ -0.411               │
+├───────────────────────┼────────────────────────┼──────────────────────┤
+│ # Trainable Params    │ 52620                  │ * 4810 *             │
+└───────────────────────┴────────────────────────┴──────────────────────┘
+
+CLI table metrics saved to results/example_config_minimal/metrics_table.csv
+
+--------------------------------------------------------------------------------
+|                            Evaluation completed.                             |
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>Nice! Now we have some more comprehensive output. As you can see, we get a direct comparison in the CLI with some of the most important metrics across all surrogates. Best values are highlighted with an asterisk (*).</p>
+<p>Below, we can again inspect the contents of the results directory to see what additional files were created during this extended evaluation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use tree visualization if available</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="n">tree_cmd</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;tree&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">tree_cmd</span><span class="p">:</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>trained/<span class="o">{</span>training_id<span class="o">}</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>results/<span class="o">{</span>training_id<span class="o">}</span>
+    <span class="o">!</span><span class="s2">&quot;{tree_cmd}&quot;</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>plots/<span class="o">{</span>training_id<span class="o">}</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The &#39;tree&#39; command is not available. Please install it to visualize the directory structure.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Blue">trained/example_config_minimal</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">FullyConnected</span>
+│   ├── fullyconnected_main.pth
+│   └── fullyconnected_main.yaml
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">LatentPoly</span>
+│   ├── latentpoly_main.pth
+│   └── latentpoly_main.yaml
+├── completed.txt
+└── config.yaml
+
+3 directories, 6 files
+<span class=" -Color -Color-Bold -Color-Bold-Blue">results/example_config_minimal</span>
+├── all_metrics.csv
+├── fullyconnected_metrics.yaml
+├── latentpoly_metrics.yaml
+├── metrics_table.csv
+└── metrics_table.txt
+
+1 directory, 5 files
+<span class=" -Color -Color-Bold -Color-Bold-Blue">plots/example_config_minimal</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">FullyConnected</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_per_quantity.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_time.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_error_per_quantity.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_errors_time.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">example_preds_iterative.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">gradient_error_heatmap.jpg</span>
+│   └── <span class=" -Color -Color-Bold -Color-Bold-Magenta">losses_main.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Blue">LatentPoly</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_per_quantity.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_time.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_error_per_quantity.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_errors_time.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">example_preds_iterative.jpg</span>
+│   ├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">gradient_error_heatmap.jpg</span>
+│   └── <span class=" -Color -Color-Bold -Color-Bold-Magenta">losses_main.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_delta_dex_time.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_error_dist_deltadex.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_error_dist_relative.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">accuracy_rel_errors_time_models.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">gradients_heatmaps.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">iterative_delta_dex_time.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">iterative_error_dist_deltadex.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">losses_main_model.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">losses_main_model_duration.jpg</span>
+├── <span class=" -Color -Color-Bold -Color-Bold-Magenta">losses_main_model_equal.jpg</span>
+└── <span class=" -Color -Color-Bold -Color-Bold-Magenta">timing_inference.jpg</span>
+
+3 directories, 25 files
+</pre></div>
+</div>
+</div>
+</div>
+<p>Nothing changed in the trained model directories, but the results directories now contain additional summary files with more metrics computed during this extended evaluation, and explicit comparisons across surrogates, since we enabled the <code class="docutils literal notranslate"><span class="pre">compare</span></code> toggle in the config.</p>
+<p>Let us look at some of the additional plots we generated during this extended evaluation. We will start with results for one of the surrogates (<code class="docutils literal notranslate"><span class="pre">FullyConnected</span></code>), and then look at comparison plots across all surrogates.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;losses_main.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;example_preds_iterative.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;gradient_error_heatmap.jpg&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Displaying new plots from </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_plot_identifiers</span><span class="p">):</span>
+    <span class="n">plot_file</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">plots_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">item</span> <span class="o">/</span> <span class="n">plot_id</span>
+        <span class="k">if</span> <span class="n">candidate</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">plot_file</span> <span class="o">=</span> <span class="n">candidate</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">plot_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Showing plot </span><span class="si">{</span><span class="n">plot_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plot </span><span class="si">{</span><span class="n">plot_id</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Displaying new plots from /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal:
+Showing plot losses_main.jpg
+Showing plot example_preds_iterative.jpg
+Showing plot gradient_error_heatmap.jpg
+</pre></div>
+</div>
+<img alt="../_images/27121d5ba8e3153940c58108d8dc1cccb186c400f968ed6fe75d35389b15da8c.png" src="../_images/27121d5ba8e3153940c58108d8dc1cccb186c400f968ed6fe75d35389b15da8c.png" />
+<img alt="../_images/085483f7ec6f3e05598348c10d5641fa482f4b36c96c90c94a94783c8bb908bc.png" src="../_images/085483f7ec6f3e05598348c10d5641fa482f4b36c96c90c94a94783c8bb908bc.png" />
+<img alt="../_images/d2fcacfb614507808100b51a7291df17aa60c5a9e9b9a1aaad0f30d09efa1600.png" src="../_images/d2fcacfb614507808100b51a7291df17aa60c5a9e9b9a1aaad0f30d09efa1600.png" />
+</div>
+</div>
+<p>Of course, the plots look a bit weird because we did not really train for long enough. But you get the idea!</p>
+<p>Now, let us look at some comparison plots across the two surrogates we trained.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comparison_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;accuracy_rel_errors_time_models.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy_error_dist_deltadex.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;losses_main_model.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;iterative_delta_dex_time.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;timing_inference.jpg&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Displaying comparison plots from </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="c1"># This time, the plots live directly in plots_dir</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">comparison_plot_identifiers</span><span class="p">):</span>
+    <span class="n">plot_file</span> <span class="o">=</span> <span class="n">plots_dir</span> <span class="o">/</span> <span class="n">plot_id</span>
+    <span class="k">if</span> <span class="n">plot_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Showing comparison plot </span><span class="si">{</span><span class="n">plot_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Comparison plot </span><span class="si">{</span><span class="n">plot_id</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Displaying comparison plots from /export/home/rjanssen/CODES-Benchmark/plots/example_config_minimal:
+Showing comparison plot accuracy_rel_errors_time_models.jpg
+</pre></div>
+</div>
+<img alt="../_images/ed691ab2d39678d4af7b1e93c2b5fc3b91cb7cfa493853f645ef8992eb2fcc6b.png" src="../_images/ed691ab2d39678d4af7b1e93c2b5fc3b91cb7cfa493853f645ef8992eb2fcc6b.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Showing comparison plot accuracy_error_dist_deltadex.jpg
+</pre></div>
+</div>
+<img alt="../_images/cd68eddbc6717118b5921eef03bc4468cf446827c0c4583450a6c5fc0c0da0ed.png" src="../_images/cd68eddbc6717118b5921eef03bc4468cf446827c0c4583450a6c5fc0c0da0ed.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Showing comparison plot losses_main_model.jpg
+</pre></div>
+</div>
+<img alt="../_images/46f13daae0664e289ed71f9dbf9cbeb46883b1dd7f4e18c554307b6016a8a42b.png" src="../_images/46f13daae0664e289ed71f9dbf9cbeb46883b1dd7f4e18c554307b6016a8a42b.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Showing comparison plot iterative_delta_dex_time.jpg
+</pre></div>
+</div>
+<img alt="../_images/c9a006b7e493ea57e435c60ee3abe6bd25ab9d94bf13a03914fa620cf4588314.png" src="../_images/c9a006b7e493ea57e435c60ee3abe6bd25ab9d94bf13a03914fa620cf4588314.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Showing comparison plot timing_inference.jpg
+</pre></div>
+</div>
+<img alt="../_images/1db2d32d46c4e6e22c58cf8fb07f10d562380b593f35eafd2092221bfe1470a8.png" src="../_images/1db2d32d46c4e6e22c58cf8fb07f10d562380b593f35eafd2092221bfe1470a8.png" />
+</div>
+</div>
+<p>The above plots yield some insights into how the two surrogates compare against each other. Of course, for lack of proper training, the only plot that really shows us something meaningful is the timing plot, where we can see that both surrogates are roughly on par for this simple dataset.*</p>
+</section>
+<section id="end-of-benchmark-quickstart-congratulations">
+<h2>End of Benchmark Quickstart - Congratulations!<a class="headerlink" href="#end-of-benchmark-quickstart-congratulations" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tutorials</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../api-reference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API Reference Overview</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-cli-from-this-notebook">1. Running the CLI from this notebook</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trigger-training">2. Trigger training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-and-collect-metrics">3. Benchmark and collect metrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-generated-results">4. Inspect generated results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-evals-comparing-surrogates">5. Additional Evals &amp; Comparing Surrogates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-of-benchmark-quickstart-congratulations">End of Benchmark Quickstart - Congratulations!</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Robin Janssen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026, Robin Janssen.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
