@@ -1,4 +1,53 @@
 {
   "projectName": "CODES-Benchmark",
   "projectOwner": "AstroAI-Lab",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "robin-janssen",
+      "name": "Robin Janssen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82322346?v=4",
+      "profile": "https://github.com/robin-janssen",
+      "contributions": [
+        "code",
+        "content",
+        "data",
+        "doc",
+        "design",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "plugin",
+        "projectManagement",
+        "question",
+        "research",
+        "review",
+        "tool",
+        "test",
+        "talk",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "TobiBu",
+      "name": "Tobias Buck",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7574273?v=4",
+      "profile": "https://tobibu.github.io",
+      "contributions": [
+        "ideas",
+        "infra",
+        "projectManagement",
+        "research",
+        "review",
+        "talk",
+        "mentoring"
+      ]
+    },
+  ]
 }
