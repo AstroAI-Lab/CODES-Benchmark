@@ -1,17 +1,16 @@
-osu2008: "https://zenodo.org/records/13749089/files/data.hdf5?download=1"
-simple_reaction: "https://zenodo.org/records/14712934/files/data.hdf5?download=1"
-simple_ode: "https://zenodo.org/records/14878373/files/data.hdf5?download=1"
-lotka_volterra: "https://zenodo.org/records/14703867/files/data.hdf5?download=1"
-branca24: "https://zenodo.org/records/13624794/files/data.hdf5?download=1"
-simple_primordial: "https://zenodo.org/records/13754361/files/data.hdf5?download=1"
-branca_norad: "https://zenodo.org/records/14041124/files/data.hdf5?download=1"
-branca_large_kyr: "https://zenodo.org/records/14204650/files/data.hdf5?download=1"
-branca_large_myr: "https://zenodo.org/records/14243267/files/data.hdf5?download=1"
-coupled_oscillators: "https://zenodo.org/records/14717175/files/data.hdf5?download=1"
+osu2008: https://zenodo.org/records/13749089/files/data.hdf5?download=1
+simple_reaction: https://zenodo.org/records/14712934/files/data.hdf5?download=1
+simple_ode: https://zenodo.org/records/14878373/files/data.hdf5?download=1
+lotka_volterra: https://zenodo.org/records/14703867/files/data.hdf5?download=1
+branca24: https://zenodo.org/records/13624794/files/data.hdf5?download=1
+simple_primordial: https://zenodo.org/records/13754361/files/data.hdf5?download=1
+branca_norad: https://zenodo.org/records/14041124/files/data.hdf5?download=1
+branca_large_kyr: https://zenodo.org/records/14204650/files/data.hdf5?download=1
+branca_large_myr: https://zenodo.org/records/14243267/files/data.hdf5?download=1
+coupled_oscillators: https://zenodo.org/records/14717175/files/data.hdf5?download=1
 lv_parametric: https://zenodo.org/records/15412214/files/data.hdf5?download=1
 lv_parametric_no_params: https://zenodo.org/records/15412297/files/data.hdf5?download=1
 cloud: https://zenodo.org/records/18018572/files/codes_cloud_data.hdf5?download=1
 cloud_parametric: https://zenodo.org/records/18018572/files/codes_cloud_parametric_data.hdf5?download=1
 primordial: https://zenodo.org/records/18018572/files/codes_primordial_data.hdf5?download=1
 primordial_parametric: https://zenodo.org/records/18018572/files/codes_primordial_parametric_data.hdf5?download=1
-

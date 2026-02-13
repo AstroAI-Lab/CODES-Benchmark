@@ -73,16 +73,21 @@ def train_and_save_model(
     ) = check_and_load_data(
         config["dataset"]["name"],
         verbose=config.get("verbose", False),
-        log=config["dataset"]["log10_transform"],
-        log_params=config["dataset"].get("log10_transform_params", False),
-        normalisation_mode=config["dataset"]["normalise"],
-        tolerance=config["dataset"]["tolerance"],
+        log=config["dataset"].get("log10_transform", True),
+        log_params=config["dataset"].get("log10_transform_params", True),
+        normalisation_mode=config["dataset"].get("normalise", "minmax"),
+        tolerance=config["dataset"].get("tolerance", None),
         per_species=config["dataset"].get("normalise_per_species", False),
     )
 
     # Get the appropriate data subset
     (train_data, test_data), (train_params, test_params), timesteps = get_data_subset(
-        (train_data, test_data), timesteps, mode, metric, (train_params, test_params)
+        (train_data, test_data),
+        timesteps,
+        mode,
+        metric,
+        (train_params, test_params),
+        config["dataset"].get("subset_factor", 1),
     )
 
     _, n_timesteps, n_quantities = train_data.shape
@@ -156,7 +161,7 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
         list: A list of training tasks for the surrogate model.
     """
     tasks = []
-    seed = config["seed"]
+    seed = config.get("seed", 42)
     surr_idx = config["surrogates"].index(surr_name)
     id = config["training_id"]
     epochs = (
@@ -167,29 +172,34 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
 
     tasks.append((surr_name, "main", "", id, seed, epochs))
 
-    if config["interpolation"]["enabled"]:
+    interpolation_conf = config.get("interpolation", {})
+    if interpolation_conf.get("enabled", False):
         mode = "interpolation"
-        for interval in config["interpolation"]["intervals"]:
+        for interval in interpolation_conf["intervals"]:
             tasks.append((surr_name, mode, interval, id, seed + interval, epochs))
 
-    if config["extrapolation"]["enabled"]:
+    extrapolation_conf = config.get("extrapolation", {})
+    if extrapolation_conf.get("enabled", False):
         mode = "extrapolation"
-        for cutoff in config["extrapolation"]["cutoffs"]:
+        for cutoff in extrapolation_conf["cutoffs"]:
             tasks.append((surr_name, mode, cutoff, id, seed + cutoff, epochs))
 
-    if config["sparse"]["enabled"]:
-        for factor in config["sparse"]["factors"]:
+    sparse_conf = config.get("sparse", {})
+    if sparse_conf.get("enabled", False):
+        for factor in sparse_conf["factors"]:
             tasks.append((surr_name, "sparse", factor, id, seed + factor, epochs))
 
-    if config["uncertainty"]["enabled"]:
-        n_models = config["uncertainty"]["ensemble_size"]
+    uncertainty_conf = config.get("uncertainty", {})
+    if uncertainty_conf.get("enabled", False):
+        n_models = uncertainty_conf["ensemble_size"]
         for i in range(n_models - 1):
             tasks.append((surr_name, "UQ", i + 1, id, seed + i, epochs))
 
-    if config["batch_scaling"]["enabled"]:
+    batch_scaling_conf = config.get("batch_scaling", {})
+    if batch_scaling_conf.get("enabled", False):
         mode = "batchsize"
-        for bf in config["batch_scaling"]["sizes"]:
-            bf_index = config["batch_scaling"]["sizes"].index(bf)
+        for bf in batch_scaling_conf["sizes"]:
+            bf_index = batch_scaling_conf["sizes"].index(bf)
             bf = batch_factor_to_float(bf)
             tasks.append((surr_name, mode, float(bf), id, seed + bf_index, epochs))
 
@@ -249,6 +259,17 @@ def worker(
 
 
 def parallel_training(tasks, device_list, task_list_filepath: str):
+    """
+    Execute the queued training tasks across multiple devices using worker threads.
+
+    Args:
+        tasks (list[tuple]): Output of :func:`create_task_list_for_surrogate`.
+        device_list (list[str]): Devices allocated to training (e.g. ["cuda:0", "cuda:1"]).
+        task_list_filepath (str): Path to the persisted JSON task list that tracks progress.
+
+    Returns:
+        float: Elapsed wall-clock time reported by the shared progress bar.
+    """
     task_queue = Queue()
     for task in tasks:
         task_queue.put(task)
@@ -299,6 +320,17 @@ def parallel_training(tasks, device_list, task_list_filepath: str):
 
 
 def sequential_training(tasks, device_list, task_list_filepath: str):
+    """
+    Run all training tasks sequentially on a single device.
+
+    Args:
+        tasks (list[tuple]): Task specification tuples generated from the config.
+        device_list (list[str]): Contains exactly one element (typically \"cpu\" or a single CUDA id).
+        task_list_filepath (str): Path to the JSON file used to resume interrupted runs.
+
+    Returns:
+        float: Total elapsed time once all tasks finish.
+    """
     overall_progress_bar = get_progress_bar(tasks)
     errors_encountered = False
     device = device_list[0]

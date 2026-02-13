@@ -192,10 +192,10 @@ def get_required_models_list(surrogate: str, conf: dict) -> list:
     required_models.append(f"{surrogate.lower()}_main.pth")
 
     # Gradients does not require a separate model
-    if conf["gradients"]:
+    if conf.get("gradients", False):
         pass
 
-    if conf["interpolation"]["enabled"]:
+    if conf.get("interpolation", {}).get("enabled", False):
         intervals = conf["interpolation"]["intervals"]
         required_models.extend(
             [
@@ -204,19 +204,19 @@ def get_required_models_list(surrogate: str, conf: dict) -> list:
             ]
         )
 
-    if conf["extrapolation"]["enabled"]:
+    if conf.get("extrapolation", {}).get("enabled", False):
         cutoffs = conf["extrapolation"]["cutoffs"]
         required_models.extend(
             [f"{surrogate.lower()}_extrapolation_{cutoff}.pth" for cutoff in cutoffs]
         )
 
-    if conf["sparse"]["enabled"]:
+    if conf.get("sparse", {}).get("enabled", False):
         factors = conf["sparse"]["factors"]
         required_models.extend(
             [f"{surrogate.lower()}_sparse_{factor}.pth" for factor in factors]
         )
 
-    if conf["uncertainty"]["enabled"]:
+    if conf.get("uncertainty", {}).get("enabled", False):
         n_models = conf["uncertainty"]["ensemble_size"]
         required_models.extend(
             [f"{surrogate.lower()}_UQ_{i + 1}.pth" for i in range(n_models - 1)]
@@ -261,30 +261,27 @@ def count_trainable_parameters(model: torch.nn.Module) -> int:
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
-def measure_memory_footprint(model: torch.nn.Module, inputs: tuple) -> dict:
+def measure_memory_footprint(
+    model: torch.nn.Module, inputs: tuple, device: torch.device
+) -> tuple[dict, torch.nn.Module]:
     """
-    Measure the memory footprint of a model during forward and backward passes using
-    peak memory tracking and explicit synchronization.
+    Measure peak GPU memory usage for forward/backward passes.
 
     Args:
-        model (torch.nn.Module): The PyTorch model.
-        inputs (tuple): The input data for the model.
+        model (torch.nn.Module): Model to profile.
+        inputs (tuple): Sample batch used for the forward pass.
 
     Returns:
-        dict: A dictionary containing measured memory usages for:
-            - model_memory: Additional memory used when moving the model to GPU.
-            - forward_memory: Peak additional memory during the forward pass with gradients.
-            - backward_memory: Peak additional memory during the backward pass.
-            - forward_memory_nograd: Peak additional memory during the forward pass without gradients.
-        model: The model (possibly moved back to the original device).
+        tuple[dict, torch.nn.Module]: Dictionary with ``model_memory``, ``forward_memory``,
+        ``backward_memory``, and ``forward_memory_nograd`` plus the model (moved back to its
+        original device).
     """
     # Determine the target device
-    device = model.device if hasattr(model, "device") else torch.device("cuda:0")
+    if not torch.cuda.is_available() or device.type != "cuda":
+        raise RuntimeError("CUDA device required for memory profiling.")
 
-    # Move the model to CPU first (simulate baseline)
     model.to("cpu")
 
-    # --- Model loading measurement ---
     torch.cuda.synchronize(device)
     torch.cuda.reset_peak_memory_stats(device)
     before_load = torch.cuda.memory_allocated(device)
@@ -413,25 +410,25 @@ def clean_metrics(metrics: dict, conf: dict) -> dict:
     write_metrics["accuracy"].pop("relative_errors", None)
     write_metrics["accuracy"].pop("absolute_errors_log", None)
 
-    if conf["iterative"]:
+    if conf.get("iterative", False):
         write_metrics["iterative"].pop("absolute_errors", None)
         write_metrics["iterative"].pop("absolute_errors_log", None)
-    if conf["gradients"]:
+    if conf.get("gradients", False):
         write_metrics["gradients"].pop("gradients", None)
         write_metrics["gradients"].pop("max_counts", None)
         write_metrics["gradients"].pop("max_gradient", None)
         write_metrics["gradients"].pop("max_error", None)
         write_metrics["gradients"].pop("errors_log", None)
-    if conf["interpolation"]["enabled"]:
+    if conf.get("interpolation", {}).get("enabled", False):
         write_metrics["interpolation"].pop("model_errors", None)
         write_metrics["interpolation"].pop("intervals", None)
-    if conf["extrapolation"]["enabled"]:
+    if conf.get("extrapolation", {}).get("enabled", False):
         write_metrics["extrapolation"].pop("model_errors", None)
         write_metrics["extrapolation"].pop("cutoffs", None)
-    if conf["sparse"]["enabled"]:
+    if conf.get("sparse", {}).get("enabled", False):
         write_metrics["sparse"].pop("model_errors", None)
         write_metrics["sparse"].pop("n_train_samples", None)
-    if conf["uncertainty"]["enabled"]:
+    if conf.get("uncertainty", {}).get("enabled", False):
         write_metrics["UQ"].pop("pred_uncertainty_log", None)
         write_metrics["UQ"].pop("max_counts", None)
         write_metrics["UQ"].pop("axis_max", None)
@@ -651,7 +648,7 @@ def make_comparison_csv(metrics: dict, config: dict) -> None:
                 row.append(value)
             writer.writerow(row)
 
-    if config["verbose"]:
+    if config.get("verbose", False):
         print(f"Comparison CSV file saved at {csv_file_path}")
 
 

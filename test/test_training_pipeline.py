@@ -1,19 +1,19 @@
 import threading
 from queue import Queue
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 # import *from* the module that actually defines them
 from codes.train.train_fcts import (
     DummyLock,
     create_task_list_for_surrogate,
-    train_and_save_model,
-    worker,
     parallel_training,
     sequential_training,
+    train_and_save_model,
+    worker,
 )
 from codes.utils import load_task_list, save_task_list
-
 
 # — fixtures —
 

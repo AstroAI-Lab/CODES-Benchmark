@@ -9,12 +9,11 @@ import yaml
 from torch import nn
 from torch.utils.data import Dataset, IterableDataset
 
-# TODO complete type hints
-
 
 def custom_collate_fn(batch):
     """
     Custom collate function to ensure tensors are returned in the correct shape.
+
     Args:
         batch: A list of tuples from the dataset, where each tuple contains
                (branch_input, trunk_input, targets).

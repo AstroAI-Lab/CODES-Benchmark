@@ -483,7 +483,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
                     return data.to(dtype=data_type)
                 if isinstance(data, np.ndarray):
                     return data.astype(data_type)
-            
+
         return data
 
     def denormalize_old(self, data: Tensor) -> Tensor:

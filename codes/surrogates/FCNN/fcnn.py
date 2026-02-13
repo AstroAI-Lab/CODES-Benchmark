@@ -38,15 +38,16 @@ class FCFlatBatchIterable(IterableDataset):
 def fc_collate_fn(batch):
     """
     Custom collate function to ensure tensors are returned in the correct shape.
+
     Args:
-        batch: A list of tuples (input_batch, target_batch)
-               where each item is already a precomputed batch of shape:
-                 input_batch -> [batch_size, n_quantities+1]
-                 target_batch -> [batch_size, n_quantities]
+        batch (list[tuple[torch.Tensor, torch.Tensor]]): List of precomputed
+            batches. Each tuple contains an ``input_batch`` with shape
+            ``[batch_size, n_quantities + 1]`` and ``target_batch`` with shape
+            ``[batch_size, n_quantities]``.
+
     Returns:
-        A tuple of tensors with the final shapes:
-        - inputs: [batch_size, n_quantities+1]
-        - targets: [batch_size, n_quantities]
+        tuple[torch.Tensor, torch.Tensor]: Inputs and targets with the same shapes
+        as described above.
     """
     # 'batch' is a list of length=1 if DataLoader has batch_size=1,
     # and each element is (input_tensor, target_tensor).
@@ -59,6 +60,7 @@ def fc_collate_fn(batch):
 class FCPrebatchedDataset(Dataset):
     """
     Dataset for pre-batched data specifically for the FullyConnected model.
+
     Args:
         inputs_batches (list[Tensor]): List of precomputed input batches.
         targets_batches (list[Tensor]): List of precomputed target batches.

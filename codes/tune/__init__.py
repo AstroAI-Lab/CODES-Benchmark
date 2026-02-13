@@ -24,6 +24,7 @@ from .postgres_fcts import (
     initialize_optuna_database,
 )
 from .tune_utils import (
+    apply_tuning_defaults,
     build_study_names,
     copy_config,
     delete_studies_if_requested,
@@ -44,6 +45,7 @@ __all__ = [
     "plot_test_losses",
     "load_model_test_losses",
     "build_study_names",
+    "apply_tuning_defaults",
     "copy_config",
     "delete_studies_if_requested",
     "prepare_workspace",

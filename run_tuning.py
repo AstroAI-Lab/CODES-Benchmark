@@ -14,6 +14,7 @@ from codes.benchmark import get_model_config
 from codes.tune import (
     MaxValidTrialsCallback,
     _count_valid_trials,
+    apply_tuning_defaults,
     build_fine_optuna_params,
     create_objective,
     initialize_optuna_database,
@@ -24,11 +25,40 @@ from codes.tune import (
 from codes.utils import download_data, nice_print
 
 
-def run_single_study(config: dict, study_name: str, db_url: str):
+def resolve_storage_backend(config: dict, tuning_id: str) -> tuple[str, bool]:
+    """
+    Return (storage_url, is_sqlite).
+    Defaults to Postgres for backward compatibility.
+    """
+    storage_cfg = config.get("storage", {})
+    backend = storage_cfg.get("backend", "postgres").lower()
+
+    if backend == "sqlite":
+        sqlite_path = storage_cfg.get("path")
+        if not sqlite_path:
+            raise ValueError(
+                "SQLite storage requires `storage.path` in optuna_config.yaml."
+            )
+        sqlite_path = Path(sqlite_path).expanduser().resolve()
+        sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+        return f"sqlite:///{sqlite_path}", True
+
+    if backend == "postgres":
+        storage_url = initialize_optuna_database(config, study_folder_name=tuning_id)
+        return storage_url, False
+
+    raise ValueError(
+        f"Unknown storage backend '{backend}'. Use 'sqlite' or 'postgres'."
+    )
+
+
+def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend: bool):
     if not config.get("optuna_logging", False):
         optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-    if config["multi_objective"]:
+    multi_objective = config.get("multi_objective", False)
+
+    if multi_objective:
         sampler = optuna.samplers.NSGAIISampler(
             seed=config["seed"], population_size=config["population_size"]
         )
@@ -69,12 +99,19 @@ def run_single_study(config: dict, study_name: str, db_url: str):
         return
 
     device_queue = queue.Queue()
-    for slot_id, dev in enumerate(config["devices"]):
+    devices = config.get("devices", ["cpu"])
+    if sqlite_backend and len(devices) > 1:
+        print(
+            "⚠️ SQLite storage does not handle concurrent writers well. "
+            "Continuing with multiple devices may trigger 'database is locked' errors."
+        )
+
+    for slot_id, dev in enumerate(devices):
         device_queue.put((dev, slot_id))
 
     objective_fn = create_objective(config, study_name, device_queue)
     n_trials = config["n_trials"]
-    n_jobs = len(config["devices"])
+    n_jobs = len(devices)
     warmup_target = max(10, int(n_trials * 0.10))
 
     all_durations: list[float] = []
@@ -100,9 +137,11 @@ def run_single_study(config: dict, study_name: str, db_url: str):
             )
 
         # try to set threshold (no-op if not enough data or already set)
-        maybe_set_runtime_threshold(study_, warmup_target, include_pruned=True)
+        if config.get("time_pruning", True):
+            maybe_set_runtime_threshold(study_, warmup_target, include_pruned=True)
 
-    download_data(config["dataset"]["name"])
+    dataset_cfg = config["dataset"]
+    download_data(dataset_cfg["name"])
 
     with tqdm(
         total=n_trials,
@@ -111,19 +150,30 @@ def run_single_study(config: dict, study_name: str, db_url: str):
         leave=True,
         bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}{postfix}]",
     ) as trial_pbar:
-        study.optimize(
-            objective_fn,
-            n_trials=n_trials * 2 if config["multi_objective"] else n_trials,
-            n_jobs=n_jobs,
-            callbacks=[
-                MaxValidTrialsCallback(n_trials),
-                trial_complete_callback,
-            ],
-        )
+        try:
+            study.optimize(
+                objective_fn,
+                n_trials=n_trials,
+                n_jobs=n_jobs,
+                callbacks=[
+                    MaxValidTrialsCallback(n_trials),
+                    trial_complete_callback,
+                ],
+            )
+        except Exception as exc:  # pragma: no cover - guidance-oriented handling
+            if sqlite_backend and "database is locked" in str(exc).lower():
+                raise RuntimeError(
+                    "SQLite storage encountered a concurrency lock. "
+                    "Please rerun with fewer devices or switch to Postgres."
+                ) from exc
+            raise
 
 
-def run_all_studies(config: dict, main_study_name: str, db_url: str):
+def run_all_studies(
+    config: dict, main_study_name: str, db_url: str, sqlite_backend: bool
+):
     surrogates = config["surrogates"]
+    dataset_cfg = config["dataset"]
     global_params = (
         {} if config.get("fine", False) else config.get("global_optuna_params", {})
     )
@@ -141,6 +191,7 @@ def run_all_studies(config: dict, main_study_name: str, db_url: str):
 
         for surr in surrogates:
             arch_name = surr["name"]
+            n_trials_override = None
             if config.get("fine", False):
                 # ignore manual search spaces
                 surr["optuna_params"] = {}
@@ -186,30 +237,37 @@ def run_all_studies(config: dict, main_study_name: str, db_url: str):
             study_name = f"{main_study_name}_{arch_name.lower()}"
             arch_pbar.set_postfix({"study": study_name})
 
-            trials = surr.get("trials", config.get("trials", None))
+            trials = surr.get("trials", config.get("trials"))
             sub_config = {
                 "batch_size": surr["batch_size"],
-                "dataset": config["dataset"],
-                "devices": config["devices"],
+                "dataset": dataset_cfg.copy(),
+                "devices": list(config.get("devices", ["cpu"])),
                 "epochs": surr["epochs"],
                 "n_trials": trials if not n_trials_override else n_trials_override,
-                "seed": config["seed"],
+                "seed": config.get("seed", 42),
                 "surrogate": {"name": arch_name},
                 "optuna_params": surr.get("optuna_params", {}),
                 "prune": config.get("prune", True),
                 "optuna_logging": config.get("optuna_logging", False),
-                "use_optimal_params": config.get("use_optimal_params", False),
+                "use_optimal_params": config.get("use_optimal_params", True),
                 "multi_objective": config.get("multi_objective", False),
                 "population_size": config.get("population_size", 50),
-                "target_percentile": config.get("target_percentile", 0.95),
+                "target_percentile": config.get("target_percentile", 0.99),
                 "fine": config.get("fine", False),  # pass through
                 "loss_cap": config.get("loss_cap", 20),
+                "time_pruning": config.get("time_pruning", True),
             }
+
+            if sub_config["n_trials"] is None:
+                raise ValueError(
+                    f"No trial count specified for surrogate '{arch_name}'. "
+                    "Add 'trials' either globally or per surrogate."
+                )
 
             if config.get("fine", False):
                 sub_config["fine_space"] = fine_space
 
-            run_single_study(sub_config, study_name, db_url)
+            run_single_study(sub_config, study_name, db_url, sqlite_backend)
             arch_pbar.update(1)
             arch_pbar.set_postfix({"done": study_name})
 
@@ -228,8 +286,8 @@ def parse_arguments():
     parser.add_argument(
         "--config",
         type=str,
-        default="codes/tune/optuna_config.yaml",
-        help="Path to master optuna_config.yaml",
+        default="configs/tuning/sqlite_quickstart.yaml",
+        help="Path to tuning config YAML.",
     )
     return parser.parse_args()
 
@@ -244,20 +302,18 @@ def main():
         sys.exit(1)
 
     config = load_yaml_config(str(master_cfg_path))
-    prepare_workspace(master_cfg_path, config)
+    config = prepare_workspace(master_cfg_path, config)
+    config = apply_tuning_defaults(config)
     tuning_id = config["tuning_id"]
 
     # Initialize DB (remote/local)
-    db_url = initialize_optuna_database(config, study_folder_name=tuning_id)
-
-    # # If overwriting, delete Optuna studies
-    # delete_studies_if_requested(config, tuning_id, db_url)
+    db_url, sqlite_backend = resolve_storage_backend(config, tuning_id)
 
     # Run
     if "surrogates" in config:
-        run_all_studies(config, tuning_id, db_url)
+        run_all_studies(config, tuning_id, db_url, sqlite_backend)
     else:
-        run_single_study(config, tuning_id, db_url)
+        run_single_study(config, tuning_id, db_url, sqlite_backend)
 
     nice_print("Optuna tuning completed!")
 

@@ -700,18 +700,40 @@ def download_data(dataset_name: str, path: str | None = None, verbose: bool = Tr
 
 def print_data_info(data_path):
     with h5py.File(data_path, "r") as f:
-        if f.attrs.get("n_quantities", None) is None:
-            print(f"Dataset '{data_path}' does not contain the required attributes.")
-            return
         print("Dataset Info:")
-        n_quantities = 10  # f.attrs["n_quantities"]
-        train_samples = f.attrs["n_train_samples"]
-        test_samples = f.attrs["n_test_samples"]
-        val_samples = f.attrs["n_val_samples"]
-        labels = f.attrs.get("labels", None)
+
+        def _attr_or_default(name, default=None):
+            return f.attrs[name] if name in f.attrs else default
+
+        # infer n_quantities if missing
+        n_quantities = _attr_or_default("n_quantities")
+        if n_quantities is None:
+            if "train" in f:
+                n_quantities = f["train"].shape[-1]
+            else:
+                n_quantities = "unknown"
+
+        train_samples = _attr_or_default(
+            "n_train_samples", f["train"].shape[0] if "train" in f else 0
+        )
+        test_samples = _attr_or_default(
+            "n_test_samples", f["test"].shape[0] if "test" in f else 0
+        )
+        val_samples = _attr_or_default(
+            "n_val_samples", f["val"].shape[0] if "val" in f else 0
+        )
+        labels = _attr_or_default("labels")
+
         total_samples = train_samples + test_samples + val_samples
-        if "n_parameters" in f.attrs:
-            n_parameters = f.attrs["n_parameters"]
+
+        n_parameters = _attr_or_default("n_parameters")
+        if n_parameters is None:
+            if "train_params" in f:
+                n_parameters = f["train_params"].shape[-1]
+            else:
+                n_parameters = 0
+
+        if n_parameters:
             print(
                 f" - Dataset comprises {n_quantities} quantities and {n_parameters} parameters."
             )
