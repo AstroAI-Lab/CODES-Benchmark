@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -44,6 +45,8 @@
     <link rel="icon" href="_static/favicon-96x96.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="codes.surrogates package" href="codes.surrogates.html" />
+    <link rel="prev" title="API Reference Overview" href="api-reference.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +133,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
   
-    <p class="title logo__title">CODES  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -147,17 +156,6 @@
           
           <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://codes-docs.web.app" title="CODES Docs" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="_static/favicon-96x96.png" class="icon-link-image" alt="CODES Docs"/></a>
         </li>
         <li class="nav-item">
           
@@ -185,39 +183,50 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.benchmark.html">codes.benchmark</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_fcts.html">codes.benchmark.bench_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_plots.html">codes.benchmark.bench_plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_utils.html">codes.benchmark.bench_utils</a></li>
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.surrogates.html">codes.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html">codes.surrogates.AbstractSurrogate.abstract_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html">codes.surrogates.AbstractSurrogate.abstract_surrogate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.surrogates.surrogate_classes.html">codes.surrogates.surrogate_classes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.train.html">codes.train</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.train.train_fcts.html">codes.train.train_fcts</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.tune.html">codes.tune</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_study.html">codes.tune.evaluate_study</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_tuning.html">codes.tune.evaluate_tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.optuna_fcts.html">codes.tune.optuna_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.postgres_fcts.html">codes.tune.postgres_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.tune_utils.html">codes.tune.tune_utils</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.utils.html">codes.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.data_utils.html">codes.utils.data_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.utils.html">codes.utils.utils</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.utils.html">codes.utils package</a></li>
 </ul>
 
     </div>
@@ -367,7 +376,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_fcts">codes.benchmark.bench_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_fcts">codes.benchmark.bench_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_UQ"><code class="docutils literal notranslate"><span class="pre">compare_UQ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_batchsize"><code class="docutils literal notranslate"><span class="pre">compare_batchsize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_errors"><code class="docutils literal notranslate"><span class="pre">compare_errors()</span></code></a></li>
@@ -393,7 +402,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.time_inference"><code class="docutils literal notranslate"><span class="pre">time_inference()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_plots">codes.benchmark.bench_plots module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_plots">codes.benchmark.bench_plots module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.get_custom_palette"><code class="docutils literal notranslate"><span class="pre">get_custom_palette()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.inference_time_bar_plot"><code class="docutils literal notranslate"><span class="pre">inference_time_bar_plot()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.plot_MAE_comparison"><code class="docutils literal notranslate"><span class="pre">plot_MAE_comparison()</span></code></a></li>
@@ -431,7 +440,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_utils">codes.benchmark.bench_utils module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_utils">codes.benchmark.bench_utils module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.check_benchmark"><code class="docutils literal notranslate"><span class="pre">check_benchmark()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.check_surrogate"><code class="docutils literal notranslate"><span class="pre">check_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.clean_metrics"><code class="docutils literal notranslate"><span class="pre">clean_metrics()</span></code></a></li>
@@ -454,7 +463,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.write_metrics_to_yaml"><code class="docutils literal notranslate"><span class="pre">write_metrics_to_yaml()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.check_benchmark"><code class="docutils literal notranslate"><span class="pre">check_benchmark()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.check_surrogate"><code class="docutils literal notranslate"><span class="pre">check_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.clean_metrics"><code class="docutils literal notranslate"><span class="pre">clean_metrics()</span></code></a></li>
@@ -547,6 +556,10 @@ document.write(`
 </section>
 <section id="module-codes.benchmark.bench_fcts">
 <span id="codes-benchmark-bench-fcts-module"></span><h2>codes.benchmark.bench_fcts module<a class="headerlink" href="#module-codes.benchmark.bench_fcts" title="Link to this heading">#</a></h2>
+<p>Utility functions that execute the different benchmark suites (accuracy, gradients,
+timing, sparsity studies, etc.) for every surrogate model.</p>
+<p>The functions in this module are invoked by <cite>run_eval.py</cite> and populate the metrics
+dictionary that later feeds the comparative plots and CSV exports.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_fcts.compare_UQ">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_fcts.</span></span><span class="sig-name descname"><span class="pre">compare_UQ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_fcts.compare_UQ" title="Link to this definition">#</a></dt>
@@ -735,7 +748,19 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_fcts.compare_models">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_fcts.</span></span><span class="sig-name descname"><span class="pre">compare_models</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_fcts.compare_models" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Aggregate surrogate-level metrics into comparison plots and CSV summaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metrics</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#codes.benchmark.bench_fcts.run_benchmark" title="codes.benchmark.bench_fcts.run_benchmark"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_benchmark()</span></code></a> for each surrogate.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – Benchmark configuration that determines which comparisons to run.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The function is intentionally side-effect heavy: it creates plots, writes tables,
+and prints status messages. Nothing is returned; all artifacts are stored under
+<cite>plots/&lt;training_id&gt;</cite> and <cite>results/&lt;training_id&gt;</cite>.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_fcts.compare_sparse">
@@ -935,12 +960,30 @@ Errors are computed as absolute log differences (Δdex).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_fcts.evaluate_iterative_predictions">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_fcts.</span></span><span class="sig-name descname"><span class="pre">evaluate_iterative_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_fcts.evaluate_iterative_predictions" title="Link to this definition">#</a></dt>
-<dd><p>Evaluate the iterative predictions of the surrogate model.</p>
-<p>Returns the same set of error metrics as evaluate_accuracy, but over the
-full trajectory built by re-feeding the last prediction as the next initial state.</p>
+<dd><p>Measure how prediction errors accumulate when the surrogate is rolled forward in
+an auto-regressive fashion.</p>
+<p>The model is fed with its own previous output (instead of ground truth) and
+evaluated for each chunk of the trajectory. The same error metrics as
+<a class="reference internal" href="#codes.benchmark.bench_fcts.evaluate_accuracy" title="codes.benchmark.bench_fcts.evaluate_accuracy"><code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate_accuracy()</span></code></a> are reported so you can compare one-shot predictions
+with long-horizon roll-outs.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – Loaded surrogate instance.</p></li>
+<li><p><strong>surr_name</strong> (<em>str</em>) – Surrogate identifier used to locate checkpoints.</p></li>
+<li><p><strong>timesteps</strong> (<em>np.ndarray</em>) – Timeline associated with the validation data.</p></li>
+<li><p><strong>val_loader</strong> (<em>DataLoader</em>) – Validation loader that provides initial states.</p></li>
+<li><p><strong>val_params</strong> (<em>np.ndarray</em>) – Optional auxiliary parameters aligned with the data.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em>) – Benchmark configuration.</p></li>
+<li><p><strong>labels</strong> (<em>list</em><em> | </em><em>None</em>) – Quantity names for labelling plots.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Error statistics for iterative predictions together with the
+generated trajectories.</p>
+</dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
+<dd class="field-odd"><p>dict[str, Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1161,39 +1204,32 @@ Only the modalities present in all_metrics will be plotted.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_plots.plot_catastrophic_detection_curves">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_plots.</span></span><span class="sig-name descname"><span class="pre">plot_catastrophic_detection_curves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(99.0,</span> <span class="pre">90.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_fractions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.01,</span> <span class="pre">0.05,</span> <span class="pre">0.1,</span> <span class="pre">0.2,</span> <span class="pre">0.3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_plots.plot_catastrophic_detection_curves" title="Link to this definition">#</a></dt>
-<dd><p>Plot catastrophic error recall (Δdex) vs fraction flagged by uncertainty,
-across multiple catastrophic percentiles, plus performance improvement curves.</p>
-<p>Catastrophic errors are those with Δdex &gt;= P_cat (e.g. 99th percentile).
-For each flag fraction f, the uncertainty threshold is the (1 - f) quantile of std.
-We then flag samples with std &gt;= threshold and measure recall among catastrophic samples.</p>
-<p>Additionally, computes the effective log-space MAE if flagged samples are replaced
-by solver outputs (0 error). This measures how much UQ-guided deferral improves performance.</p>
+<dd><p>Plot recall vs. flagged fraction curves for catastrophic errors.</p>
+<p>For each surrogate and percentile threshold <code class="docutils literal notranslate"><span class="pre">p</span></code> we:</p>
+<ul class="simple">
+<li><p>Treat samples with <code class="docutils literal notranslate"><span class="pre">Δdex</span> <span class="pre">&gt;=</span> <span class="pre">percentile(p)</span></code> as catastrophic.</p></li>
+<li><p>Sweep the requested <code class="docutils literal notranslate"><span class="pre">flag_fractions</span></code> to determine which proportion of points would be
+deferred based on predictive uncertainty.</p></li>
+<li><p>Report both the catastrophic recall and the hypothetical MAE if flagged samples were replaced
+by exact solver outputs.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>errors_log</strong> (<em>dict</em>) – Δdex arrays [N, T, Q] per surrogate.</p></li>
-<li><p><strong>std_log</strong> (<em>dict</em>) – Log-space std arrays [N, T, Q] per surrogate.</p></li>
+<li><p><strong>errors_log</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Log-space errors per surrogate.</p></li>
+<li><p><strong>std_log</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Log-space predictive standard deviations.</p></li>
 <li><p><strong>conf</strong> (<em>dict</em>) – Configuration dictionary.</p></li>
-<li><p><strong>percentiles</strong> (<em>tuple</em>) – Catastrophic percentiles to evaluate (default: (90, 95, 99)).</p></li>
-<li><p><strong>flag_fractions</strong> (<em>tuple</em>) – Fractions of predictions to flag (includes 0 for baseline).</p></li>
-<li><p><strong>save</strong> (<em>bool</em>) – Save figure.</p></li>
-<li><p><strong>show_title</strong> (<em>bool</em>) – Add title.</p></li>
+<li><p><strong>percentiles</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>...</em><em>]</em>) – Catastrophic thresholds to evaluate.</p></li>
+<li><p><strong>flag_fractions</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>...</em><em>]</em>) – Fractions of samples to flag at each step.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl>
-<dt>Nested dict of results:</dt><dd><dl class="simple">
-<dt>summary[surrogate][percentile] = {</dt><dd><p>‘flag_fraction’: f, ‘recall’: r, ‘cat_threshold’: thr,
-‘mae_curve’: [(f, mae), …]</p>
-</dd>
-</dl>
-<p>}</p>
-</dd>
-</dl>
-</p>
+<dd class="field-even"><p>Recall/threshold summary per surrogate.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>dict[str, dict[float, dict[str, float]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1372,30 +1408,19 @@ Defaults to “relative”.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_plots.plot_errors_over_time">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_plots.</span></span><span class="sig-name descname"><span class="pre">plot_errors_over_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">median_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relative'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_plots.plot_errors_over_time" title="Link to this definition">#</a></dt>
-<dd><p>Plot errors over time for different surrogate models (relative, Δdex, or iterative Δdex).</p>
+<dd><p>Plot error trajectories for each surrogate model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mean_errors</strong> (<em>dict</em>) – Mean errors for each surrogate.</p></li>
-<li><p><strong>median_errors</strong> (<em>dict</em>) – Median errors for each surrogate.</p></li>
-<li><p><strong>timesteps</strong> (<em>np.ndarray</em>) – Array of timesteps.</p></li>
-<li><p><strong>config</strong> (<em>dict</em>) – <p>Configuration dictionary.
-save (bool): Whether to save the figure.
-show_title (bool): Whether to add a title.
-mode (str):</p>
-<blockquote>
-<div><ul>
-<li><p>”relative”: percentage errors (y-axis log scale)</p></li>
-<li><p>”deltadex”: log-space absolute errors (Δdex)</p></li>
-<li><dl class="simple">
-<dt>”iterative”: like “deltadex” but also draws dashed vertical lines at every</dt><dd><p>n-th timestep to indicate the iterative retrigger interval.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
-<p>iter_interval (int | None): Interval for vertical guide lines when mode == “iterative”.</p>
-</p></li>
+<li><p><strong>mean_errors</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Mean error curves keyed by surrogate name.</p></li>
+<li><p><strong>median_errors</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Median error curves keyed by surrogate name.</p></li>
+<li><p><strong>timesteps</strong> (<em>np.ndarray</em>) – Timeline in the same shape as the error curves.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – Benchmark configuration used for saving.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to write the figure to disk.</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to display the figure title.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;relative&quot;</span></code> for percentage errors, <code class="docutils literal notranslate"><span class="pre">&quot;deltadex&quot;</span></code> for log-space errors,
+or <code class="docutils literal notranslate"><span class="pre">&quot;iterative&quot;</span></code> for chained Δdex errors with guide lines every <code class="docutils literal notranslate"><span class="pre">iter_interval</span></code> steps.</p></li>
+<li><p><strong>iter_interval</strong> (<em>int</em><em> | </em><em>None</em>) – Interval for the dashed guide lines when <code class="docutils literal notranslate"><span class="pre">mode</span> <span class="pre">==</span> <span class="pre">&quot;iterative&quot;</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1638,49 +1663,49 @@ Numeric y-axis labels are removed.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_plots.plot_losses">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_plots.</span></span><span class="sig-name descname"><span class="pre">plot_losses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss_histories</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Losses'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'main'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_plots.plot_losses" title="Link to this definition">#</a></dt>
-<dd><p>Plot the loss trajectories for the training of multiple models.</p>
+<dd><p>Plot the loss trajectories for multiple models on a single axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loss_histories</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – List of loss history arrays.</p></li>
-<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of epochs.</p></li>
-<li><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – List of labels for each loss history.</p></li>
-<li><p><strong>title</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Title of the plot.</p></li>
-<li><p><strong>save</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to save the plot as an image file.</p></li>
-<li><p><strong>conf</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</span>) – The configuration dictionary.</p></li>
-<li><p><strong>surr_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The name of the surrogate model.</p></li>
-<li><p><strong>mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The mode of the training.</p></li>
-<li><p><strong>percentage</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Percentage of initial values to exclude from min-max calculation.</p></li>
+<li><p><strong>loss_histories</strong> (<em>tuple</em><em>[</em><em>np.ndarray</em><em>, </em><em>...</em><em>]</em>) – Loss arrays for each model.</p></li>
+<li><p><strong>epochs</strong> (<em>int</em>) – Number of epochs in the associated training run.</p></li>
+<li><p><strong>labels</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em>) – Labels matching <code class="docutils literal notranslate"><span class="pre">loss_histories</span></code>.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Plot title.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em><em> | </em><em>None</em>) – Configuration dictionary used for saving.</p></li>
+<li><p><strong>surr_name</strong> (<em>str</em><em> | </em><em>None</em>) – Surrogate identifier used in filenames.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Training mode name appended to the filename.</p></li>
+<li><p><strong>percentage</strong> (<em>float</em>) – Portion of early iterations ignored when computing y-limits.</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
-<p>show_title (bool): Whether to show the title on the plot.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_plots.plot_losses_dual_axis">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_plots.</span></span><span class="sig-name descname"><span class="pre">plot_losses_dual_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('Train</span> <span class="pre">Loss',</span> <span class="pre">'Test</span> <span class="pre">Loss')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Losses'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_plots.plot_losses_dual_axis" title="Link to this definition">#</a></dt>
-<dd><p>Plot the training and test loss trajectories with dual y-axes.</p>
+<dd><p>Plot training and validation losses on dual y-axes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_loss</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code></span>) – Training loss history array.</p></li>
-<li><p><strong>test_loss</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code></span>) – Test loss history array.</p></li>
-<li><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Labels for the losses (train and test).</p></li>
-<li><p><strong>title</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Title of the plot.</p></li>
-<li><p><strong>save</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to save the plot as an image file.</p></li>
-<li><p><strong>conf</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</span>) – The configuration dictionary.</p></li>
-<li><p><strong>surr_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The name of the surrogate model.</p></li>
+<li><p><strong>train_loss</strong> (<em>np.ndarray</em>) – Training loss curve.</p></li>
+<li><p><strong>test_loss</strong> (<em>np.ndarray</em>) – Validation loss curve.</p></li>
+<li><p><strong>labels</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Axis labels for train/test.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Plot title.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em><em> | </em><em>None</em>) – Configuration dictionary used for saving.</p></li>
+<li><p><strong>surr_name</strong> (<em>str</em><em> | </em><em>None</em>) – Surrogate identifier used in filenames.</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
-<p>show_title (bool): Whether to show the title on the plot.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1751,39 +1776,29 @@ Numeric y-axis labels are removed.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_plots.plot_uncertainty_confidence">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_plots.</span></span><span class="sig-name descname"><span class="pre">plot_uncertainty_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weighted_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary_stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_plots.plot_uncertainty_confidence" title="Link to this definition">#</a></dt>
-<dd><p>Plot a comparative grouped bar chart of catastrophic confidence measures and return a metric
-quantifying the net skew of over- versus underconfidence.</p>
-<dl class="simple">
-<dt>For each surrogate model, the target-weighted difference is computed as:</dt><dd><p>weighted_diff = (predicted uncertainty - <a href="#id1"><span class="problematic" id="id2">|prediction - target|</span></a>) / target.</p>
-</dd>
-</dl>
-<p>Negative values indicate overconfidence (i.e. the model’s uncertainty is too low relative to its error),
-while positive values indicate underconfidence.</p>
-<p>Catastrophic events are defined as those samples in the lowest <cite>percentile</cite> (e.g. 2nd percentile)
-for overconfidence and in the highest <cite>percentile</cite> (i.e. 100 - percentile) for underconfidence.</p>
-<p>For each surrogate, this function computes the mean and standard deviation of the weighted
-differences in both tails, then plots them as grouped bars (overconfidence bars on the left,
-underconfidence bars on the right) with standard error bars (thin, with capsize=3). The bar heights
-are expressed in percentages.</p>
-<p>The text labels for the bars are placed on the opposite side of the x-axis: for negative (overconfident)
-values the annotation is shown a few pixels above the x-axis, and for positive (underconfident) values
-it is shown a few pixels below the x-axis.</p>
-<p>The plot title includes the metric (mean ± std) and the number of samples (per tail).</p>
-<p>Additionally, if the range between the smallest and largest bar is more than two orders of magnitude,
-the y-axis is set to a symmetric log scale.</p>
+<dd><p>Plot overconfidence/underconfidence statistics for each surrogate.</p>
+<p>Each <code class="docutils literal notranslate"><span class="pre">weighted_diff</span></code> array stores <code class="docutils literal notranslate"><span class="pre">(predicted_uncertainty</span> <span class="pre">-</span> <span class="pre">abs(prediction</span> <span class="pre">-</span> <span class="pre">target))</span> <span class="pre">/</span> <span class="pre">target</span></code>.
+Negative values indicate overconfidence (uncertainty too small), whereas positive values indicate
+underconfidence. The function:</p>
+<ol class="arabic simple">
+<li><p>Selects catastrophic events in the lower <code class="docutils literal notranslate"><span class="pre">percentile</span></code> tail (overconfidence) and upper tail
+(underconfidence).</p></li>
+<li><p>Computes the mean and standard deviation of each tail.</p></li>
+<li><p>Draws grouped bars with error caps so the tails are easy to compare visually.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>weighted_diffs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Dictionary of weighted_diff arrays for each surrogate model.</p></li>
-<li><p><strong>conf</strong> (<em>dict</em>) – The configuration dictionary.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the plot.</p></li>
-<li><p><strong>percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentile threshold for defining catastrophic events (default is 2).</p></li>
-<li><p><strong>summary_stat</strong> (<em>str</em><em>, </em><em>optional</em>) – Currently only “mean” is implemented.</p></li>
-<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to show the title on the plot.</p></li>
+<li><p><strong>weighted_diffs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Weighted-difference arrays keyed by surrogate name.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em>) – Configuration dictionary used for saving.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>percentile</strong> (<em>float</em>) – Tail percentile for defining catastrophic events.</p></li>
+<li><p><strong>summary_stat</strong> (<em>str</em>) – Currently unused hook for other aggregations (defaults to <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>).</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary mapping surrogate names to the net difference (over_summary + under_summary).</p>
+<dd class="field-even"><p>Net overconfidence/underconfidence score for each surrogate.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict[str, float]</p>
@@ -2259,31 +2274,22 @@ or if no configuration file is found in the dataset folder.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.bench_utils.measure_memory_footprint">
-<span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_utils.</span></span><span class="sig-name descname"><span class="pre">measure_memory_footprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_utils.measure_memory_footprint" title="Link to this definition">#</a></dt>
-<dd><p>Measure the memory footprint of a model during forward and backward passes using
-peak memory tracking and explicit synchronization.</p>
+<span class="sig-prename descclassname"><span class="pre">codes.benchmark.bench_utils.</span></span><span class="sig-name descname"><span class="pre">measure_memory_footprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.bench_utils.measure_memory_footprint" title="Link to this definition">#</a></dt>
+<dd><p>Measure peak GPU memory usage for forward/backward passes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – The PyTorch model.</p></li>
-<li><p><strong>inputs</strong> (<em>tuple</em>) – The input data for the model.</p></li>
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Model to profile.</p></li>
+<li><p><strong>inputs</strong> (<em>tuple</em>) – Sample batch used for the forward pass.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A dictionary containing measured memory usages for:</dt><dd><ul class="simple">
-<li><p>model_memory: Additional memory used when moving the model to GPU.</p></li>
-<li><p>forward_memory: Peak additional memory during the forward pass with gradients.</p></li>
-<li><p>backward_memory: Peak additional memory during the backward pass.</p></li>
-<li><p>forward_memory_nograd: Peak additional memory during the forward pass without gradients.</p></li>
-</ul>
-</dd>
-</dl>
-<p>model: The model (possibly moved back to the original device).</p>
-</p>
+<dd class="field-even"><p>Dictionary with <code class="docutils literal notranslate"><span class="pre">model_memory</span></code>, <code class="docutils literal notranslate"><span class="pre">forward_memory</span></code>,
+<code class="docutils literal notranslate"><span class="pre">backward_memory</span></code>, and <code class="docutils literal notranslate"><span class="pre">forward_memory_nograd</span></code> plus the model (moved back to its
+original device).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>tuple[dict, torch.nn.Module]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2559,7 +2565,19 @@ This version strips out any formatting (like asterisks) from the table cells.</p
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.compare_models">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.</span></span><span class="sig-name descname"><span class="pre">compare_models</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.compare_models" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Aggregate surrogate-level metrics into comparison plots and CSV summaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metrics</strong> (<em>dict</em>) – Output of <a class="reference internal" href="#codes.benchmark.run_benchmark" title="codes.benchmark.run_benchmark"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_benchmark()</span></code></a> for each surrogate.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – Benchmark configuration that determines which comparisons to run.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The function is intentionally side-effect heavy: it creates plots, writes tables,
+and prints status messages. Nothing is returned; all artifacts are stored under
+<cite>plots/&lt;training_id&gt;</cite> and <cite>results/&lt;training_id&gt;</cite>.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.compare_sparse">
@@ -3091,31 +3109,22 @@ or if no configuration file is found in the dataset folder.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.measure_memory_footprint">
-<span class="sig-prename descclassname"><span class="pre">codes.benchmark.</span></span><span class="sig-name descname"><span class="pre">measure_memory_footprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.measure_memory_footprint" title="Link to this definition">#</a></dt>
-<dd><p>Measure the memory footprint of a model during forward and backward passes using
-peak memory tracking and explicit synchronization.</p>
+<span class="sig-prename descclassname"><span class="pre">codes.benchmark.</span></span><span class="sig-name descname"><span class="pre">measure_memory_footprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.measure_memory_footprint" title="Link to this definition">#</a></dt>
+<dd><p>Measure peak GPU memory usage for forward/backward passes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – The PyTorch model.</p></li>
-<li><p><strong>inputs</strong> (<em>tuple</em>) – The input data for the model.</p></li>
+<li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Model to profile.</p></li>
+<li><p><strong>inputs</strong> (<em>tuple</em>) – Sample batch used for the forward pass.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A dictionary containing measured memory usages for:</dt><dd><ul class="simple">
-<li><p>model_memory: Additional memory used when moving the model to GPU.</p></li>
-<li><p>forward_memory: Peak additional memory during the forward pass with gradients.</p></li>
-<li><p>backward_memory: Peak additional memory during the backward pass.</p></li>
-<li><p>forward_memory_nograd: Peak additional memory during the forward pass without gradients.</p></li>
-</ul>
-</dd>
-</dl>
-<p>model: The model (possibly moved back to the original device).</p>
-</p>
+<dd class="field-even"><p>Dictionary with <code class="docutils literal notranslate"><span class="pre">model_memory</span></code>, <code class="docutils literal notranslate"><span class="pre">forward_memory</span></code>,
+<code class="docutils literal notranslate"><span class="pre">backward_memory</span></code>, and <code class="docutils literal notranslate"><span class="pre">forward_memory_nograd</span></code> plus the model (moved back to its
+original device).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>tuple[dict, torch.nn.Module]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3579,26 +3588,26 @@ Gradients are normalized, errors are absolute log differences (Δdex).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.plot_losses">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.</span></span><span class="sig-name descname"><span class="pre">plot_losses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss_histories</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Losses'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'main'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.plot_losses" title="Link to this definition">#</a></dt>
-<dd><p>Plot the loss trajectories for the training of multiple models.</p>
+<dd><p>Plot the loss trajectories for multiple models on a single axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loss_histories</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – List of loss history arrays.</p></li>
-<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of epochs.</p></li>
-<li><p><strong>labels</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</span>) – List of labels for each loss history.</p></li>
-<li><p><strong>title</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Title of the plot.</p></li>
-<li><p><strong>save</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether to save the plot as an image file.</p></li>
-<li><p><strong>conf</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</span>) – The configuration dictionary.</p></li>
-<li><p><strong>surr_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – The name of the surrogate model.</p></li>
-<li><p><strong>mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The mode of the training.</p></li>
-<li><p><strong>percentage</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Percentage of initial values to exclude from min-max calculation.</p></li>
+<li><p><strong>loss_histories</strong> (<em>tuple</em><em>[</em><em>np.ndarray</em><em>, </em><em>...</em><em>]</em>) – Loss arrays for each model.</p></li>
+<li><p><strong>epochs</strong> (<em>int</em>) – Number of epochs in the associated training run.</p></li>
+<li><p><strong>labels</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em>) – Labels matching <code class="docutils literal notranslate"><span class="pre">loss_histories</span></code>.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Plot title.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em><em> | </em><em>None</em>) – Configuration dictionary used for saving.</p></li>
+<li><p><strong>surr_name</strong> (<em>str</em><em> | </em><em>None</em>) – Surrogate identifier used in filenames.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Training mode name appended to the filename.</p></li>
+<li><p><strong>percentage</strong> (<em>float</em>) – Portion of early iterations ignored when computing y-limits.</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
-<p>show_title (bool): Whether to show the title on the plot.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3648,39 +3657,29 @@ Gradients are normalized, errors are absolute log differences (Δdex).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.benchmark.plot_uncertainty_confidence">
 <span class="sig-prename descclassname"><span class="pre">codes.benchmark.</span></span><span class="sig-name descname"><span class="pre">plot_uncertainty_confidence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weighted_diffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary_stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.benchmark.plot_uncertainty_confidence" title="Link to this definition">#</a></dt>
-<dd><p>Plot a comparative grouped bar chart of catastrophic confidence measures and return a metric
-quantifying the net skew of over- versus underconfidence.</p>
-<dl class="simple">
-<dt>For each surrogate model, the target-weighted difference is computed as:</dt><dd><p>weighted_diff = (predicted uncertainty - <a href="#id3"><span class="problematic" id="id4">|prediction - target|</span></a>) / target.</p>
-</dd>
-</dl>
-<p>Negative values indicate overconfidence (i.e. the model’s uncertainty is too low relative to its error),
-while positive values indicate underconfidence.</p>
-<p>Catastrophic events are defined as those samples in the lowest <cite>percentile</cite> (e.g. 2nd percentile)
-for overconfidence and in the highest <cite>percentile</cite> (i.e. 100 - percentile) for underconfidence.</p>
-<p>For each surrogate, this function computes the mean and standard deviation of the weighted
-differences in both tails, then plots them as grouped bars (overconfidence bars on the left,
-underconfidence bars on the right) with standard error bars (thin, with capsize=3). The bar heights
-are expressed in percentages.</p>
-<p>The text labels for the bars are placed on the opposite side of the x-axis: for negative (overconfident)
-values the annotation is shown a few pixels above the x-axis, and for positive (underconfident) values
-it is shown a few pixels below the x-axis.</p>
-<p>The plot title includes the metric (mean ± std) and the number of samples (per tail).</p>
-<p>Additionally, if the range between the smallest and largest bar is more than two orders of magnitude,
-the y-axis is set to a symmetric log scale.</p>
+<dd><p>Plot overconfidence/underconfidence statistics for each surrogate.</p>
+<p>Each <code class="docutils literal notranslate"><span class="pre">weighted_diff</span></code> array stores <code class="docutils literal notranslate"><span class="pre">(predicted_uncertainty</span> <span class="pre">-</span> <span class="pre">abs(prediction</span> <span class="pre">-</span> <span class="pre">target))</span> <span class="pre">/</span> <span class="pre">target</span></code>.
+Negative values indicate overconfidence (uncertainty too small), whereas positive values indicate
+underconfidence. The function:</p>
+<ol class="arabic simple">
+<li><p>Selects catastrophic events in the lower <code class="docutils literal notranslate"><span class="pre">percentile</span></code> tail (overconfidence) and upper tail
+(underconfidence).</p></li>
+<li><p>Computes the mean and standard deviation of each tail.</p></li>
+<li><p>Draws grouped bars with error caps so the tails are easy to compare visually.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>weighted_diffs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Dictionary of weighted_diff arrays for each surrogate model.</p></li>
-<li><p><strong>conf</strong> (<em>dict</em>) – The configuration dictionary.</p></li>
-<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the plot.</p></li>
-<li><p><strong>percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentile threshold for defining catastrophic events (default is 2).</p></li>
-<li><p><strong>summary_stat</strong> (<em>str</em><em>, </em><em>optional</em>) – Currently only “mean” is implemented.</p></li>
-<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to show the title on the plot.</p></li>
+<li><p><strong>weighted_diffs</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em>) – Weighted-difference arrays keyed by surrogate name.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em>) – Configuration dictionary used for saving.</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – Whether to save the figure.</p></li>
+<li><p><strong>percentile</strong> (<em>float</em>) – Tail percentile for defining catastrophic events.</p></li>
+<li><p><strong>summary_stat</strong> (<em>str</em>) – Currently unused hook for other aggregations (defaults to <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>).</p></li>
+<li><p><strong>show_title</strong> (<em>bool</em>) – Whether to draw the title.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary mapping surrogate names to the net difference (over_summary + under_summary).</p>
+<dd class="field-even"><p>Net overconfidence/underconfidence score for each surrogate.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict[str, float]</p>
@@ -3942,6 +3941,24 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="api-reference.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API Reference Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="codes.surrogates.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">codes.surrogates package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -3959,7 +3976,7 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_fcts">codes.benchmark.bench_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_fcts">codes.benchmark.bench_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_UQ"><code class="docutils literal notranslate"><span class="pre">compare_UQ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_batchsize"><code class="docutils literal notranslate"><span class="pre">compare_batchsize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.compare_errors"><code class="docutils literal notranslate"><span class="pre">compare_errors()</span></code></a></li>
@@ -3985,7 +4002,7 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_fcts.time_inference"><code class="docutils literal notranslate"><span class="pre">time_inference()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_plots">codes.benchmark.bench_plots module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_plots">codes.benchmark.bench_plots module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.get_custom_palette"><code class="docutils literal notranslate"><span class="pre">get_custom_palette()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.inference_time_bar_plot"><code class="docutils literal notranslate"><span class="pre">inference_time_bar_plot()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.plot_MAE_comparison"><code class="docutils literal notranslate"><span class="pre">plot_MAE_comparison()</span></code></a></li>
@@ -4023,7 +4040,7 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_plots.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_utils">codes.benchmark.bench_utils module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark.bench_utils">codes.benchmark.bench_utils module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.check_benchmark"><code class="docutils literal notranslate"><span class="pre">check_benchmark()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.check_surrogate"><code class="docutils literal notranslate"><span class="pre">check_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.clean_metrics"><code class="docutils literal notranslate"><span class="pre">clean_metrics()</span></code></a></li>
@@ -4046,7 +4063,7 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.bench_utils.write_metrics_to_yaml"><code class="docutils literal notranslate"><span class="pre">write_metrics_to_yaml()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.benchmark">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.check_benchmark"><code class="docutils literal notranslate"><span class="pre">check_benchmark()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.check_surrogate"><code class="docutils literal notranslate"><span class="pre">check_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.benchmark.clean_metrics"><code class="docutils literal notranslate"><span class="pre">clean_metrics()</span></code></a></li>
@@ -4135,7 +4152,7 @@ Also saves a CSV file with only the metrics that appear in the CLI table.</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Robin Janssen, Immanuel Sulzer
+By Robin Janssen
 </p>
 
   </div>
@@ -4145,7 +4162,7 @@ By Robin Janssen, Immanuel Sulzer
 
   <p class="copyright">
     
-      © Copyright 2024, Robin Janssen, Immanuel Sulzer.
+      © Copyright 2026, Robin Janssen.
       <br/>
     
   </p>

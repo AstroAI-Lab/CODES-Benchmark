@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -44,6 +45,8 @@
     <link rel="icon" href="_static/favicon-96x96.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="codes.tune package" href="codes.tune.html" />
+    <link rel="prev" title="codes.surrogates.LatentPolynomial package" href="codes.surrogates.LatentPolynomial.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +133,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
   
-    <p class="title logo__title">CODES  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -147,17 +156,6 @@
           
           <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://codes-docs.web.app" title="CODES Docs" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="_static/favicon-96x96.png" class="icon-link-image" alt="CODES Docs"/></a>
         </li>
         <li class="nav-item">
           
@@ -185,39 +183,50 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.benchmark.html">codes.benchmark</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_fcts.html">codes.benchmark.bench_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_plots.html">codes.benchmark.bench_plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_utils.html">codes.benchmark.bench_utils</a></li>
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.surrogates.html">codes.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html">codes.surrogates.AbstractSurrogate.abstract_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html">codes.surrogates.AbstractSurrogate.abstract_surrogate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.surrogates.surrogate_classes.html">codes.surrogates.surrogate_classes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.train.html">codes.train</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.train.train_fcts.html">codes.train.train_fcts</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.tune.html">codes.tune</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_study.html">codes.tune.evaluate_study</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_tuning.html">codes.tune.evaluate_tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.optuna_fcts.html">codes.tune.optuna_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.postgres_fcts.html">codes.tune.postgres_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.tune_utils.html">codes.tune.tune_utils</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.utils.html">codes.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.data_utils.html">codes.utils.data_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.utils.html">codes.utils.utils</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.utils.html">codes.utils package</a></li>
 </ul>
 
     </div>
@@ -367,7 +376,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
@@ -380,7 +389,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
@@ -451,12 +460,44 @@ configuration file.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_fcts.parallel_training">
 <span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.parallel_training" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Execute the queued training tasks across multiple devices using worker threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Output of <a class="reference internal" href="#codes.train.train_fcts.create_task_list_for_surrogate" title="codes.train.train_fcts.create_task_list_for_surrogate"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a>.</p></li>
+<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Devices allocated to training (e.g. [“cuda:0”, “cuda:1”]).</p></li>
+<li><p><strong>task_list_filepath</strong> (<em>str</em>) – Path to the persisted JSON task list that tracks progress.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Elapsed wall-clock time reported by the shared progress bar.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_fcts.sequential_training">
 <span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.sequential_training" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Run all training tasks sequentially on a single device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Task specification tuples generated from the config.</p></li>
+<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Contains exactly one element (typically “cpu” or a single CUDA id).</p></li>
+<li><p><strong>task_list_filepath</strong> (<em>str</em>) – Path to the JSON file used to resume interrupted runs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total elapsed time once all tasks finish.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_fcts.train_and_save_model">
@@ -542,12 +583,44 @@ configuration file.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.parallel_training">
 <span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.parallel_training" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Execute the queued training tasks across multiple devices using worker threads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Output of <a class="reference internal" href="#codes.train.create_task_list_for_surrogate" title="codes.train.create_task_list_for_surrogate"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a>.</p></li>
+<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Devices allocated to training (e.g. [“cuda:0”, “cuda:1”]).</p></li>
+<li><p><strong>task_list_filepath</strong> (<em>str</em>) – Path to the persisted JSON task list that tracks progress.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Elapsed wall-clock time reported by the shared progress bar.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.sequential_training">
 <span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.sequential_training" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Run all training tasks sequentially on a single device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Task specification tuples generated from the config.</p></li>
+<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Contains exactly one element (typically “cpu” or a single CUDA id).</p></li>
+<li><p><strong>task_list_filepath</strong> (<em>str</em>) – Path to the JSON file used to resume interrupted runs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total elapsed time once all tasks finish.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_and_save_model">
@@ -604,6 +677,24 @@ configuration file.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="codes.surrogates.LatentPolynomial.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">codes.surrogates.LatentPolynomial package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="codes.tune.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">codes.tune package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -621,7 +712,7 @@ configuration file.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
@@ -634,7 +725,7 @@ configuration file.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
@@ -661,7 +752,7 @@ configuration file.</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Robin Janssen, Immanuel Sulzer
+By Robin Janssen
 </p>
 
   </div>
@@ -671,7 +762,7 @@ By Robin Janssen, Immanuel Sulzer
 
   <p class="copyright">
     
-      © Copyright 2024, Robin Janssen, Immanuel Sulzer.
+      © Copyright 2026, Robin Janssen.
       <br/>
     
   </p>

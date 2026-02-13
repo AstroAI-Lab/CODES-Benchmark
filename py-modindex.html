@@ -29,6 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -134,8 +135,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
   
-    <p class="title logo__title">CODES  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -151,17 +158,6 @@
           
           <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://codes-docs.web.app" title="CODES Docs" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="_static/favicon-96x96.png" class="icon-link-image" alt="CODES Docs"/></a>
         </li>
         <li class="nav-item">
           
@@ -189,39 +185,50 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.benchmark.html">codes.benchmark</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_fcts.html">codes.benchmark.bench_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_plots.html">codes.benchmark.bench_plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_utils.html">codes.benchmark.bench_utils</a></li>
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.surrogates.html">codes.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html">codes.surrogates.AbstractSurrogate.abstract_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html">codes.surrogates.AbstractSurrogate.abstract_surrogate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.surrogates.surrogate_classes.html">codes.surrogates.surrogate_classes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.train.html">codes.train</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.train.train_fcts.html">codes.train.train_fcts</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.tune.html">codes.tune</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_study.html">codes.tune.evaluate_study</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_tuning.html">codes.tune.evaluate_tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.optuna_fcts.html">codes.tune.optuna_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.postgres_fcts.html">codes.tune.postgres_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.tune_utils.html">codes.tune.tune_utils</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.utils.html">codes.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.data_utils.html">codes.utils.data_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.utils.html">codes.utils.utils</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.utils.html">codes.utils package</a></li>
 </ul>
 
     </div>
@@ -344,42 +351,117 @@ document.write(`
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.benchmark.html#module-codes.benchmark"><code class="xref">codes.benchmark</code></a></td><td>
+       <a href="codes.benchmark.html#module-codes.benchmark"><code class="xref">codes.benchmark</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.benchmark.bench_fcts.html#module-codes.benchmark.bench_fcts"><code class="xref">codes.benchmark.bench_fcts</code></a></td><td>
+       <a href="codes.benchmark.html#module-codes.benchmark.bench_fcts"><code class="xref">codes.benchmark.bench_fcts</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.benchmark.bench_plots.html#module-codes.benchmark.bench_plots"><code class="xref">codes.benchmark.bench_plots</code></a></td><td>
+       <a href="codes.benchmark.html#module-codes.benchmark.bench_plots"><code class="xref">codes.benchmark.bench_plots</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.benchmark.bench_utils.html#module-codes.benchmark.bench_utils"><code class="xref">codes.benchmark.bench_utils</code></a></td><td>
+       <a href="codes.benchmark.html#module-codes.benchmark.bench_utils"><code class="xref">codes.benchmark.bench_utils</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.surrogates.html#module-codes.surrogates"><code class="xref">codes.surrogates</code></a></td><td>
+       <a href="codes.surrogates.html#module-codes.surrogates"><code class="xref">codes.surrogates</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate"><code class="xref">codes.surrogates.AbstractSurrogate</code></a></td><td>
+       <a href="codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate"><code class="xref">codes.surrogates.AbstractSurrogate</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html#module-codes.surrogates.AbstractSurrogate.abstract_config"><code class="xref">codes.surrogates.AbstractSurrogate.abstract_config</code></a></td><td>
+       <a href="codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate.abstract_config"><code class="xref">codes.surrogates.AbstractSurrogate.abstract_config</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html#module-codes.surrogates.AbstractSurrogate.abstract_surrogate"><code class="xref">codes.surrogates.AbstractSurrogate.abstract_surrogate</code></a></td><td>
+       <a href="codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate.abstract_surrogate"><code class="xref">codes.surrogates.AbstractSurrogate.abstract_surrogate</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet"><code class="xref">codes.surrogates.DeepONet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.deeponet"><code class="xref">codes.surrogates.DeepONet.deeponet</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.deeponet_config"><code class="xref">codes.surrogates.DeepONet.deeponet_config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.don_utils"><code class="xref">codes.surrogates.DeepONet.don_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.train_utils"><code class="xref">codes.surrogates.DeepONet.train_utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.FCNN.html#module-codes.surrogates.FCNN"><code class="xref">codes.surrogates.FCNN</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.FCNN.html#module-codes.surrogates.FCNN.fcnn"><code class="xref">codes.surrogates.FCNN.fcnn</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.FCNN.html#module-codes.surrogates.FCNN.fcnn_config"><code class="xref">codes.surrogates.FCNN.fcnn_config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentNeuralODE.html#module-codes.surrogates.LatentNeuralODE"><code class="xref">codes.surrogates.LatentNeuralODE</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentNeuralODE.html#module-codes.surrogates.LatentNeuralODE.latent_neural_ode"><code class="xref">codes.surrogates.LatentNeuralODE.latent_neural_ode</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentNeuralODE.html#module-codes.surrogates.LatentNeuralODE.latent_neural_ode_config"><code class="xref">codes.surrogates.LatentNeuralODE.latent_neural_ode_config</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentNeuralODE.html#module-codes.surrogates.LatentNeuralODE.utilities"><code class="xref">codes.surrogates.LatentNeuralODE.utilities</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentPolynomial.html#module-codes.surrogates.LatentPolynomial"><code class="xref">codes.surrogates.LatentPolynomial</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentPolynomial.html#module-codes.surrogates.LatentPolynomial.latent_poly"><code class="xref">codes.surrogates.LatentPolynomial.latent_poly</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="codes.surrogates.LatentPolynomial.html#module-codes.surrogates.LatentPolynomial.latent_poly_config"><code class="xref">codes.surrogates.LatentPolynomial.latent_poly_config</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -389,57 +471,57 @@ document.write(`
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.train.html#module-codes.train"><code class="xref">codes.train</code></a></td><td>
+       <a href="codes.train.html#module-codes.train"><code class="xref">codes.train</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.train.train_fcts.html#module-codes.train.train_fcts"><code class="xref">codes.train.train_fcts</code></a></td><td>
+       <a href="codes.train.html#module-codes.train.train_fcts"><code class="xref">codes.train.train_fcts</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.html#module-codes.tune"><code class="xref">codes.tune</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune"><code class="xref">codes.tune</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.evaluate_study.html#module-codes.tune.evaluate_study"><code class="xref">codes.tune.evaluate_study</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune.evaluate_study"><code class="xref">codes.tune.evaluate_study</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.evaluate_tuning.html#module-codes.tune.evaluate_tuning"><code class="xref">codes.tune.evaluate_tuning</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune.evaluate_tuning"><code class="xref">codes.tune.evaluate_tuning</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.optuna_fcts.html#module-codes.tune.optuna_fcts"><code class="xref">codes.tune.optuna_fcts</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune.optuna_fcts"><code class="xref">codes.tune.optuna_fcts</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.postgres_fcts.html#module-codes.tune.postgres_fcts"><code class="xref">codes.tune.postgres_fcts</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune.postgres_fcts"><code class="xref">codes.tune.postgres_fcts</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.tune.tune_utils.html#module-codes.tune.tune_utils"><code class="xref">codes.tune.tune_utils</code></a></td><td>
+       <a href="codes.tune.html#module-codes.tune.tune_utils"><code class="xref">codes.tune.tune_utils</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.utils.html#module-codes.utils"><code class="xref">codes.utils</code></a></td><td>
+       <a href="codes.utils.html#module-codes.utils"><code class="xref">codes.utils</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.utils.data_utils.html#module-codes.utils.data_utils"><code class="xref">codes.utils.data_utils</code></a></td><td>
+       <a href="codes.utils.html#module-codes.utils.data_utils"><code class="xref">codes.utils.data_utils</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="docs/source/codes.utils.utils.html#module-codes.utils.utils"><code class="xref">codes.utils.utils</code></a></td><td>
+       <a href="codes.utils.html#module-codes.utils.utils"><code class="xref">codes.utils.utils</code></a></td><td>
        <em></em></td></tr>
    </table>
 
@@ -470,7 +552,7 @@ document.write(`
   <div class="footer-item">
     
 <p class="component-author">
-By Robin Janssen, Immanuel Sulzer
+By Robin Janssen
 </p>
 
   </div>
@@ -480,7 +562,7 @@ By Robin Janssen, Immanuel Sulzer
 
   <p class="copyright">
     
-      © Copyright 2024, Robin Janssen, Immanuel Sulzer.
+      © Copyright 2026, Robin Janssen.
       <br/>
     
   </p>

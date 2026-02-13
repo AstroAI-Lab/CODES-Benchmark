@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -44,6 +45,8 @@
     <link rel="icon" href="_static/favicon-96x96.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="codes.surrogates.DeepONet package" href="codes.surrogates.DeepONet.html" />
+    <link rel="prev" title="codes.surrogates package" href="codes.surrogates.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -106,8 +109,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -132,8 +133,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
   
-    <p class="title logo__title">CODES  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -149,17 +156,6 @@
           
           <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://codes-docs.web.app" title="CODES Docs" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="_static/favicon-96x96.png" class="icon-link-image" alt="CODES Docs"/></a>
         </li>
         <li class="nav-item">
           
@@ -187,39 +183,50 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.benchmark.html">codes.benchmark</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_fcts.html">codes.benchmark.bench_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_plots.html">codes.benchmark.bench_plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_utils.html">codes.benchmark.bench_utils</a></li>
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.surrogates.html">codes.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html">codes.surrogates.AbstractSurrogate.abstract_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html">codes.surrogates.AbstractSurrogate.abstract_surrogate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.surrogates.surrogate_classes.html">codes.surrogates.surrogate_classes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.train.html">codes.train</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.train.train_fcts.html">codes.train.train_fcts</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.tune.html">codes.tune</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_study.html">codes.tune.evaluate_study</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_tuning.html">codes.tune.evaluate_tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.optuna_fcts.html">codes.tune.optuna_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.postgres_fcts.html">codes.tune.postgres_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.tune_utils.html">codes.tune.tune_utils</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.utils.html">codes.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.data_utils.html">codes.utils.data_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.utils.html">codes.utils.utils</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.train.html">codes.train package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.tune.html">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.utils.html">codes.utils package</a></li>
 </ul>
 
     </div>
@@ -369,45 +376,25 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_config">codes.surrogates.AbstractSurrogate.abstract_config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_config">codes.surrogates.AbstractSurrogate.abstract_config module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_kwargs"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_kwargs</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_surrogate">codes.surrogates.AbstractSurrogate.abstract_surrogate module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_surrogate">codes.surrogates.AbstractSurrogate.abstract_surrogate module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.test_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.test_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.MAE"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.MAE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.normalisation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.normalisation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_duration"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_duration</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.device"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.device</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_quantities"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_quantities</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_timesteps"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_timesteps</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.L1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.L1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.config"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.config</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.denormalize"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
@@ -429,42 +416,22 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_kwargs"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_kwargs</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.test_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.test_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.MAE"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.MAE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.normalisation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.normalisation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_duration"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_duration</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.device"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.device</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_quantities"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_quantities</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_timesteps"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_timesteps</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.L1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.L1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.config"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.config</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.denormalize"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
@@ -506,126 +473,32 @@ document.write(`
 <span id="codes-surrogates-abstractsurrogate-abstract-config-module"></span><h2>codes.surrogates.AbstractSurrogate.abstract_config module<a class="headerlink" href="#module-codes.surrogates.AbstractSurrogate.abstract_config" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.AbstractSurrogate.abstract_config.</span></span><span class="sig-name descname"><span class="pre">AbstractSurrogateBaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adamw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.AbstractSurrogate.abstract_config.</span></span><span class="sig-name descname"><span class="pre">AbstractSurrogateBaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adamw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base configuration for the AbstractSurrogate model.</p>
 <p>This class defines shared attributes and methods for surrogate models.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate">
-<span class="sig-name descname"><span class="pre">learning_rate</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate" title="Link to this definition">#</a></dt>
-<dd><p>Learning rate for the optimizer.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor">
-<span class="sig-name descname"><span class="pre">regularization_factor</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor" title="Link to this definition">#</a></dt>
-<dd><p>Regularization coefficient, applied as weight decay.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer" title="Link to this definition">#</a></dt>
-<dd><p>Type of optimizer to use. Supported options: adamw, sgd.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum">
-<span class="sig-name descname"><span class="pre">momentum</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum" title="Link to this definition">#</a></dt>
-<dd><p>Momentum factor for the optimizer (used only if optimizer == “sgd”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler" title="Link to this definition">#</a></dt>
-<dd><p>Type of learning rate scheduler to use.
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>learning_rate</strong> (<em>float</em>) – Learning rate for the optimizer.</p></li>
+<li><p><strong>regularization_factor</strong> (<em>float</em>) – Regularization coefficient, applied as weight decay.</p></li>
+<li><p><strong>optimizer</strong> (<em>str</em>) – Type of optimizer to use. Supported options: adamw, sgd.</p></li>
+<li><p><strong>momentum</strong> (<em>float</em>) – Momentum factor for the optimizer (used only if optimizer == “sgd”).</p></li>
+<li><p><strong>scheduler</strong> (<em>str</em>) – Type of learning rate scheduler to use.
 - “schedulefree”: Use schedulefree optimizer.
 - “cosine”: Use cosine annealing scheduler.
-- “poly”: Use polynomial decay scheduler.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+- “poly”: Use polynomial decay scheduler.</p></li>
+<li><p><strong>poly_power</strong> (<em>float</em>) – Power for polynomial decay scheduler (used only if scheduler == “poly”).</p></li>
+<li><p><strong>eta_min</strong> (<em>float</em>) – Multiplier for minimum learning rate for cosine annealing scheduler (used only if scheduler == “cosine”).</p></li>
+<li><p><strong>activation</strong> (<em>nn.Module | None</em>) – Activation module used in the model.</p></li>
+<li><p><strong>loss_function</strong> (<em>nn.Module | None</em>) – Loss function used for training.</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – Beta parameter forwarded to SmoothL1Loss.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power">
-<span class="sig-name descname"><span class="pre">poly_power</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power" title="Link to this definition">#</a></dt>
-<dd><p>Power for polynomial decay scheduler (used only if scheduler == “poly”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min">
-<span class="sig-name descname"><span class="pre">eta_min</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min" title="Link to this definition">#</a></dt>
-<dd><p>Multiplier for minimum learning rate for cosine annealing scheduler (used only if scheduler == “cosine”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation">
-<span class="sig-name descname"><span class="pre">activation</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation" title="Link to this definition">#</a></dt>
-<dd><p>Activation function used in the model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.Module</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function">
-<span class="sig-name descname"><span class="pre">loss_function</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function" title="Link to this definition">#</a></dt>
-<dd><p>Loss function used for training.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.Module</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_kwargs">
-<span class="sig-name descname"><span class="pre">loss_kwargs</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_kwargs" title="Link to this definition">#</a></dt>
-<dd><p>Additional arguments for the loss function (used only if loss_function == nn.SmoothL1Loss()).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">ReLU()</span></em><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">activation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -634,13 +507,13 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">eta_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#id1" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min">
+<span class="sig-name descname"><span class="pre">eta_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">learning_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0003</span></em><a class="headerlink" href="#id2" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate">
+<span class="sig-name descname"><span class="pre">learning_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0003</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -652,33 +525,33 @@ Otherwise, it returns the loss function as is.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">loss_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MSELoss()</span></em><a class="headerlink" href="#id3" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function">
+<span class="sig-name descname"><span class="pre">loss_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">momentum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#id4" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum">
+<span class="sig-name descname"><span class="pre">momentum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'adamw'</span></em><a class="headerlink" href="#id5" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'adamw'</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">poly_power</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.9</span></em><a class="headerlink" href="#id6" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power">
+<span class="sig-name descname"><span class="pre">poly_power</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.9</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">regularization_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#id7" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor">
+<span class="sig-name descname"><span class="pre">regularization_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cosine'</span></em><a class="headerlink" href="#id8" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler">
+<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cosine'</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -704,117 +577,21 @@ framework. For more information, see
 <li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration dictionary. Defaults to {}.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_loss">
-<span class="sig-name descname"><span class="pre">train_loss</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_loss" title="Link to this definition">#</a></dt>
-<dd><p>The training loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>train_loss</strong> (<em>float</em>) – The training loss.</p></li>
+<li><p><strong>test_loss</strong> (<em>float</em>) – The test loss.</p></li>
+<li><p><strong>MAE</strong> (<em>float</em>) – The mean absolute error.</p></li>
+<li><p><strong>normalisation</strong> (<em>dict</em>) – The normalisation parameters.</p></li>
+<li><p><strong>train_duration</strong> (<em>float</em>) – The training duration.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – The device to run the model on.</p></li>
+<li><p><strong>n_quantities</strong> (<em>int</em>) – The number of quantities.</p></li>
+<li><p><strong>n_timesteps</strong> (<em>int</em>) – The number of timesteps.</p></li>
+<li><p><strong>L1</strong> (<em>nn.L1Loss</em>) – The L1 loss function.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – The configuration dictionary.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.test_loss">
-<span class="sig-name descname"><span class="pre">test_loss</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.test_loss" title="Link to this definition">#</a></dt>
-<dd><p>The test loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.MAE">
-<span class="sig-name descname"><span class="pre">MAE</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.MAE" title="Link to this definition">#</a></dt>
-<dd><p>The mean absolute error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.normalisation">
-<span class="sig-name descname"><span class="pre">normalisation</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.normalisation" title="Link to this definition">#</a></dt>
-<dd><p>The normalisation parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_duration">
-<span class="sig-name descname"><span class="pre">train_duration</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_duration" title="Link to this definition">#</a></dt>
-<dd><p>The training duration.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.device">
-<span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.device" title="Link to this definition">#</a></dt>
-<dd><p>The device to run the model on.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_quantities">
-<span class="sig-name descname"><span class="pre">n_quantities</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_quantities" title="Link to this definition">#</a></dt>
-<dd><p>The number of quantities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_timesteps">
-<span class="sig-name descname"><span class="pre">n_timesteps</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_timesteps" title="Link to this definition">#</a></dt>
-<dd><p>The number of timesteps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.L1">
-<span class="sig-name descname"><span class="pre">L1</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.L1" title="Link to this definition">#</a></dt>
-<dd><p>The L1 loss function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.L1Loss</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.config">
-<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.config" title="Link to this definition">#</a></dt>
-<dd><p>The configuration dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">forward(inputs</span></span></dt>
@@ -1230,126 +1007,32 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-codes.surrogates.AbstractSurrogate" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.AbstractSurrogate.</span></span><span class="sig-name descname"><span class="pre">AbstractSurrogateBaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adamw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.surrogates.AbstractSurrogate.</span></span><span class="sig-name descname"><span class="pre">AbstractSurrogateBaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adamw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base configuration for the AbstractSurrogate model.</p>
 <p>This class defines shared attributes and methods for surrogate models.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate">
-<span class="sig-name descname"><span class="pre">learning_rate</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate" title="Link to this definition">#</a></dt>
-<dd><p>Learning rate for the optimizer.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor">
-<span class="sig-name descname"><span class="pre">regularization_factor</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor" title="Link to this definition">#</a></dt>
-<dd><p>Regularization coefficient, applied as weight decay.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer" title="Link to this definition">#</a></dt>
-<dd><p>Type of optimizer to use. Supported options: adamw, sgd.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum">
-<span class="sig-name descname"><span class="pre">momentum</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum" title="Link to this definition">#</a></dt>
-<dd><p>Momentum factor for the optimizer (used only if optimizer == “sgd”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler" title="Link to this definition">#</a></dt>
-<dd><p>Type of learning rate scheduler to use.
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>learning_rate</strong> (<em>float</em>) – Learning rate for the optimizer.</p></li>
+<li><p><strong>regularization_factor</strong> (<em>float</em>) – Regularization coefficient, applied as weight decay.</p></li>
+<li><p><strong>optimizer</strong> (<em>str</em>) – Type of optimizer to use. Supported options: adamw, sgd.</p></li>
+<li><p><strong>momentum</strong> (<em>float</em>) – Momentum factor for the optimizer (used only if optimizer == “sgd”).</p></li>
+<li><p><strong>scheduler</strong> (<em>str</em>) – Type of learning rate scheduler to use.
 - “schedulefree”: Use schedulefree optimizer.
 - “cosine”: Use cosine annealing scheduler.
-- “poly”: Use polynomial decay scheduler.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+- “poly”: Use polynomial decay scheduler.</p></li>
+<li><p><strong>poly_power</strong> (<em>float</em>) – Power for polynomial decay scheduler (used only if scheduler == “poly”).</p></li>
+<li><p><strong>eta_min</strong> (<em>float</em>) – Multiplier for minimum learning rate for cosine annealing scheduler (used only if scheduler == “cosine”).</p></li>
+<li><p><strong>activation</strong> (<em>nn.Module | None</em>) – Activation module used in the model.</p></li>
+<li><p><strong>loss_function</strong> (<em>nn.Module | None</em>) – Loss function used for training.</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – Beta parameter forwarded to SmoothL1Loss.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power">
-<span class="sig-name descname"><span class="pre">poly_power</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power" title="Link to this definition">#</a></dt>
-<dd><p>Power for polynomial decay scheduler (used only if scheduler == “poly”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min">
-<span class="sig-name descname"><span class="pre">eta_min</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min" title="Link to this definition">#</a></dt>
-<dd><p>Multiplier for minimum learning rate for cosine annealing scheduler (used only if scheduler == “cosine”).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation">
-<span class="sig-name descname"><span class="pre">activation</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation" title="Link to this definition">#</a></dt>
-<dd><p>Activation function used in the model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.Module</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function">
-<span class="sig-name descname"><span class="pre">loss_function</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function" title="Link to this definition">#</a></dt>
-<dd><p>Loss function used for training.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.Module</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_kwargs">
-<span class="sig-name descname"><span class="pre">loss_kwargs</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_kwargs" title="Link to this definition">#</a></dt>
-<dd><p>Additional arguments for the loss function (used only if loss_function == nn.SmoothL1Loss()).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id9">
-<span class="sig-name descname"><span class="pre">activation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">ReLU()</span></em><a class="headerlink" href="#id9" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">activation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1358,13 +1041,13 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id10">
-<span class="sig-name descname"><span class="pre">eta_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#id10" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min">
+<span class="sig-name descname"><span class="pre">eta_min</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id11">
-<span class="sig-name descname"><span class="pre">learning_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0003</span></em><a class="headerlink" href="#id11" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate">
+<span class="sig-name descname"><span class="pre">learning_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0003</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1376,33 +1059,33 @@ Otherwise, it returns the loss function as is.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id12">
-<span class="sig-name descname"><span class="pre">loss_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">MSELoss()</span></em><a class="headerlink" href="#id12" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function">
+<span class="sig-name descname"><span class="pre">loss_function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> <span class="pre">|</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id13">
-<span class="sig-name descname"><span class="pre">momentum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#id13" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum">
+<span class="sig-name descname"><span class="pre">momentum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id14">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'adamw'</span></em><a class="headerlink" href="#id14" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'adamw'</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id15">
-<span class="sig-name descname"><span class="pre">poly_power</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.9</span></em><a class="headerlink" href="#id15" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power">
+<span class="sig-name descname"><span class="pre">poly_power</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.9</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id16">
-<span class="sig-name descname"><span class="pre">regularization_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#id16" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor">
+<span class="sig-name descname"><span class="pre">regularization_factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id17">
-<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cosine'</span></em><a class="headerlink" href="#id17" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler">
+<span class="sig-name descname"><span class="pre">scheduler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cosine'</span></em><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1425,117 +1108,21 @@ framework. For more information, see
 <li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration dictionary. Defaults to {}.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_loss">
-<span class="sig-name descname"><span class="pre">train_loss</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_loss" title="Link to this definition">#</a></dt>
-<dd><p>The training loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>train_loss</strong> (<em>float</em>) – The training loss.</p></li>
+<li><p><strong>test_loss</strong> (<em>float</em>) – The test loss.</p></li>
+<li><p><strong>MAE</strong> (<em>float</em>) – The mean absolute error.</p></li>
+<li><p><strong>normalisation</strong> (<em>dict</em>) – The normalisation parameters.</p></li>
+<li><p><strong>train_duration</strong> (<em>float</em>) – The training duration.</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – The device to run the model on.</p></li>
+<li><p><strong>n_quantities</strong> (<em>int</em>) – The number of quantities.</p></li>
+<li><p><strong>n_timesteps</strong> (<em>int</em>) – The number of timesteps.</p></li>
+<li><p><strong>L1</strong> (<em>nn.L1Loss</em>) – The L1 loss function.</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – The configuration dictionary.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.test_loss">
-<span class="sig-name descname"><span class="pre">test_loss</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.test_loss" title="Link to this definition">#</a></dt>
-<dd><p>The test loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.MAE">
-<span class="sig-name descname"><span class="pre">MAE</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.MAE" title="Link to this definition">#</a></dt>
-<dd><p>The mean absolute error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.normalisation">
-<span class="sig-name descname"><span class="pre">normalisation</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.normalisation" title="Link to this definition">#</a></dt>
-<dd><p>The normalisation parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_duration">
-<span class="sig-name descname"><span class="pre">train_duration</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_duration" title="Link to this definition">#</a></dt>
-<dd><p>The training duration.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.device">
-<span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.device" title="Link to this definition">#</a></dt>
-<dd><p>The device to run the model on.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_quantities">
-<span class="sig-name descname"><span class="pre">n_quantities</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_quantities" title="Link to this definition">#</a></dt>
-<dd><p>The number of quantities.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_timesteps">
-<span class="sig-name descname"><span class="pre">n_timesteps</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_timesteps" title="Link to this definition">#</a></dt>
-<dd><p>The number of timesteps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.L1">
-<span class="sig-name descname"><span class="pre">L1</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.L1" title="Link to this definition">#</a></dt>
-<dd><p>The L1 loss function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nn.L1Loss</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.config">
-<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.config" title="Link to this definition">#</a></dt>
-<dd><p>The configuration dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">forward(inputs</span></span></dt>
@@ -1960,6 +1547,24 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="codes.surrogates.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">codes.surrogates package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="codes.surrogates.DeepONet.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">codes.surrogates.DeepONet package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1977,45 +1582,25 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_config">codes.surrogates.AbstractSurrogate.abstract_config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_config">codes.surrogates.AbstractSurrogate.abstract_config module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_kwargs"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_kwargs</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_surrogate">codes.surrogates.AbstractSurrogate.abstract_surrogate module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate.abstract_surrogate">codes.surrogates.AbstractSurrogate.abstract_surrogate module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.test_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.test_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.MAE"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.MAE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.normalisation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.normalisation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.train_duration"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_duration</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.device"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.device</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_quantities"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_quantities</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.n_timesteps"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_timesteps</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.L1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.L1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.config"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.config</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.denormalize"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
@@ -2037,42 +1622,22 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.AbstractSurrogate">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_kwargs"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_kwargs</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id16"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.momentum"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.momentum</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.optimizer"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.optimizer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.poly_power"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.poly_power</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.regularization_factor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.scheduler"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.scheduler</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.test_loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.test_loss</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.MAE"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.MAE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.normalisation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.normalisation</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.train_duration"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_duration</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.device"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.device</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_quantities"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_quantities</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.n_timesteps"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.n_timesteps</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.L1"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.L1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.config"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.config</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.denormalize"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
@@ -2108,7 +1673,7 @@ Main reporting metric is MAE in log10-space (i.e., Δdex). Additionally, MAE in 
   <div class="footer-item">
     
 <p class="component-author">
-By Robin Janssen, Immanuel Sulzer
+By Robin Janssen
 </p>
 
   </div>
@@ -2118,7 +1683,7 @@ By Robin Janssen, Immanuel Sulzer
 
   <p class="copyright">
     
-      © Copyright 2024, Robin Janssen, Immanuel Sulzer.
+      © Copyright 2026, Robin Janssen.
       <br/>
     
   </p>

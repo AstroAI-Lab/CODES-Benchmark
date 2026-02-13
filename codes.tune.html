@@ -30,6 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -44,6 +45,8 @@
     <link rel="icon" href="_static/favicon-96x96.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="codes.utils package" href="codes.utils.html" />
+    <link rel="prev" title="codes.train package" href="codes.train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -130,8 +133,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="CODES  documentation - Home"/>`);</script>
   
-    <p class="title logo__title">CODES  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -147,17 +156,6 @@
           
           <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
-        </li>
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://codes-docs.web.app" title="CODES Docs" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="_static/favicon-96x96.png" class="icon-link-image" alt="CODES Docs"/></a>
         </li>
         <li class="nav-item">
           
@@ -185,39 +183,50 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.benchmark.html">codes.benchmark</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_fcts.html">codes.benchmark.bench_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_plots.html">codes.benchmark.bench_plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.benchmark.bench_utils.html">codes.benchmark.bench_utils</a></li>
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    CODES Benchmark
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/accuracy-metrics.html">Accuracy Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/uncertainty.html">Uncertainty Quantification</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.surrogates.html">codes.surrogates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_config.html">codes.surrogates.AbstractSurrogate.abstract_config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/source/codes.surrogates.AbstractSurrogate.abstract_surrogate.html">codes.surrogates.AbstractSurrogate.abstract_surrogate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/extending-benchmark.html">Extending The Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/configuration.html">Configuration Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/datasets.html">Dataset Catalog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials/index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/benchmark_quickstart.html">Benchmark Quickstart</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.surrogates.surrogate_classes.html">codes.surrogates.surrogate_classes</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.FCNN.html">codes.surrogates.FCNN package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html">codes.surrogates.LatentNeuralODE package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.LatentPolynomial.html">codes.surrogates.LatentPolynomial package</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.train.html">codes.train</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.train.train_fcts.html">codes.train.train_fcts</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.tune.html">codes.tune</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_study.html">codes.tune.evaluate_study</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.evaluate_tuning.html">codes.tune.evaluate_tuning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.optuna_fcts.html">codes.tune.optuna_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.postgres_fcts.html">codes.tune.postgres_fcts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.tune.tune_utils.html">codes.tune.tune_utils</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="docs/source/codes.utils.html">codes.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.data_utils.html">codes.utils.data_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/source/codes.utils.utils.html">codes.utils.utils</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.train.html">codes.train package</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">codes.tune package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.utils.html">codes.utils package</a></li>
 </ul>
 
     </div>
@@ -367,7 +376,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_study">codes.tune.evaluate_study module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_study">codes.tune.evaluate_study module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.load_model_test_losses"><code class="docutils literal notranslate"><span class="pre">load_model_test_losses()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.load_study_config"><code class="docutils literal notranslate"><span class="pre">load_study_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
@@ -376,7 +385,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.plot_test_losses"><code class="docutils literal notranslate"><span class="pre">plot_test_losses()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_tuning">codes.tune.evaluate_tuning module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_tuning">codes.tune.evaluate_tuning module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.compute_hypervolume_over_time"><code class="docutils literal notranslate"><span class="pre">compute_hypervolume_over_time()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.compute_pareto_plot_data"><code class="docutils literal notranslate"><span class="pre">compute_pareto_plot_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.evaluate_tuning"><code class="docutils literal notranslate"><span class="pre">evaluate_tuning()</span></code></a></li>
@@ -396,7 +405,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.summarize_pareto_tradeoff"><code class="docutils literal notranslate"><span class="pre">summarize_pareto_tradeoff()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.optuna_fcts">codes.tune.optuna_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.optuna_fcts">codes.tune.optuna_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.MaxValidTrialsCallback"><code class="docutils literal notranslate"><span class="pre">MaxValidTrialsCallback</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.build_fine_optuna_params"><code class="docutils literal notranslate"><span class="pre">build_fine_optuna_params()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.create_objective"><code class="docutils literal notranslate"><span class="pre">create_objective()</span></code></a></li>
@@ -406,11 +415,12 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.training_run"><code class="docutils literal notranslate"><span class="pre">training_run()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.postgres_fcts">codes.tune.postgres_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.postgres_fcts">codes.tune.postgres_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.postgres_fcts.initialize_optuna_database"><code class="docutils literal notranslate"><span class="pre">initialize_optuna_database()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.tune_utils">codes.tune.tune_utils module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.tune_utils">codes.tune.tune_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.apply_tuning_defaults"><code class="docutils literal notranslate"><span class="pre">apply_tuning_defaults()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.build_study_names"><code class="docutils literal notranslate"><span class="pre">build_study_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.copy_config"><code class="docutils literal notranslate"><span class="pre">copy_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.delete_studies_if_requested"><code class="docutils literal notranslate"><span class="pre">delete_studies_if_requested()</span></code></a></li>
@@ -418,8 +428,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.yes_no"><code class="docutils literal notranslate"><span class="pre">yes_no()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.MaxValidTrialsCallback"><code class="docutils literal notranslate"><span class="pre">MaxValidTrialsCallback</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.apply_tuning_defaults"><code class="docutils literal notranslate"><span class="pre">apply_tuning_defaults()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.build_fine_optuna_params"><code class="docutils literal notranslate"><span class="pre">build_fine_optuna_params()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.build_study_names"><code class="docutils literal notranslate"><span class="pre">build_study_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.copy_config"><code class="docutils literal notranslate"><span class="pre">copy_config()</span></code></a></li>
@@ -794,6 +805,16 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <section id="module-codes.tune.tune_utils">
 <span id="codes-tune-tune-utils-module"></span><h2>codes.tune.tune_utils module<a class="headerlink" href="#module-codes.tune.tune_utils" title="Link to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="codes.tune.tune_utils.apply_tuning_defaults">
+<span class="sig-prename descclassname"><span class="pre">codes.tune.tune_utils.</span></span><span class="sig-name descname"><span class="pre">apply_tuning_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.tune_utils.apply_tuning_defaults" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="codes.tune.tune_utils.build_study_names">
 <span class="sig-prename descclassname"><span class="pre">codes.tune.tune_utils.</span></span><span class="sig-name descname"><span class="pre">build_study_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_study_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.tune_utils.build_study_names" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -824,7 +845,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <span class="sig-prename descclassname"><span class="pre">codes.tune.tune_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_workspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master_cfg_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.tune_utils.prepare_workspace" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -847,6 +868,16 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <dt class="sig sig-object py" id="codes.tune.MaxValidTrialsCallback">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">codes.tune.</span></span><span class="sig-name descname"><span class="pre">MaxValidTrialsCallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.MaxValidTrialsCallback" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.tune.apply_tuning_defaults">
+<span class="sig-prename descclassname"><span class="pre">codes.tune.</span></span><span class="sig-name descname"><span class="pre">apply_tuning_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.apply_tuning_defaults" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1028,7 +1059,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <span class="sig-prename descclassname"><span class="pre">codes.tune.</span></span><span class="sig-name descname"><span class="pre">prepare_workspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master_cfg_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.tune.prepare_workspace" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1083,6 +1114,24 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="codes.train.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">codes.train package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="codes.utils.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">codes.utils package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -1100,7 +1149,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_study">codes.tune.evaluate_study module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_study">codes.tune.evaluate_study module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.load_model_test_losses"><code class="docutils literal notranslate"><span class="pre">load_model_test_losses()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.load_study_config"><code class="docutils literal notranslate"><span class="pre">load_study_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
@@ -1109,7 +1158,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_study.plot_test_losses"><code class="docutils literal notranslate"><span class="pre">plot_test_losses()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_tuning">codes.tune.evaluate_tuning module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.evaluate_tuning">codes.tune.evaluate_tuning module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.compute_hypervolume_over_time"><code class="docutils literal notranslate"><span class="pre">compute_hypervolume_over_time()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.compute_pareto_plot_data"><code class="docutils literal notranslate"><span class="pre">compute_pareto_plot_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.evaluate_tuning"><code class="docutils literal notranslate"><span class="pre">evaluate_tuning()</span></code></a></li>
@@ -1129,7 +1178,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.evaluate_tuning.summarize_pareto_tradeoff"><code class="docutils literal notranslate"><span class="pre">summarize_pareto_tradeoff()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.optuna_fcts">codes.tune.optuna_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.optuna_fcts">codes.tune.optuna_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.MaxValidTrialsCallback"><code class="docutils literal notranslate"><span class="pre">MaxValidTrialsCallback</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.build_fine_optuna_params"><code class="docutils literal notranslate"><span class="pre">build_fine_optuna_params()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.create_objective"><code class="docutils literal notranslate"><span class="pre">create_objective()</span></code></a></li>
@@ -1139,11 +1188,12 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.optuna_fcts.training_run"><code class="docutils literal notranslate"><span class="pre">training_run()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.postgres_fcts">codes.tune.postgres_fcts module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.postgres_fcts">codes.tune.postgres_fcts module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.postgres_fcts.initialize_optuna_database"><code class="docutils literal notranslate"><span class="pre">initialize_optuna_database()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.tune_utils">codes.tune.tune_utils module</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune.tune_utils">codes.tune.tune_utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.apply_tuning_defaults"><code class="docutils literal notranslate"><span class="pre">apply_tuning_defaults()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.build_study_names"><code class="docutils literal notranslate"><span class="pre">build_study_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.copy_config"><code class="docutils literal notranslate"><span class="pre">copy_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.delete_studies_if_requested"><code class="docutils literal notranslate"><span class="pre">delete_studies_if_requested()</span></code></a></li>
@@ -1151,8 +1201,9 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.tune_utils.yes_no"><code class="docutils literal notranslate"><span class="pre">yes_no()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.tune">Module contents</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.MaxValidTrialsCallback"><code class="docutils literal notranslate"><span class="pre">MaxValidTrialsCallback</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.apply_tuning_defaults"><code class="docutils literal notranslate"><span class="pre">apply_tuning_defaults()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.build_fine_optuna_params"><code class="docutils literal notranslate"><span class="pre">build_fine_optuna_params()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.build_study_names"><code class="docutils literal notranslate"><span class="pre">build_study_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.tune.copy_config"><code class="docutils literal notranslate"><span class="pre">copy_config()</span></code></a></li>
@@ -1185,7 +1236,7 @@ tuple[float, float]: (loss, mean_inference_time) in multi objective mode.</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Robin Janssen, Immanuel Sulzer
+By Robin Janssen
 </p>
 
   </div>
@@ -1195,7 +1246,7 @@ By Robin Janssen, Immanuel Sulzer
 
   <p class="copyright">
     
-      © Copyright 2024, Robin Janssen, Immanuel Sulzer.
+      © Copyright 2026, Robin Janssen.
       <br/>
     
   </p>
