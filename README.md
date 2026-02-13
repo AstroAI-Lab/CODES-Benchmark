@@ -64,15 +64,9 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 
 ## Contributing
 
-Pull requests are welcome! Please include documentation updates, add or update tests when you touch executable code, and run:
+Contribution guidelines are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-```bash
-uv pip install --group dev
-pytest
-sphinx-build -b html docs/source/ docs/_build/html
-```
-
-If you publish a new surrogate or dataset, document it under `docs/guides` / `docs/reference` so users can adopt it quickly. For questions, open an issue on GitHub.
+In short: open or pick an issue, make your changes in a branch, and submit a pull request with tests/docs updates as needed.
 
 ## Contributors
 
