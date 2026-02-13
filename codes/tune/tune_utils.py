@@ -1,7 +1,12 @@
+import copy
 import shutil
+import sys
+from datetime import datetime
 from pathlib import Path
 
 import optuna
+
+from codes.utils.utils import read_yaml_config
 
 
 def yes_no(prompt: str, default: bool = False) -> bool:
@@ -29,27 +34,86 @@ def build_study_names(config: dict, main_study_name: str) -> list[str]:
     return [main_study_name]
 
 
-def prepare_workspace(master_cfg_path: Path, config: dict) -> None:
+def _prompt_config_decision(stored: Path, incoming: Path) -> str:
+    prompt = (
+        f"A stored config exists at '{stored}'.\n"
+        f"The provided config '{incoming}' differs.\n"
+        "Use stored version [U], overwrite with new version [O], or abort [A]? "
+    )
+    while True:
+        ans = input(prompt).strip().lower()
+        if ans in ("u", "use"):
+            return "use"
+        if ans in ("o", "overwrite"):
+            return "overwrite"
+        if ans in ("a", "abort"):
+            return "abort"
+        print("Please answer with U, O, or A.")
+
+
+def prepare_workspace(master_cfg_path: Path, config: dict) -> dict:
     tuning_id = config["tuning_id"]
     run_dir = Path("tuned") / tuning_id
-    run_dir_exists = run_dir.exists()
+    run_dir.mkdir(parents=True, exist_ok=True)
+    dst_cfg = run_dir / "optuna_config.yaml"
 
-    if run_dir_exists:
-        overwrite = yes_no(f"Folder '{run_dir}' exists. Overwrite?", default=False)
-        if overwrite:
-            shutil.rmtree(run_dir)
-            run_dir.mkdir(parents=True, exist_ok=True)
-            copy_config(master_cfg_path, run_dir)
-            config["_overwrite_run"] = True
-        else:
-            config["_overwrite_run"] = False
-            # ensure config is present for reproducibility (copy if missing)
-            if not (run_dir / "optuna_config.yaml").exists():
+    config["_overwrite_run"] = False
+
+    if dst_cfg.exists():
+        stored_config = read_yaml_config(dst_cfg)
+        if stored_config != config:
+            decision = _prompt_config_decision(dst_cfg, master_cfg_path)
+            if decision == "use":
+                print(
+                    f"Using stored config for tuning_id '{tuning_id}'. "
+                    "The provided config was ignored."
+                )
+                return stored_config
+            if decision == "overwrite":
+                backup = dst_cfg.with_name(
+                    f"optuna_config.yaml.bak-{datetime.now():%Y%m%d-%H%M%S}"
+                )
+                shutil.copy2(dst_cfg, backup)
                 copy_config(master_cfg_path, run_dir)
-    else:
-        run_dir.mkdir(parents=True, exist_ok=True)
-        copy_config(master_cfg_path, run_dir)
-        config["_overwrite_run"] = True  # brand new
+                config["_overwrite_run"] = True
+                return config
+            print("Aborting tuning run.")
+            sys.exit(1)
+        return stored_config
+
+    copy_config(master_cfg_path, run_dir)
+    config["_overwrite_run"] = True
+    return config
+
+
+def apply_tuning_defaults(config: dict) -> dict:
+    cfg = copy.deepcopy(config)
+
+    dataset = cfg.get("dataset", {})
+    if "name" not in dataset:
+        raise ValueError("Tuning config must specify dataset.name")
+    dataset.setdefault("log10_transform", True)
+    dataset.setdefault("log10_transform_params", True)
+    dataset.setdefault("normalise", "minmax")
+    dataset.setdefault("normalise_per_species", False)
+    dataset.setdefault("tolerance", None)
+    dataset.setdefault("subset_factor", 1)
+    dataset.setdefault("log_timesteps", False)
+    cfg["dataset"] = dataset
+
+    cfg.setdefault("devices", ["cpu"])
+    cfg.setdefault("seed", 42)
+    cfg.setdefault("multi_objective", False)
+    cfg.setdefault("target_percentile", 0.99)
+    cfg.setdefault("loss_cap", 20)
+    cfg.setdefault("time_pruning", True)
+    cfg.setdefault("population_size", 50)
+    cfg.setdefault("optuna_logging", False)
+    cfg.setdefault("use_optimal_params", True)
+    cfg.setdefault("prune", True)
+    cfg.setdefault("trials", 50)
+
+    return cfg
 
 
 def delete_studies_if_requested(config: dict, main_study_name: str, db_url: str):

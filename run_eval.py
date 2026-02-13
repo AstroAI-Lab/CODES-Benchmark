@@ -39,12 +39,14 @@ def main(args):
             print(f"Surrogate {surrogate_name} not recognized. Skipping.")
 
     # Compare models
-    if config["compare"]:
+    if config.get("compare", False):
         if len(surrogates) < 2:
             nice_print("At least two surrogate models are required to compare.")
         else:
             nice_print("Comparing models")
             compare_models(all_metrics, config)
+
+    nice_print("Evaluation completed.")
 
 
 if __name__ == "__main__":

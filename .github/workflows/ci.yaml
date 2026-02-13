@@ -9,6 +9,10 @@ on:
     branches:
       - main
       - develop
+    types: 
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: write
@@ -113,8 +117,13 @@ jobs:
           fail_ci_if_error: true # Optional, ensures the CI fails if Codecov upload fails
 
   docs:
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main')
+    name: Docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to push to gh-pages
+
+    # Only build+deploy docs when main is updated (i.e., after PR merge)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     strategy:
       matrix:
@@ -124,7 +133,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history if necessary
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -146,18 +155,20 @@ jobs:
       - name: Generate API Documentation with Sphinx
         run: |
           source .venv/bin/activate
-          sphinx-apidoc -o docs/ codes
+          mkdir -p docs/source/api
+          sphinx-apidoc -o docs/source/api codes
 
       - name: Build HTML with Sphinx
         run: |
           source .venv/bin/activate
-          sphinx-build -b html docs/ docs/_build
+          sphinx-build -b html docs/source docs/_build/html
 
-      - name: Deploy Sphinx API docs to gh-pages
+      - name: Deploy docs to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build
+          publish_dir: docs/_build/html
           publish_branch: gh-pages
           user_name: "GitHub Actions"
           user_email: "actions@github.com"
+          force_orphan: false

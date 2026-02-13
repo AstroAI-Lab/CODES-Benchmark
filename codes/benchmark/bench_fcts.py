@@ -1,8 +1,17 @@
+"""
+Utility functions that execute the different benchmark suites (accuracy, gradients,
+timing, sparsity studies, etc.) for every surrogate model.
+
+The functions in this module are invoked by `run_eval.py` and populate the metrics
+dictionary that later feeds the comparative plots and CSV exports.
+"""
+
 import os
 from contextlib import redirect_stdout
 from typing import Any
 
 import numpy as np
+import torch
 from scipy.stats import pearsonr
 from tabulate import tabulate
 from torch.utils.data import DataLoader
@@ -80,6 +89,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         batch_size = conf["batch_size"]
 
     # Load full data and parameters
+    dataset_conf = conf.get("dataset", {})
     (
         (train_data, test_data, val_data),
         (train_params, test_params, val_params),
@@ -88,13 +98,13 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         _,
         labels,
     ) = check_and_load_data(
-        conf["dataset"]["name"],
+        dataset_conf["name"],
         verbose=conf.get("verbose", False),
-        log=conf["dataset"]["log10_transform"],
-        log_params=conf.get("log10_transform_params", False),
-        normalisation_mode=conf["dataset"]["normalise"],
-        tolerance=conf["dataset"]["tolerance"],
-        per_species=conf["dataset"].get("normalise_per_species", False),
+        log=dataset_conf.get("log10_transform", True),
+        log_params=dataset_conf.get("log10_transform_params", True),
+        normalisation_mode=dataset_conf.get("normalise", "minmax"),
+        tolerance=dataset_conf.get("tolerance", None),
+        per_species=dataset_conf.get("normalise_per_species", False),
     )
 
     model_config = get_model_config(surr_name, conf)
@@ -130,7 +140,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
     )
 
     # Plot training losses
-    if conf["losses"]:
+    if conf.get("losses", False):
         print("Loss plots...")
         plot_surr_losses(model, surr_name, conf, timesteps, show_title=TITLE)
 
@@ -140,7 +150,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         model, surr_name, timesteps, val_loader, conf, labels
     )
 
-    if conf["iterative"]:
+    if conf.get("iterative", False):
         # Iterative training benchmark
         print("Running iterative training benchmark...")
         metrics["iterative"] = evaluate_iterative_predictions(
@@ -148,53 +158,53 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         )
 
     # Gradients benchmark
-    if conf["gradients"]:
+    if conf.get("gradients", False):
         print("Running gradients benchmark...")
         # For this benchmark, we can also use the main model
         metrics["gradients"] = evaluate_gradients(model, surr_name, val_loader, conf)
 
     # Timing benchmark
-    if conf["timing"]:
+    if conf.get("timing", False):
         print("Running timing benchmark...")
         metrics["timing"] = time_inference(
             model, surr_name, val_loader, conf, n_test_samples
         )
 
     # Compute (resources) benchmark
-    if conf["compute"]:
+    if conf.get("compute", False):
         print("Running compute benchmark...")
         metrics["compute"] = evaluate_compute(model, surr_name, val_loader, conf)
 
     # Interpolation benchmark
-    if conf["interpolation"]["enabled"]:
+    if conf.get("interpolation", {}).get("enabled", False):
         print("Running interpolation benchmark...")
         metrics["interpolation"] = evaluate_interpolation(
             model, surr_name, val_loader, timesteps, conf, labels
         )
 
     # Extrapolation benchmark
-    if conf["extrapolation"]["enabled"]:
+    if conf.get("extrapolation", {}).get("enabled", False):
         print("Running extrapolation benchmark...")
         metrics["extrapolation"] = evaluate_extrapolation(
             model, surr_name, val_loader, timesteps, conf, labels
         )
 
     # Sparse data benchmark
-    if conf["sparse"]["enabled"]:
+    if conf.get("sparse", {}).get("enabled", False):
         print("Running sparse benchmark...")
         metrics["sparse"] = evaluate_sparse(
             model, surr_name, val_loader, timesteps, n_train_samples, conf
         )
 
     # Batch size benchmark
-    if conf["batch_scaling"]["enabled"]:
+    if conf.get("batch_scaling", {}).get("enabled", False):
         print("Running batch size benchmark...")
         metrics["batch_size"] = evaluate_batchsize(
             model, surr_name, val_loader, timesteps, conf
         )
 
     # Uncertainty Quantification (UQ) benchmark
-    if conf["uncertainty"]["enabled"]:
+    if conf.get("uncertainty", {}).get("enabled", False):
         print("Running UQ benchmark...")
         metrics["UQ"] = evaluate_UQ(
             model, surr_name, val_loader, timesteps, conf, labels
@@ -349,10 +359,26 @@ def evaluate_iterative_predictions(
     labels: list | None = None,
 ) -> dict[str, Any]:
     """
-    Evaluate the iterative predictions of the surrogate model.
+    Measure how prediction errors accumulate when the surrogate is rolled forward in
+    an auto-regressive fashion.
 
-    Returns the same set of error metrics as evaluate_accuracy, but over the
-    full trajectory built by re-feeding the last prediction as the next initial state.
+    The model is fed with its own previous output (instead of ground truth) and
+    evaluated for each chunk of the trajectory. The same error metrics as
+    :func:`evaluate_accuracy` are reported so you can compare one-shot predictions
+    with long-horizon roll-outs.
+
+    Args:
+        model: Loaded surrogate instance.
+        surr_name (str): Surrogate identifier used to locate checkpoints.
+        timesteps (np.ndarray): Timeline associated with the validation data.
+        val_loader (DataLoader): Validation loader that provides initial states.
+        val_params (np.ndarray): Optional auxiliary parameters aligned with the data.
+        conf (dict): Benchmark configuration.
+        labels (list | None): Quantity names for labelling plots.
+
+    Returns:
+        dict[str, Any]: Error statistics for iterative predictions together with the
+        generated trajectories.
     """
     # load trained model
     training_id = conf["training_id"]
@@ -434,7 +460,9 @@ def evaluate_iterative_predictions(
         # We predict steps 1..(chunk_len-1) relative to the provided init state (index 0).
         # Map these to global indices [start+1 .. end] inclusively.
         if i == 0:
-            iterative_preds[:, start : end + 1, :] = preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+            iterative_preds[:, start : end + 1, :] = (
+                preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+            )
         iterative_preds[:, start + 1 : end + 1, :] = (
             preds_chunk[:, 1 : model.n_timesteps, :].detach().cpu().numpy()
         )
@@ -628,10 +656,35 @@ def evaluate_compute(
     training_id = conf["training_id"]
     model.load(training_id, surr_name, model_identifier=f"{surr_name.lower()}_main")
 
-    # Get a sample input tensor from the test_loader
-    inputs = next(iter(test_loader))
-    # Measure the memory footprint during forward and backward pass
-    memory_footprint, model = measure_memory_footprint(model, inputs)
+    device = torch.device(getattr(model, "device", torch.device("cpu")))
+    memory_footprint = {}
+
+    if torch.cuda.is_available():
+        try:
+            inputs = next(iter(test_loader))
+        except StopIteration:
+            inputs = None
+
+        if inputs is None:
+            print(
+                "Skipping GPU memory profiling for compute evaluation "
+                "(test loader provided no samples)."
+            )
+        else:
+            try:
+                memory_footprint, model = measure_memory_footprint(
+                    model, inputs, device
+                )
+            except RuntimeError as exc:
+                print(
+                    "Skipping GPU memory profiling for compute evaluation "
+                    f"(reason: {exc})."
+                )
+    else:
+        print(
+            "Skipping GPU memory profiling for compute evaluation "
+            "(CUDA not available)."
+        )
 
     # Count the number of trainable parameters
     num_params = count_trainable_parameters(model)
@@ -1142,49 +1195,60 @@ def evaluate_UQ(
 
 
 def compare_models(metrics: dict, config: dict):
+    """
+    Aggregate surrogate-level metrics into comparison plots and CSV summaries.
+
+    Args:
+        metrics (dict): Output of :func:`run_benchmark` for each surrogate.
+        config (dict): Benchmark configuration that determines which comparisons to run.
+
+    The function is intentionally side-effect heavy: it creates plots, writes tables,
+    and prints status messages. Nothing is returned; all artifacts are stored under
+    `plots/<training_id>` and `results/<training_id>`.
+    """
 
     print("Making comparative plots... \n")
 
     # Compare errors
     compare_errors(metrics, config)
-    if config["losses"]:
+    if config.get("losses", False):
         compare_main_losses(metrics, config)
 
-    if config["iterative"]:
+    if config.get("iterative", False):
         compare_iterative(metrics, config)
 
-    if config["gradients"]:
+    if config.get("gradients", False):
         compare_gradients(metrics, config)
 
     # Compare inference time
-    if config["timing"]:
+    if config.get("timing", False):
         compare_inference_time(metrics, config)
 
     # Compare interpolation errors
-    if config["interpolation"]["enabled"]:
+    if config.get("interpolation", {}).get("enabled", False):
         compare_interpolation(metrics, config)
 
     # Compare extrapolation errors
-    if config["extrapolation"]["enabled"]:
+    if config.get("extrapolation", {}).get("enabled", False):
         compare_extrapolation(metrics, config)
 
     # Compare sparse training errors
-    if config["sparse"]["enabled"]:
+    if config.get("sparse", {}).get("enabled", False):
         compare_sparse(metrics, config)
 
     if (
-        config["interpolation"]["enabled"]
-        and config["extrapolation"]["enabled"]
-        and config["sparse"]["enabled"]
+        config.get("interpolation", {}).get("enabled", False)
+        and config.get("extrapolation", {}).get("enabled", False)
+        and config.get("sparse", {}).get("enabled", False)
     ):
         plot_all_generalization_errors(metrics, config, show_title=TITLE)
 
     # Compare batch size training errors
-    if config["batch_scaling"]["enabled"]:
+    if config.get("batch_scaling", {}).get("enabled", False):
         compare_batchsize(metrics, config)
 
     # Compare UQ metrics
-    if config["uncertainty"]["enabled"]:
+    if config.get("uncertainty", {}).get("enabled", False):
         compare_UQ(metrics, config)
         # rel_errors_and_uq(metrics, config)
 

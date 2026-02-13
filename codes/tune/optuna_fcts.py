@@ -244,6 +244,7 @@ def training_run(
 
     download_data(config["dataset"]["name"], verbose=False)
 
+    dataset_cfg = config["dataset"]
     (
         (train_data, test_data, _),
         (train_params, test_params, _),
@@ -252,20 +253,20 @@ def training_run(
         data_info,
         _,
     ) = check_and_load_data(
-        config["dataset"]["name"],
+        dataset_cfg["name"],
         verbose=False,
-        log=config["dataset"]["log10_transform"],
-        log_params=config.get("log10_transform_params", False),
-        normalisation_mode=config["dataset"]["normalise"],
-        tolerance=config["dataset"]["tolerance"],
-        per_species=config["dataset"].get("normalise_per_species", False),
+        log=dataset_cfg.get("log10_transform", True),
+        log_params=dataset_cfg.get("log10_transform_params", True),
+        normalisation_mode=dataset_cfg.get("normalise", "minmax"),
+        tolerance=dataset_cfg.get("tolerance", None),
+        per_species=dataset_cfg.get("normalise_per_species", False),
     )
 
-    subset_factor = config["dataset"].get("subset_factor", 1)
+    subset_factor = dataset_cfg.get("subset_factor", 1)
     train_data = train_data[::subset_factor]
     train_params = train_params[::subset_factor] if train_params is not None else None
 
-    set_random_seeds(config["seed"], device=device)
+    set_random_seeds(config.get("seed", 42), device=device)
     surr_name = config["surrogate"]["name"]
 
     # Load base (best) config from disk as you already do
@@ -316,12 +317,13 @@ def training_run(
         epochs=config["epochs"],
         position=slot_id + 2,
         description=description,
-        multi_objective=config["multi_objective"],
+        multi_objective=config.get("multi_objective", False),
     )
 
     preds, targets = model.predict(test_loader, leave_log=True)
     p99_dex = torch.quantile(
-        (preds - targets).abs().flatten(), float(config["target_percentile"])
+        (preds - targets).abs().flatten(),
+        float(config.get("target_percentile", 0.99)),
     ).item()
     p99_dex = min(p99_dex, config.get("loss_cap", 20))
 
@@ -333,7 +335,7 @@ def training_run(
     model_name = f"{surr_name.lower()}_{trial.number}"
     model.save(model_name=model_name, base_dir="", training_id=savepath)
 
-    if config["multi_objective"]:
+    if config.get("multi_objective", False):
         with _inference_time_lock:
             inference_times = measure_inference_time(model, test_loader)
         return p99_dex, np.mean(inference_times)
