@@ -73,6 +73,14 @@ In short: open or pick an issue, make your changes in a branch, and submit a pul
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/robin-janssen"><img src="https://avatars.githubusercontent.com/u/82322346?v=4?s=100" width="100px;" alt="Robin Janssen"/><br /><sub><b>Robin Janssen</b></sub></a><br /><a href="#code-robin-janssen" title="Code">💻</a> <a href="#content-ufuk-cakir" title="Content">🖋</a> <a href="#data-ufuk-cakir" title="Data">🔣</a> <a href="#doc-ufuk-cakir" title="Documentation">📖</a> <a href="#design-ufuk-cakir" title="Design">🎨</a> <a href="#example-ufuk-cakir" title="Examples">💡</a> <a href="#ideas-ufuk-cakir" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-ufuk-cakir" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-ufuk-cakir" title="Maintenance">🚧</a> <a href="#plugin-ufuk-cakir" title="Plugin/utility libraries">🔌</a> <a href="#projectManagement-ufuk-cakir" title="Project Management">📆</a> <a href="#question-ufuk-cakir" title="Answering Questions">💬</a> <a href="#research-ufuk-cakir" title="Research">🔬</a> <a href="#review-ufuk-cakir" title="Reviewed Pull Requests">👀</a> <a href="#tool-ufuk-cakir" title="Tools">🔧</a> <a href="#test-ufuk-cakir" title="Tests">⚠️</a> <a href="#talk-ufuk-cakir" title="Talks">📢</a> <a href="#userTesting-ufuk-cakir" title="User Testing">📓</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://tobibu.github.io"><img src="https://avatars.githubusercontent.com/u/7574273?v=4?s=100" width="100px;" alt="Tobias Buck"/><br /><sub><b>Tobias Buck</b></sub></a><br /><a href="#ideas-TobiBu" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-TobiBu" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-TobiBu" title="Project Management">📆</a> <a href="#research-TobiBu" title="Research">🔬</a> <a href="#review-TobiBu" title="Reviewed Pull Requests">👀</a> <a href="#test-TobiBu" title="Tests">⚠️</a> <a href="#talk-TobiBu" title="Talks">📢</a> <a href="#mentoring-TobiBu" title="Mentoring">🧑‍🏫</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
