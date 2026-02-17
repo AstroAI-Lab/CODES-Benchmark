@@ -462,7 +462,7 @@ document.write(`
 <figure class="align-center" id="id2">
 <img alt="Interpolation modality example" src="../../_images/Interpolation.png" />
 <figcaption>
-<p><span class="caption-text">Interpolation MAE over time for several interval widths. Wider gaps create bigger spikes but also highlight which surrogates remain stable.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-text">Interpolation MAE over time for several interval widths. When the distance between time steps increases, one can often observe error spikes between them.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -482,7 +482,7 @@ document.write(`
 <figure class="align-center" id="id4">
 <img alt="Sparse modality example" src="../../_images/Sparse.png" />
 <figcaption>
-<p><span class="caption-text">Down-sampling trajectories shows how MAE changes with fewer observations; FCNN tends to degrade earlier than the latent models.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-text">Reducing the numer of samples (sets of trajectories) shows how MAE changes with fewer observations, revealing how efficiently the model extracts information from samples, and equivalently informing whether more training data could help improve this surrogate’s performance.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>

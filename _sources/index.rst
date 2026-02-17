@@ -12,7 +12,7 @@ CODES Benchmark
 * **Extend the Stack** — :doc:`guides/extending-benchmark` shows how to add datasets or surrogates without rewriting orchestration glue.
 * **API Reference** — :doc:`api-reference` explains how the generated package docs are organized and links to each module.
 
-Looking for a bird’s-eye view first? Start with the **User Guide**. Already configuring experiments or integrating your own model? Skip ahead to the **API Reference**. Either way, the sidebar mirrors the sections below so you are one click away from the next step.
+Looking for a bird’s-eye view first? Start with the **User Guide**. Already configuring experiments or integrating your own model? Skip ahead to the **API Reference**. The sidebar mirrors the sections below so you are one click away from the next step.
 
 .. toctree::
    :maxdepth: 2
