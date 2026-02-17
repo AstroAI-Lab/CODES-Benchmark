@@ -48,6 +48,34 @@
         "talk",
         "mentoring"
       ]
+    },
+    {
+      "login": "lorenzobranca",
+      "name": "Lorenzo Branca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57775402?v=4",
+      "profile": "https://github.com/lorenzobranca",
+      "contributions": [
+        "data",
+        "ideas",
+        "research",
+        "test",
+        "talk"
+      ]
+    },
+    {
+        "login": "Immi000",
+        "name": "Immanuel Sulzer",
+        "avatar_url": "https://avatars.githubusercontent.com/u/100942429?v=4",
+        "profile": "https://github.com/Immi000",
+        "contributions": [
+          "code",
+          "content",
+          "data",
+          "design",
+          "doc",
+          "infra",
+          "userTesting"
+        ]
     }
   ]
 }

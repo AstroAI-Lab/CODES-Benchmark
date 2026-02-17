@@ -37,7 +37,7 @@ Interpolation studies remove every _n_-th timestep, forcing the surrogate to rec
 align: center
 alt: Interpolation modality example
 ---
-Interpolation MAE over time for several interval widths. Wider gaps create bigger spikes but also highlight which surrogates remain stable.
+Interpolation MAE over time for several interval widths. When the distance between time steps increases, one can often observe error spikes between them. 
 ```
 
 ## Extrapolation
@@ -61,7 +61,7 @@ Sparse training reduces the number of observations before fitting, emulating lim
 align: center
 alt: Sparse modality example
 ---
-Down-sampling trajectories shows how MAE changes with fewer observations; FCNN tends to degrade earlier than the latent models.
+Reducing the numer of samples (sets of trajectories) shows how MAE changes with fewer observations, revealing how efficiently the model extracts information from samples, and equivalently informing whether more training data could help improve this surrogate's performance.
 ```
 
 ## Batch scaling
@@ -69,3 +69,4 @@ Down-sampling trajectories shows how MAE changes with fewer observations; FCNN t
 Batch scaling sweeps different batch sizes and records how accuracy/timing behave. This is useful to identify sweet spots for throughput without impacting convergence too heavily. Combine the results with the `timing` evaluation to compare throughput across surrogates.
 
 See the :doc:`configuration reference </reference/configuration>` for the exact YAML schema and defaults.
+
