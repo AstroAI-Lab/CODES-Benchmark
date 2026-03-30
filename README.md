@@ -21,7 +21,7 @@ Benchmark coupled ODE surrogate models on curated datasets with reproducible tra
 **uv (recommended)**
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 uv sync                       # creates .venv from pyproject/uv.lock
 source .venv/bin/activate
@@ -32,7 +32,7 @@ uv run python run_eval.py --config configs/train_eval/config_minimal.yaml
 **pip alternative**
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
@@ -45,9 +45,8 @@ Outputs land in `trained/<training_id>`, `results/<training_id>`, and `plots/<tr
 
 ## Documentation
 
-- [Main docs & tutorials](https://robin-janssen.github.io/CODES-Benchmark/)
-- [API reference (Sphinx)](https://robin-janssen.github.io/CODES-Benchmark/modules.html)
-- [Paper on arXiv](https://arxiv.org/abs/2410.20886)
+- [Main docs & tutorials](https://astroai-lab.de/CODES-Benchmark/)
+- [API reference (Sphinx)](https://astroai-lab.de/CODES-Benchmark/api-reference.html)
 
 The GitHub Pages site now hosts the narrative guides, configuration reference, and interactive notebooks alongside the generated API docs.
 
@@ -60,7 +59,38 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 | `codes/`                                          | Python package with surrogates, training, tuning, and benchmarking utilities     |
 | `run_training.py`, `run_eval.py`, `run_tuning.py` | CLI entry points for the main workflows                                          |
 | `docs/`                                           | Sphinx project powering the GitHub Pages site (guides, tutorials, API reference) |
-| `scripts/`                                        | Convenience tooling (dataset downloads, analysis utilities)                      |
+| `test/`                                           | Unit and integration tests                                                        |
+
+## Citation & Publications using CODES
+
+If you use `CODES` in your research, please cite the original paper, which was accepted to the ML4PS@NeurIPS24:
+
+```bibtex
+@misc{janssen2024codes,
+  title        = {CODES: Benchmarking Coupled ODE Surrogates},
+  author       = {Janssen, Robin and Sulzer, Immanuel and Buck, Tobias},
+  year         = {2024},
+  eprint       = {2410.20886},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  url          = {https://arxiv.org/abs/2410.20886}
+}
+```
+
+### Related works using CODES
+
+Robin Janssen, Immanuel Sulzer, Tobias Buck  
+**CODES: Benchmarking Coupled ODE Surrogates**  
+*NeurIPS ML4PS Workshop, 2024*  
+Initial publication of the CODES framework.  
+[arXiv](https://arxiv.org/abs/2410.20886) | [bib](https://arxiv.org/bibtex/2410.20886)
+
+
+Robin Janssen, Lorenzo Branca, Tobias Buck  
+**Systematic selection of surrogate models for nonequilibrium chemistry**  
+*Astronomy & Astrophysics, 2026*  
+Extensive application of CODES to four challenging astrochemical datasets, demonstrating practical model selection strategies for stiff chemical ODE systems.  
+[arXiv](https://arxiv.org/abs/2603.08567) | [bib](https://arxiv.org/bibtex/2603.08567)  
 
 ## Contributing
 
