@@ -110,7 +110,7 @@ jobs:
           pytest --cov-report=term-missing:skip-covered --cov=codes test/ --cov-report=xml:coverage.xml
 
       - name: Upload results to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml # Path to the coverage XML file, adjust if necessary
