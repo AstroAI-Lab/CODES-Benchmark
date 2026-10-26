@@ -103,6 +103,18 @@ class TestRunEvalMain:
         assert metrics_dict["S1"] is dummy1 and metrics_dict["S2"] is dummy2
         assert passed_cfg is cfg
 
+    @pytest.mark.parametrize(
+        "device, expected", [("cuda:1", ["cuda:1"]), ("None", ["cpu"])]
+    )
+    def test_device_argument_overrides_config(self, patches, device, expected):
+        cfg = {"dataset": {"name": "ds"}, "surrogates": [], "devices": ["cpu"]}
+        patches["read"].return_value = cfg
+
+        run_eval.main(SimpleNamespace(config="cfg.yaml", device=device))
+
+        checked_cfg = patches["chk_bench"].call_args[0][0]
+        assert checked_cfg["devices"] == expected
+
     def test_skip_unknown_surrogate(self, patches, capsys):
         cfg = {
             "dataset": {"name": "ds"},

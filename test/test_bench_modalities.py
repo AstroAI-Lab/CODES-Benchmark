@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from codes.benchmark.bench_fcts import (
+    _mode_dummy_timesteps,
     evaluate_batchsize,
     evaluate_extrapolation,
     evaluate_interpolation,
@@ -17,12 +18,20 @@ from codes.benchmark.bench_fcts import (
 class DummyModel:
     def __init__(self, device, n_quantities, n_timesteps, n_parameters, config):
         self._loads = []
+        self._loaders = []
+        self._times = []
         self.n_timesteps = n_timesteps
 
     def load(self, training_id, surr_name, model_identifier):
         self._loads.append(model_identifier)
 
+    def prepare_data(self, timesteps, dummy_timesteps, **kwargs):
+        assert not dummy_timesteps
+        self._times.append(timesteps)
+        return f"mode loader {len(self._times)}", None, None
+
     def predict(self, data_loader, leave_log=None, leave_norm=None):
+        self._loaders.append(data_loader)
         # targets always zero.  Shape (batch=2, timesteps=4, quantities=1).
         preds = torch.rand(2, 4, 1)
         targets = torch.rand(2, 4, 1)
@@ -62,8 +71,8 @@ def patch_plots():
 @pytest.mark.parametrize(
     "raw_vals, cfg_key, func, main_bs, expected_nums",
     [
-        ([2, 3, 5], "interpolation", evaluate_interpolation, None, [1, 2, 3, 5]),
-        ([1, 2, 4], "extrapolation", evaluate_extrapolation, None, [1, 2, 4]),
+        ([2, 3], "interpolation", evaluate_interpolation, None, [1, 2, 3]),
+        ([2, 3, 4], "extrapolation", evaluate_extrapolation, None, [2, 3, 4]),
         ([2, 4, 8], "sparse", evaluate_sparse, None, [1, 2, 4, 8]),
         ([0.5, 2], "batch_scaling", evaluate_batchsize, 8, [4, 8, 16]),
         (3, "uncertainty", evaluate_UQ, None, [0, 1, 2]),
@@ -83,8 +92,7 @@ def test_modality_variations(raw_vals, cfg_key, func, main_bs, expected_nums):
             "batch_scaling": "sizes",
         }[cfg_key]
         cfg[cfg_key][subkey] = raw_vals
-    if cfg_key == "batch_scaling":
-        cfg["batch_size"] = [main_bs]
+    cfg["batch_size"] = [main_bs or 8]
 
     timesteps = np.arange(4)
     # minimal iterable loader; evaluate_batchsize will call next(iter(loader))
@@ -94,10 +102,9 @@ def test_modality_variations(raw_vals, cfg_key, func, main_bs, expected_nums):
     model = DummyModel(None, 1, len(timesteps), 0, {})
 
     # invoke
-    if func is evaluate_interpolation:
-        metrics = func(model, surr, loader, timesteps, cfg, labels)
-    elif func is evaluate_extrapolation:
-        metrics = func(model, surr, loader, timesteps, cfg, labels)
+    if func in (evaluate_interpolation, evaluate_extrapolation):
+        val_data = np.zeros((2, len(timesteps), 1))
+        metrics = func(model, surr, loader, timesteps, cfg, labels, val_data=val_data)
     elif func is evaluate_sparse:
         metrics = func(model, surr, loader, timesteps, n_train_samples=10, conf=cfg)
     elif func is evaluate_batchsize:
@@ -140,3 +147,49 @@ def test_modality_variations(raw_vals, cfg_key, func, main_bs, expected_nums):
             assert f"{prefix} {num}" in metrics
     else:
         assert "average_uncertainty_log" in metrics
+
+
+@pytest.mark.parametrize(
+    "mode, metric, expected",
+    [
+        # Trained on steps 0, 2, 4, 6 of 8: step 6 is the last one, at time 1.
+        ("interpolation", 2, np.arange(8) / 6),
+        # 7 is divisible by 7, so the grid matches np.linspace(0, 1, 8).
+        ("interpolation", 7, np.linspace(0, 1, 8)),
+        # Trained on steps 0..3: later steps map past 1.
+        ("extrapolation", 4, np.arange(8) / 3),
+    ],
+)
+def test_mode_dummy_timesteps_match_training(mode, metric, expected):
+    np.testing.assert_allclose(_mode_dummy_timesteps(8, mode, metric), expected)
+
+
+def test_mode_dummy_timesteps_reject_single_timestep():
+    with pytest.raises(ValueError, match="single timestep"):
+        _mode_dummy_timesteps(8, "extrapolation", 1)
+
+
+@pytest.mark.parametrize(
+    "func, cfg_key, subkey, values",
+    [
+        (evaluate_interpolation, "interpolation", "intervals", [2]),
+        (evaluate_extrapolation, "extrapolation", "cutoffs", [3]),
+    ],
+)
+def test_mode_models_get_training_consistent_loaders(func, cfg_key, subkey, values):
+    """The main model uses the given loader; mode models get their own time input."""
+    cfg = {
+        "training_id": "TID",
+        "surrogates": ["S"],
+        "batch_size": 8,
+        cfg_key: {"enabled": True, subkey: values},
+    }
+    timesteps = np.arange(4)
+    model = DummyModel(None, 1, len(timesteps), 0, {})
+
+    func(model, "S", "main loader", timesteps, cfg, val_data=np.zeros((2, 4, 1)))
+
+    assert sorted(model._loaders) == ["main loader", "mode loader 1"]
+    np.testing.assert_allclose(
+        model._times[0], _mode_dummy_timesteps(4, cfg_key, values[0])
+    )

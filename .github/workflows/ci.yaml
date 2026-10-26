@@ -4,166 +4,96 @@ on:
   push:
     branches:
       - main
-      - develop
   pull_request:
-    branches:
-      - main
-      - develop
-    types: 
-      - opened
-      - synchronize
-      - reopened
 
 permissions:
-  contents: write
-  checks: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Check that uv.lock matches pyproject.toml
+        run: uv lock --check
+
+      - name: Check formatting
+        run: |
+          uv sync --locked --only-group dev
+          uv run --no-sync black --check .
+          uv run --no-sync isort --check-only .
+
   test:
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history to support dependency checks
-          ref: ${{ github.head_ref || github.ref }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Setup Python environment with uv
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip install --group dev
-
-      - name: Check for dependency changes
-        id: deps
-        run: |
-          # Determine if the event is a pull request
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "PR detected. Comparing with main branch."
-            # Fetch the main branch
-            git fetch origin main
-            # Compare the PR branch with main
-            CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
-          else
-            echo "Push detected. Comparing with previous commit."
-            # For push events, compare with the previous commit
-            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-          fi
-
-          echo "Changed files: $CHANGED_FILES"
-
-          # Check if pyproject.toml has changed
-          if echo "$CHANGED_FILES" | grep -qE '(^|/)pyproject\.toml$'; then
-            echo "dependencies-changed=true" >> $GITHUB_ENV
-          else
-            echo "dependencies-changed=false" >> $GITHUB_ENV
-          fi
-
-      - name: Generate requirements.txt
-        if: env.dependencies-changed == 'true'
-        run: |
-          source .venv/bin/activate
-          uv pip freeze > requirements.txt
-
-      - name: Commit and push updated requirements.txt
-        if: |
-          env.dependencies-changed == 'true' &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add requirements.txt
-          git diff --cached --exit-code || git commit -m "Update requirements.txt [skip ci]"
-          git push || echo "Nothing to push"
-
-      - name: Run Black (auto-reformat)
-        run: |
-          source .venv/bin/activate
-          black .
-
-      - name: Run isort (auto-reformat)
-        run: |
-          source .venv/bin/activate
-          isort .
+      - name: Install CODES and its locked dependencies
+        run: uv sync --locked
 
       - name: Run pytest and generate coverage report
-        run: |
-          source .venv/bin/activate
-          pytest --cov-report=term-missing:skip-covered --cov=codes test/ --cov-report=xml:coverage.xml
+        run: uv run --no-sync pytest --cov=codes --cov-report=term-missing:skip-covered --cov-report=xml:coverage.xml test/
 
       - name: Upload results to Codecov
+        if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml # Path to the coverage XML file, adjust if necessary
-          fail_ci_if_error: true # Optional, ensures the CI fails if Codecov upload fails
+          files: ./coverage.xml
+          # Pull requests from forks have no access to the token; don't fail them.
+          fail_ci_if_error: false
 
   docs:
     name: Docs
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # needed to push to gh-pages
-
-    # Only build+deploy docs when main is updated (i.e., after PR merge)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    strategy:
-      matrix:
-        python-version: ["3.10"]
+      contents: write # needed to push to gh-pages
 
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
 
-      - name: Setup Python environment with uv
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip install --group dev
+      - name: Install CODES and its locked dependencies
+        run: uv sync --locked
 
       - name: Generate API Documentation with Sphinx
         run: |
-          source .venv/bin/activate
           mkdir -p docs/source/api
-          sphinx-apidoc -o docs/source/api codes
+          uv run --no-sync sphinx-apidoc -o docs/source/api codes
 
       - name: Build HTML with Sphinx
-        run: |
-          source .venv/bin/activate
-          sphinx-build -b html docs/source docs/_build/html
+        run: uv run --no-sync sphinx-build -b html docs/source docs/_build/html
 
+      # Pull requests only build the docs; pushes to main also deploy them.
       - name: Deploy docs to gh-pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -20,10 +20,12 @@ class AbstractSurrogateBaseConfig:
             - "cosine": Use cosine annealing scheduler.
             - "poly": Use polynomial decay scheduler.
         poly_power (float): Power for polynomial decay scheduler (used only if scheduler == "poly").
-        eta_min (float): Multiplier for minimum learning rate for cosine annealing scheduler (used only if scheduler == "cosine").
+        eta_min (float): Minimum learning rate of the cosine annealing scheduler, as a
+            fraction of learning_rate (used only if scheduler == "cosine").
         activation (nn.Module | None): Activation module used in the model.
         loss_function (nn.Module | None): Loss function used for training.
-        beta (float): Beta parameter forwarded to SmoothL1Loss.
+        beta (float): Beta parameter forwarded to SmoothL1Loss (used only if
+            loss_function is nn.SmoothL1Loss). Defaults to 0.0.
         gradient_clip (float): Maximum gradient norm. Set to 0 to disable clipping.
     """
 
@@ -33,7 +35,7 @@ class AbstractSurrogateBaseConfig:
     momentum: float = 0.0  # Used only if optimizer == "sgd"
     scheduler: str = "cosine"  # Options: "schedulefree", "cosine", "poly"
     poly_power: float = 0.9  # Used only if scheduler == "poly"
-    eta_min: float = 1e-1  # Used only if scheduler == "cosine"
+    eta_min: float = 0.1  # Fraction of learning_rate; only if scheduler == "cosine"
     activation: nn.Module | None = None
     loss_function: nn.Module | None = None  # Options: nn.MSELoss(), nn.SmoothL1Loss()
     beta: float = 0.0  # Used only if loss_function == nn.SmoothL1Loss()

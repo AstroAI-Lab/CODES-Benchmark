@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 import torch
+import yaml
 
 from codes.benchmark import bench_utils as bu
 
@@ -185,3 +186,23 @@ def test_measure_inference_time():
     assert isinstance(times, list) and len(times) == 4
     assert all(isinstance(t, float) for t in times)
     assert all(t >= 0.0 for t in times)
+
+
+@pytest.mark.parametrize(
+    "train_bs, eval_bs", [(8, 8), ([8, 16], [8, 16]), (8, [8, 8]), ([8, 8], 8)]
+)
+def test_check_benchmark_accepts_scalar_and_list_batch_sizes(train_bs, eval_bs):
+    """A batch size may be one value for all surrogates or one per surrogate."""
+    trained = Path("trained") / "tid"
+    trained.mkdir(parents=True)
+    surrogates = ["A", "B"]
+    with open(trained / "config.yaml", "w", encoding="utf-8") as f:
+        yaml.safe_dump({"surrogates": surrogates, "batch_size": train_bs}, f)
+    conf = {
+        "training_id": "tid",
+        "surrogates": surrogates,
+        "batch_size": eval_bs,
+        "devices": ["cpu"],
+    }
+
+    bu.check_benchmark(conf)

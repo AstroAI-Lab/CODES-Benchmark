@@ -21,24 +21,33 @@ Use either `uv` (recommended) or a standard `venv` + `pip` setup.
 ### Option A: uv (recommended)
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
-uv sync
+uv sync  # installs CODES with the locked runtime and development dependencies
 source .venv/bin/activate
-uv pip install --group dev
 ```
 
 ### Option B: venv + pip
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-pip install -r requirements.txt
-pip install black isort pytest sphinx
+pip install -r requirements.txt  # the same pinned versions as uv.lock
 ```
+
+### Changing dependencies
+
+Edit `pyproject.toml`, then update the lockfile and the pinned requirements:
+
+```bash
+uv lock
+uv export --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
+```
+
+CI fails if `uv.lock` is out of date with `pyproject.toml`.
 
 ## Code style and formatting
 
@@ -47,7 +56,7 @@ This repository uses:
 - [Black](https://black.readthedocs.io/en/stable/) for formatting
 - [isort](https://pycqa.github.io/isort/) for import sorting
 
-The CI pipeline auto-applies both tools on contributions. Running them locally is still recommended so you get fast feedback before opening or updating a pull request.
+CI checks both on every pull request and fails if a file needs reformatting, so run them before pushing.
 
 Run both locally with:
 
@@ -73,6 +82,12 @@ sphinx-build -b html docs/source docs/_build/html
 ```
 
 If your change affects user-facing behavior, update the relevant docs in `docs/source/`.
+
+The end-to-end test (`test/test_end_to_end.py`) trains every surrogate on a tiny synthetic dataset, evaluates them, and compares the results with the golden values in `test/data/golden_metrics.yaml`. If it fails, your change alters benchmark results. If that is intended, regenerate the values, explain the change in the pull request, and add it under "Changes affecting results" in `CHANGELOG.md`:
+
+```bash
+CODES_UPDATE_GOLDEN=1 pytest test/test_end_to_end.py
+```
 
 ## Standard contribution workflow
 

@@ -3,9 +3,11 @@ import json
 import os
 import random
 import shutil
+import subprocess
 import sys
 import time
 from fractions import Fraction
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -23,10 +25,51 @@ def read_yaml_config(config_path):
     return config
 
 
+def get_version_info() -> dict:
+    """
+    The CODES version and, in a git checkout, the commit and whether the checkout has
+    uncommitted changes. Stored with trained models and results, so that they can be
+    traced back to the code that produced them.
+
+    Returns:
+        dict: "codes_version", "git_commit" and "git_dirty" (None outside a checkout).
+    """
+    from codes import __version__
+
+    info = {"codes_version": __version__, "git_commit": None, "git_dirty": None}
+    repo = Path(__file__).resolve().parents[2]
+    if not (repo / ".git").exists():
+        return info
+    try:
+        info["git_commit"] = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        info["git_dirty"] = bool(status.strip())
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    return info
+
+
 def time_execution(func):
     """
     Decorator to time the execution of a function and store the duration
     as an attribute of the function.
+
+    For methods, the duration is also stored on the instance as
+    `<method name>_duration` (e.g. `model.fit_duration`). The attribute on the
+    function is shared by all instances, so it is unreliable when several
+    instances run concurrently.
 
     Args:
         func (callable): The function to be timed.
@@ -37,7 +80,10 @@ def time_execution(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        wrapper.duration = end_time - start_time
+        duration = end_time - start_time
+        wrapper.duration = duration
+        if args and hasattr(args[0], "__dict__"):
+            setattr(args[0], f"{func.__name__}_duration", duration)
         # tqdm.write(f"{func.__name__} executed in {wrapper.duration:.2f} seconds.")
         return result
 
@@ -203,6 +249,23 @@ def get_progress_bar(tasks: list) -> tqdm:
     return overall_progress_bar
 
 
+def make_shuffle_generator() -> torch.Generator:
+    """
+    Create a random number generator for shuffling a dataset, seeded from the global
+    torch RNG.
+
+    Each loader owns its generator, so its shuffling order depends only on the seed set
+    before the loader was created, not on other threads drawing from the global RNG
+    while models are trained in parallel.
+
+    Returns:
+        torch.Generator: The seeded generator.
+    """
+    generator = torch.Generator()
+    generator.manual_seed(int(torch.randint(0, 2**62, (1,)).item()))
+    return generator
+
+
 def worker_init_fn(worker_id):
     """
     Initialize the random seed for each worker in PyTorch DataLoader.
@@ -217,14 +280,17 @@ def worker_init_fn(worker_id):
 
 def save_task_list(tasks: list, filepath: str) -> None:
     """
-    Save a list of tasks to a JSON file.
+    Save a list of tasks to a JSON file. The file is replaced atomically, so an
+    interrupted run never leaves a truncated task list behind.
 
     Args:
         tasks (list): The list of tasks to save.
         filepath (str): The path to the JSON file.
     """
-    with open(filepath, "w", encoding="utf-8") as f:
+    tmp_path = f"{filepath}.tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(tasks, f)
+    os.replace(tmp_path, filepath)
 
 
 def load_task_list(filepath: str | None) -> list:

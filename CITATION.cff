@@ -1,0 +1,66 @@
+cff-version: 1.2.0
+message: >-
+  If you use CODES in your research, please cite the paper below. To refer to a
+  specific version of the software, cite it with the version number.
+title: "CODES: Benchmarking Coupled ODE Surrogates"
+type: software
+authors:
+  - family-names: Janssen
+    given-names: Robin
+    orcid: "https://orcid.org/0009-0006-4356-3059"
+  - family-names: Sulzer
+    given-names: Immanuel
+  - family-names: Buck
+    given-names: Tobias
+    orcid: "https://orcid.org/0000-0003-2027-399X"
+  - family-names: Branca
+    given-names: Lorenzo
+    orcid: "https://orcid.org/0000-0002-6064-1964"
+version: 0.2.0
+license: GPL-3.0
+repository-code: "https://github.com/AstroAI-Lab/CODES-Benchmark"
+url: "https://astroai-lab.de/CODES-Benchmark/"
+keywords:
+  - surrogate models
+  - ordinary differential equations
+  - benchmark
+  - astrochemistry
+preferred-citation:
+  type: conference-paper
+  title: "CODES: Benchmarking Coupled ODE Surrogates"
+  authors:
+    - family-names: Janssen
+      given-names: Robin
+      orcid: "https://orcid.org/0009-0006-4356-3059"
+    - family-names: Sulzer
+      given-names: Immanuel
+    - family-names: Buck
+      given-names: Tobias
+      orcid: "https://orcid.org/0000-0003-2027-399X"
+  year: 2024
+  collection-title: "Machine Learning and the Physical Sciences Workshop at NeurIPS 2024"
+  identifiers:
+    - type: other
+      value: "arXiv:2410.20886"
+  url: "https://arxiv.org/abs/2410.20886"
+references:
+  - type: article
+    title: "Systematic selection of surrogate models for nonequilibrium chemistry"
+    authors:
+      - family-names: Janssen
+        given-names: Robin
+        orcid: "https://orcid.org/0009-0006-4356-3059"
+      - family-names: Branca
+        given-names: Lorenzo
+        orcid: "https://orcid.org/0000-0002-6064-1964"
+      - family-names: Buck
+        given-names: Tobias
+        orcid: "https://orcid.org/0000-0003-2027-399X"
+    year: 2026
+    journal: "Astronomy & Astrophysics"
+    volume: 708
+    start: A227
+    identifiers:
+      - type: other
+        value: "arXiv:2603.08567"
+    url: "https://arxiv.org/abs/2603.08567"

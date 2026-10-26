@@ -210,3 +210,18 @@ def test_batch_factor_to_float_valid(inp, exp):
 def test_batch_factor_to_float_invalid():
     with pytest.raises(ValueError):
         batch_factor_to_float("not_a_number")
+
+
+def test_get_version_info_identifies_the_code():
+    import re
+    from importlib.metadata import version
+
+    import codes
+    from codes.utils import get_version_info
+
+    info = get_version_info()
+
+    assert info["codes_version"] == codes.__version__ == version("codes")
+    if info["git_commit"] is not None:  # running from a git checkout
+        assert re.fullmatch(r"[0-9a-f]{40}", info["git_commit"])
+        assert isinstance(info["git_dirty"], bool)

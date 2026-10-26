@@ -21,6 +21,9 @@ def main(args):
     """
 
     config = read_yaml_config(args.config)
+    device = getattr(args, "device", None)
+    if device not in (None, "None"):
+        config["devices"] = [device]
     check_benchmark(config)
     download_data(config["dataset"]["name"], verbose=config.get("verbose", False))
     surrogates = config["surrogates"]
@@ -58,7 +61,8 @@ if __name__ == "__main__":
         "--device",
         default="None",
         type=str,
-        help="Device to run the benchmark on. Can be 'cpu', 'cuda', or 'None'.",
+        help="Device to run the benchmark on, e.g. 'cpu' or 'cuda:0'. Overrides "
+        "`devices` in the config; 'None' keeps the config's setting.",
     )
     args = parser.parse_args()
     main(args)

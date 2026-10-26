@@ -97,30 +97,32 @@ def check_and_load_data(
             test_data = np.where(test_data < tolerance, tolerance, test_data)
             val_data = np.where(val_data < tolerance, tolerance, val_data)
 
-        # Log-transform data and parameters if requested.
+        # Log-transform data and parameters if requested. np.log10 turns non-positive
+        # values into -inf or NaN without raising, so check for them explicitly.
         if log:
-            try:
-                train_data = np.log10(train_data)
-                test_data = np.log10(test_data)
-                val_data = np.log10(val_data)
-                if verbose:
-                    print("Data log-transformed.")
-            except ValueError:
-                print(
-                    "Data contains non-positive values and cannot be log-transformed."
+            if any(np.any(d <= 0) for d in (train_data, test_data, val_data)):
+                raise DatasetError(
+                    "Data contains non-positive values and cannot be log-transformed. "
+                    "Set dataset.tolerance to a positive value or disable "
+                    "dataset.log10_transform."
                 )
+            train_data = np.log10(train_data)
+            test_data = np.log10(test_data)
+            val_data = np.log10(val_data)
+            if verbose:
+                print("Data log-transformed.")
 
         if log_params and train_params is not None:
-            try:
-                train_params = np.log10(train_params)
-                test_params = np.log10(test_params)
-                val_params = np.log10(val_params)
-                if verbose:
-                    print("Parameters log-transformed.")
-            except ValueError:
-                print(
-                    "Params contain non-positive values and cannot be log-transformed."
+            if any(np.any(p <= 0) for p in (train_params, test_params, val_params)):
+                raise DatasetError(
+                    "Parameters contain non-positive values and cannot be "
+                    "log-transformed. Disable dataset.log10_transform_params."
                 )
+            train_params = np.log10(train_params)
+            test_params = np.log10(test_params)
+            val_params = np.log10(val_params)
+            if verbose:
+                print("Parameters log-transformed.")
 
         # Normalize data using the existing normalize_data function.
         if normalisation_mode not in ["disable", "minmax", "standardise"]:
@@ -143,15 +145,14 @@ def check_and_load_data(
             if verbose:
                 print("Data not normalized (normalisation disabled).")
         # Normalize parameters if they are present.
-        if train_params is not None:
-            if normalisation_mode != "disable":
-                params_info, train_params, test_params, val_params = normalize_data(
-                    train_params,
-                    test_params,
-                    val_params,
-                    mode=normalisation_mode,
-                    per_species=per_species,
-                )
+        if train_params is not None and normalisation_mode != "disable":
+            params_info, train_params, test_params, val_params = normalize_data(
+                train_params,
+                test_params,
+                val_params,
+                mode=normalisation_mode,
+                per_species=per_species,
+            )
             # Rename the normalization keys for parameters.
             if normalisation_mode == "minmax":
                 data_info["min_params"] = params_info["min"]

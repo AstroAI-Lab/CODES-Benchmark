@@ -21,6 +21,7 @@ from codes.utils import (
     check_and_load_data,
     elapsed_to_dummy,
     interp_states,
+    determine_batch_size,
 )
 
 from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; plot_uncertainty_confidence,
@@ -83,15 +84,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
 
     # Determine the batch size
     surr_idx = conf["surrogates"].index(surr_name)
-    if isinstance(conf["batch_size"], list):
-        if len(conf["batch_size"]) != len(conf["surrogates"]):
-            raise ValueError(
-                "The number of provided batch sizes must match the number of surrogate models."
-            )
-        else:
-            batch_size = conf["batch_size"][surr_idx]
-    else:
-        batch_size = conf["batch_size"]
+    batch_size = determine_batch_size(conf, surr_idx, "main", None)
 
     # Load full data and parameters
     dataset_conf = conf.get("dataset", {})
@@ -184,14 +177,28 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
     if conf.get("interpolation", {}).get("enabled", False):
         print("Running interpolation benchmark...")
         metrics["interpolation"] = evaluate_interpolation(
-            model, surr_name, val_loader, timesteps, conf, labels
+            model,
+            surr_name,
+            val_loader,
+            timesteps,
+            conf,
+            labels,
+            val_data=val_data,
+            val_params=val_params,
         )
 
     # Extrapolation benchmark
     if conf.get("extrapolation", {}).get("enabled", False):
         print("Running extrapolation benchmark...")
         metrics["extrapolation"] = evaluate_extrapolation(
-            model, surr_name, val_loader, timesteps, conf, labels
+            model,
+            surr_name,
+            val_loader,
+            timesteps,
+            conf,
+            labels,
+            val_data=val_data,
+            val_params=val_params,
         )
 
     # Sparse data benchmark
@@ -252,7 +259,8 @@ def evaluate_accuracy(
     train_time = model.train_duration
     num_quantities = model.n_quantities
     model_index = conf["surrogates"].index(surr_name)
-    n_epochs = conf["epochs"][model_index]
+    epochs = conf["epochs"]
+    n_epochs = epochs[model_index] if isinstance(epochs, list) else epochs
 
     # Obtain log-space predictions and targets
     preds, targets = model.predict(data_loader=test_loader, leave_log=True)
@@ -843,6 +851,75 @@ def evaluate_compute(
     return complexity_metrics
 
 
+def _mode_dummy_timesteps(n_timesteps: int, mode: str, metric: int) -> np.ndarray:
+    """
+    Dummy time input on the full time grid for a model trained in a benchmark mode.
+
+    Training feeds np.linspace(0, 1, n) over the n timesteps of its data subset, so the
+    last trained timestep maps to 1. Interpolation models train on every `metric`-th
+    timestep and extrapolation models on the first `metric` timesteps. Scaling the full
+    grid the same way keeps the time input consistent with training; timesteps beyond
+    the extrapolation cutoff map past 1.
+
+    Args:
+        n_timesteps (int): Number of timesteps of the full grid.
+        mode (str): "interpolation" or "extrapolation".
+        metric (int): The interpolation interval or the extrapolation cutoff.
+
+    Returns:
+        np.ndarray: The dummy time input for each timestep of the full grid.
+    """
+    if mode == "interpolation":
+        last_trained = (n_timesteps - 1) // metric * metric
+    elif mode == "extrapolation":
+        last_trained = min(metric, n_timesteps) - 1
+    else:
+        raise ValueError(f"No dummy timesteps for mode '{mode}'.")
+    if last_trained < 1:
+        raise ValueError(
+            f"A {mode} model with metric {metric} was trained on a single timestep."
+        )
+    return np.arange(n_timesteps) / last_trained
+
+
+def _mode_loader(
+    model,
+    surr_name: str,
+    conf: dict,
+    val_data: np.ndarray,
+    val_params: np.ndarray | None,
+    mode: str,
+    metric: int,
+) -> DataLoader:
+    """
+    Validation loader whose time input matches how the model of a mode was trained.
+
+    Args:
+        model: Surrogate model instance.
+        surr_name (str): Name of the surrogate.
+        conf (dict): Configuration dictionary.
+        val_data (np.ndarray): Validation data on the full time grid.
+        val_params (np.ndarray | None): Validation parameters, if any.
+        mode (str): "interpolation" or "extrapolation".
+        metric (int): The interpolation interval or the extrapolation cutoff.
+
+    Returns:
+        DataLoader: Unshuffled loader over the validation data.
+    """
+    surr_idx = conf["surrogates"].index(surr_name)
+    loader, _, _ = model.prepare_data(
+        dataset_train=val_data,
+        dataset_test=None,
+        dataset_val=None,
+        timesteps=_mode_dummy_timesteps(val_data.shape[1], mode, metric),
+        batch_size=determine_batch_size(conf, surr_idx, "main", None),
+        shuffle=False,
+        dataset_train_params=val_params,
+        dummy_timesteps=False,
+    )
+    return loader
+
+
 def evaluate_interpolation(
     model,
     surr_name: str,
@@ -850,6 +927,9 @@ def evaluate_interpolation(
     timesteps: np.ndarray,
     conf: dict,
     labels: list[str] | None = None,
+    *,
+    val_data: np.ndarray,
+    val_params: np.ndarray | None = None,
 ) -> dict[str, Any]:
     """
     Evaluate the interpolation performance of the surrogate model in log-space (Δdex).
@@ -860,10 +940,13 @@ def evaluate_interpolation(
     Args:
         model: Surrogate model instance.
         surr_name (str): Name of the surrogate.
-        test_loader (DataLoader): DataLoader with test data.
+        test_loader (DataLoader): DataLoader with test data, used for the main model.
         timesteps (np.ndarray): Timesteps array.
         conf (dict): Configuration dictionary.
         labels (list, optional): Labels for the predicted quantities.
+        val_data (np.ndarray): The data of test_loader. Models trained on every n-th
+            timestep need their own time input, so their loaders are built from it.
+        val_params (np.ndarray, optional): The parameters of test_loader, if any.
 
     Returns:
         dict: Interpolation metrics in log-space.
@@ -884,9 +967,22 @@ def evaluate_interpolation(
             else f"{surr_name.lower()}_interpolation_{interval}"
         )
         model.load(training_id, surr_name, model_identifier=model_id)
+        loader = (
+            test_loader
+            if interval == 1
+            else _mode_loader(
+                model,
+                surr_name,
+                conf,
+                val_data,
+                val_params,
+                "interpolation",
+                interval,
+            )
+        )
 
         # log-space predictions
-        preds_log, targets_log = model.predict(test_loader, leave_log=True)
+        preds_log, targets_log = model.predict(loader, leave_log=True)
         preds_log = preds_log.detach().cpu().numpy()
         targets_log = targets_log.detach().cpu().numpy()
 
@@ -950,6 +1046,9 @@ def evaluate_extrapolation(
     timesteps: np.ndarray,
     conf: dict,
     labels: list[str] | None = None,
+    *,
+    val_data: np.ndarray,
+    val_params: np.ndarray | None = None,
 ) -> dict[str, Any]:
     """
     Evaluate the extrapolation performance of the surrogate model in log-space (Δdex).
@@ -960,10 +1059,13 @@ def evaluate_extrapolation(
     Args:
         model: Surrogate model instance.
         surr_name (str): Name of the surrogate.
-        test_loader (DataLoader): DataLoader with test data.
+        test_loader (DataLoader): DataLoader with test data, used for the main model.
         timesteps (np.ndarray): Timesteps array.
         conf (dict): Configuration dictionary.
         labels (list, optional): Labels for the predicted quantities.
+        val_data (np.ndarray): The data of test_loader. Models trained on the first
+            timesteps need their own time input, so their loaders are built from it.
+        val_params (np.ndarray, optional): The parameters of test_loader, if any.
 
     Returns:
         dict: Extrapolation metrics in log-space.
@@ -985,8 +1087,21 @@ def evaluate_extrapolation(
             else f"{surr_name.lower()}_extrapolation_{cutoff}"
         )
         model.load(training_id, surr_name, model_identifier=model_id)
+        loader = (
+            test_loader
+            if cutoff == max_cut
+            else _mode_loader(
+                model,
+                surr_name,
+                conf,
+                val_data,
+                val_params,
+                "extrapolation",
+                cutoff,
+            )
+        )
 
-        preds_log, targets_log = model.predict(test_loader, leave_log=True)
+        preds_log, targets_log = model.predict(loader, leave_log=True)
         preds_log, targets_log = (
             preds_log.detach().cpu().numpy(),
             targets_log.detach().cpu().numpy(),
@@ -1154,7 +1269,7 @@ def evaluate_batchsize(
     batch_metrics = {}
 
     model_idx = conf["surrogates"].index(surr_name)
-    main_batch_size = conf["batch_size"][model_idx]
+    main_batch_size = determine_batch_size(conf, model_idx, "main", None)
 
     batch_sizes = [
         int(main_batch_size * batch_factor_to_float(bf)) for bf in batch_factors

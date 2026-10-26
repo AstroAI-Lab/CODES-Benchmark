@@ -13,7 +13,7 @@ import yaml
 from torch.utils.data import DataLoader
 
 from codes.surrogates import SurrogateModel, surrogate_classes
-from codes.utils import read_yaml_config
+from codes.utils import determine_batch_size, get_version_info, read_yaml_config
 
 
 def check_surrogate(surrogate: str, conf: dict) -> None:
@@ -87,23 +87,23 @@ def check_benchmark(conf: dict) -> None:
             "Benchmark configuration includes surrogates that were not in the training configuration."
         )
 
-    # Check Batch Size
-    if "batch_size" in conf:
-        training_batch_size = training_conf.get("batch_size", [])
-        benchmark_batch_size = conf.get("batch_size", [])
-
-        # Check if batch sizes correspond to the correct surrogates
+    # Check Batch Size (a single value or one per surrogate, in either config)
+    if "batch_size" in conf and "batch_size" in training_conf:
         for i, surrogate in enumerate(conf.get("surrogates", [])):
             if surrogate in training_conf["surrogates"]:
                 index = training_conf["surrogates"].index(surrogate)
-                if training_batch_size[index] != benchmark_batch_size[i]:
+                training_batch_size = determine_batch_size(
+                    training_conf, index, "main", None
+                )
+                benchmark_batch_size = determine_batch_size(conf, i, "main", None)
+                if training_batch_size != benchmark_batch_size:
                     print(
-                        f"Warning: Batch size for surrogate '{surrogate}' has changed from {training_batch_size[index]} to {benchmark_batch_size[i]}."
+                        f"Warning: Batch size for surrogate '{surrogate}' has changed from {training_batch_size} to {benchmark_batch_size}."
                     )
                     # Get user input to confirm the change
                     user_input = input("Do you want to continue? (y/n): ")
                     if user_input.lower() == "y":
-                        print(f"Continuing with batch size {benchmark_batch_size[i]}.")
+                        print(f"Continuing with batch size {benchmark_batch_size}.")
                     else:
                         print("Exiting...")
                         exit()
@@ -455,6 +455,7 @@ def write_metrics_to_yaml(surr_name: str, conf: dict, metrics: dict) -> None:
 
     # Convert metrics to standard types
     write_metrics = convert_to_standard_types(write_metrics)
+    write_metrics["version_info"] = get_version_info()
 
     # Make results directory
     os.makedirs(f"results/{conf['training_id']}", exist_ok=True)

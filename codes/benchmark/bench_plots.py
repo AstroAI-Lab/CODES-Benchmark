@@ -8,7 +8,7 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import FuncFormatter
 from scipy.ndimage import gaussian_filter1d
 
-from codes.utils import batch_factor_to_float
+from codes.utils import batch_factor_to_float, determine_batch_size
 
 from .bench_utils import format_time
 
@@ -968,7 +968,7 @@ def plot_surr_losses(
         batch_test_losses = []
         batch_sizes = []
         surr_index = conf["surrogates"].index(surr_name)
-        main_model_bs = conf["batch_size"][surr_index]
+        main_model_bs = determine_batch_size(conf, surr_index, "main", None)
         for batch_factor in batch_factors:
             batch_factor = batch_factor_to_float(batch_factor)
             batch_size = int(main_model_bs * batch_factor)
