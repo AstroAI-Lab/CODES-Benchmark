@@ -4,7 +4,7 @@ CODES Benchmark helps you compare surrogate models for coupled ODE systems by ru
 
 ## Prerequisites
 
-- Python 3.10 with `pip` (we recommend `uv` for faster installs, but plain pip works)
+- Python 3.11 or newer with `pip` (we recommend `uv` for faster installs, but plain pip works)
 - (Optional) CUDA-capable GPU if you want to reproduce the default configurations
 - Enough disk space to store downloaded datasets and the checkpoints created under `trained/` and `results/`
 
@@ -15,7 +15,7 @@ We recommend [`uv`](https://docs.astral.sh/uv/) because the repository already s
 **uv workflow (recommended)**
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 uv sync            # creates .venv using uv.lock
 uv run python -c "import codes; print('CODES ready!')"  # optional smoke test
@@ -26,7 +26,7 @@ After this, you can prefix any command with `uv run` (for example `uv run python
 **pip / virtualenv fallback**
 
 ```bash
-git clone https://github.com/robin-janssen/CODES-Benchmark.git
+git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 python -m venv .venv && source .venv/bin/activate
 pip install -e .

@@ -9,21 +9,21 @@ codes.utils.data\_utils module
 
 .. automodule:: codes.utils.data_utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 codes.utils.utils module
 ------------------------
 
 .. automodule:: codes.utils.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: codes.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

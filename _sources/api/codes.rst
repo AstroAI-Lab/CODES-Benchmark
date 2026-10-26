@@ -18,5 +18,5 @@ Module contents
 
 .. automodule:: codes
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
