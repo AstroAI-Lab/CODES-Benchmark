@@ -19,9 +19,9 @@ from torch.utils.data import DataLoader
 from codes.utils import (
     batch_factor_to_float,
     check_and_load_data,
+    determine_batch_size,
     elapsed_to_dummy,
     interp_states,
-    determine_batch_size,
 )
 
 from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; plot_uncertainty_confidence,
