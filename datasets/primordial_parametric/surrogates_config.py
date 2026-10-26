@@ -40,7 +40,9 @@ class LatentNeuralODEConfig:
     ode_tanh_reg: bool = True
     ode_width: int = 220
     # primordial_parametric_final_fine, trial 1
-    eta_min: float = 5.32e-04
+    # Tuned as an absolute learning rate of 5.32e-04; CODES >= 0.2.0 reads eta_min as a
+    # fraction of learning_rate.
+    eta_min: float = 5.32e-04 / 2.78e-06
     learning_rate: float = 2.78e-06
     momentum: float = 0.331
     regularization_factor: float = 6.36e-05
@@ -59,7 +61,7 @@ class FullyConnectedConfig:
     num_hidden_layers: int = 3
     # primordial_parametric_final_fine, trial 1
     poly_power: float = 0.163
-    beta: float = 39.5
+    # beta: float = 39.5  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 1.29e-04
     regularization_factor: float = 0.0333
 

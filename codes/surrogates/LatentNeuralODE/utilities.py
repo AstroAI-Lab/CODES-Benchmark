@@ -1,5 +1,7 @@
 import torch
 
+from codes.utils import make_shuffle_generator
+
 
 class ChemDataset(torch.utils.data.Dataset):
     """
@@ -40,9 +42,14 @@ class FlatSeqBatchIterable(torch.utils.data.IterableDataset):
         self.N = data_t.size(0)
         self.bs = batch_size
         self.shuffle = shuffle
+        self.generator = make_shuffle_generator() if shuffle else None
 
     def __iter__(self):
-        perm = torch.randperm(self.N) if self.shuffle else torch.arange(self.N)
+        perm = (
+            torch.randperm(self.N, generator=self.generator)
+            if self.shuffle
+            else torch.arange(self.N)
+        )
         for start in range(0, self.N, self.bs):
             idx = perm[start : start + self.bs]
             yield (

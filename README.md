@@ -61,6 +61,10 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 | `docs/`                                           | Sphinx project powering the GitHub Pages site (guides, tutorials, API reference) |
 | `test/`                                           | Unit and integration tests                                                        |
 
+## Versions
+
+CODES follows [semantic versioning](https://semver.org/). [CHANGELOG.md](CHANGELOG.md) lists the changes in each release, including every change that affects benchmark results. Saved models and metrics record the CODES version and commit that produced them.
+
 ## Citation & Publications using CODES
 
 If you use `CODES` in your research, please cite the original paper, which was accepted to the ML4PS@NeurIPS24:

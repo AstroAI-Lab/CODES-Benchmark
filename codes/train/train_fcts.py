@@ -1,6 +1,7 @@
 import os
 import threading
-from queue import Queue
+import traceback
+from queue import Empty, Queue
 from threading import Thread
 
 from tqdm import tqdm
@@ -192,8 +193,9 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
     uncertainty_conf = config.get("uncertainty", {})
     if uncertainty_conf.get("enabled", False):
         n_models = uncertainty_conf["ensemble_size"]
+        # Member k uses seed + k; the main model (seed) is member 0.
         for i in range(n_models - 1):
-            tasks.append((surr_name, "UQ", i + 1, id, seed + i, epochs))
+            tasks.append((surr_name, "UQ", i + 1, id, seed + i + 1, epochs))
 
     batch_scaling_conf = config.get("batch_scaling", {})
     if batch_scaling_conf.get("enabled", False):
@@ -228,34 +230,34 @@ def worker(
                                          (True if at least one task failed).
         threadlock (threading.Lock): A lock to prevent threading issues with PyTorch.
     """
-    while not task_queue.empty():
+    while True:
         try:
             task = task_queue.get_nowait()  # Remove the task from the in-memory queue
+        except Empty:
+            return
+
+        try:
             train_and_save_model(
                 *task, device=device, position=device_idx + 1, threadlock=threadlock
             )
 
-            # Mark that we have successfully processed this task
-            task_queue.task_done()
-            overall_progress_bar.update(1)
-            current_list = load_task_list(task_list_filepath)
-            task_as_list = list(task)
+            # Workers share the JSON task list, so serialise the read-modify-write.
+            with threadlock:
+                current_list = load_task_list(task_list_filepath)
+                try:
+                    current_list.remove(list(task))
+                except ValueError:
+                    pass
+                save_task_list(current_list, task_list_filepath)
 
-            try:
-                current_list.remove(task_as_list)
-            except ValueError:
-                pass
-
-            save_task_list(current_list, task_list_filepath)
-
-        except Exception as e:
-            tqdm.write(f"Exception for task {task[:3]}: {e}")
-            # Mark this task as "done" for the queue, so the loop can move on
-            task_queue.task_done()
-            overall_progress_bar.update(1)
-
+        except Exception:
+            tqdm.write(f"Exception for task {task[:3]}:\n{traceback.format_exc()}")
             # Flag that at least one task has failed
             errors_encountered[0] = True
+
+        finally:
+            task_queue.task_done()
+            overall_progress_bar.update(1)
 
 
 def parallel_training(tasks, device_list, task_list_filepath: str):
@@ -349,8 +351,8 @@ def sequential_training(tasks, device_list, task_list_filepath: str):
                 pass
             save_task_list(current_list, task_list_filepath)
 
-        except Exception as e:
-            tqdm.write(f"Exception for task {task[:3]}: {e}")
+        except Exception:
+            tqdm.write(f"Exception for task {task[:3]}:\n{traceback.format_exc()}")
             overall_progress_bar.update(1)
             errors_encountered = True
 

@@ -96,7 +96,19 @@ def test_create_task_list_with_interpolation(sample_config):
     interpol = [t for t in tasks if t[1] == "interpolation"]
     assert [t[2] for t in interpol] == [1, 2]
 
-    # — train_and_save_model —
+
+def test_uq_members_get_distinct_seeds(minimal_config):
+    minimal_config["uncertainty"] = {"enabled": True, "ensemble_size": 5}
+    tasks = create_task_list_for_surrogate(minimal_config, "A")
+    seeds = {t[2] or "main": t[4] for t in tasks}
+    # Member k uses seed + k, so no member repeats the main model's seed.
+    assert seeds == {"main": 0, 1: 1, 2: 2, 3: 3, 4: 4}
+
+
+# — train_and_save_model —
+
+
+class TestTrainAndSaveModel:
 
     @patch("codes.train.train_fcts.load_and_save_config")
     @patch("codes.train.train_fcts.make_description")
@@ -158,7 +170,7 @@ def test_create_task_list_with_interpolation(sample_config):
 
         # run it
         train_and_save_model(
-            surr_name="test_surrogate",
+            surr_name="A",
             mode="main",
             metric="",
             training_id="test_123",
@@ -223,7 +235,7 @@ def test_create_task_list_with_interpolation(sample_config):
 
         # call under test (we omit epochs here, it falls back)
         train_and_save_model(
-            surr_name="test_surrogate",
+            surr_name="A",
             mode="main",
             metric="",
             training_id="minimal_test",
@@ -326,6 +338,38 @@ def test_parallel_training(mock_train, mock_pbar, tmp_train_dir):
     assert elapsed == 5
     # file cleaned up on success
     assert not tfile.exists()
+
+
+def test_workers_drain_queue_without_races(tmp_train_dir):
+    """Several workers sharing a queue and task list must finish every task once."""
+    tasks = [("A", "UQ", i, "some_id", i, 1) for i in range(200)]
+    tfile = tmp_train_dir / "tasks.json"
+    save_task_list([list(t) for t in tasks], str(tfile))
+    queue = Queue()
+    for task in tasks:
+        queue.put(task)
+    progress = Mock()
+    errors = [False]
+    lock = threading.Lock()
+
+    with patch("codes.train.train_fcts.train_and_save_model") as mock_train:
+        threads = [
+            threading.Thread(
+                target=worker,
+                args=(queue, "cpu", i, progress, str(tfile), errors, lock),
+            )
+            for i in range(4)
+        ]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+    assert mock_train.call_count == len(tasks)
+    assert progress.update.call_count == len(tasks)
+    assert not errors[0]
+    assert load_task_list(str(tfile)) == []
+    queue.join()  # raises if task_done() was called the wrong number of times
 
 
 # — task-list utils sanity —

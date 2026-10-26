@@ -41,7 +41,7 @@ class LatentNeuralODEConfig:
     ode_width: int = 220
     # cloud_parametric_final_fine, trial 27
     momentum: float = 0.075
-    beta: float = 14.4
+    # beta: float = 14.4  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 0.00447
     regularization_factor: float = 3.61e-04
 
@@ -59,7 +59,7 @@ class FullyConnectedConfig:
     num_hidden_layers: int = 5
     # cloud_parametric_final_fine, trial 26
     poly_power: float = 8.16
-    beta: float = 2.66
+    # beta: float = 2.66  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 0.0122
     regularization_factor: float = 0.114
 
@@ -71,7 +71,9 @@ class LatentPolyConfig:
     # cloud_parametric_final_latentpoly, trial 13
     scheduler: str = "poly"
     optimizer: str = "AdamW"
-    loss_function: nn.Module = nn.SmoothL1Loss()
+    # Tuning chose nn.SmoothL1Loss(), but LatentPoly trained with nn.MSELoss() before
+    # CODES 0.2.0, so the published model used MSE.
+    loss_function: nn.Module = nn.MSELoss()
     activation: nn.Module = nn.ReLU()
     coder_layers: int = 1
     coder_width: int = 170
@@ -80,7 +82,7 @@ class LatentPolyConfig:
     latent_features: int = 10
     # cloud_parametric_final_fine
     poly_power: float = 2.46
-    beta: float = 0.694
+    # beta: float = 0.694  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 0.00822
     regularization_factor: float = 0.0567
 

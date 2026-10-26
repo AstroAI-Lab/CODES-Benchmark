@@ -323,3 +323,23 @@ def test_create_objective_simple(monkeypatch):
     assert not device_queue.empty()
     dev, slot = device_queue.get()
     assert dev == "cpu" and slot == 0
+
+
+def test_prepare_workspace_reuses_identical_config(tmp_path, monkeypatch):
+    """Re-running with an unchanged config must not ask whether to overwrite."""
+    from codes.tune.optuna_fcts import load_yaml_config
+    from codes.tune.tune_utils import prepare_workspace
+
+    monkeypatch.chdir(tmp_path)
+    cfg_path = tmp_path / "optuna_config.yaml"
+    cfg_path.write_text("tuning_id: run\nseed: 42\nstorage: None\n")
+
+    def no_prompt(_):
+        raise AssertionError("prepare_workspace asked about an unchanged config")
+
+    monkeypatch.setattr("builtins.input", no_prompt)
+    first = prepare_workspace(cfg_path, load_yaml_config(str(cfg_path)))
+    second = prepare_workspace(cfg_path, load_yaml_config(str(cfg_path)))
+
+    assert first["_overwrite_run"] is True
+    assert not second.get("_overwrite_run", False)

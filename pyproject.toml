@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "codes"
-version = "0.1.0"
+version = "0.2.0"
 description = "Benchmarking tool for coupled ODE surrogate models"
 authors = [
     { name = "Robin Janssen", email = "sy192@uni-heidelberg.de" },
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "h5py>=3.14.0",
     "matplotlib>=3.10.3",
@@ -52,12 +52,12 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["."]
 
-[tool.setuptools]
-packages = ["codes"]
+[tool.setuptools.packages.find]
+include = ["codes*"]
 
 [tool.black]
 line-length = 88
-target-version = ['py310']
+target-version = ['py311']
 include = '\.pyi?$'
 
 [tool.isort]

@@ -21,7 +21,7 @@ class MultiONetConfig:
     activation: nn.Module = nn.LeakyReLU()
 
     # primordial_final_fine, trial 21
-    beta: float = 0.732
+    # beta: float = 0.732  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 0.00269
     regularization_factor: float = 0.117
 
@@ -91,7 +91,7 @@ class FullyConnectedConfig:
     # regularization_factor: float = 3.3e-05
 
     # primordial_final_fine, trial 39
-    beta: float = 0.863
+    # beta: float = 0.863  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 1.78e-03
     poly_power: float = 3.59
     regularization_factor: float = 5.25e-05

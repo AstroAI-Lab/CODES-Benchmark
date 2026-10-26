@@ -277,9 +277,11 @@ class MultiONet(OperatorNetwork):
         Returns:
             None. The training loss, test loss, and MAE are stored in the model.
         """
-        self.n_train_samples = int(len(train_loader.dataset) / self.n_timesteps)
+        # Flat datasets hold one row per (sample, timestep); their length counts batches.
+        n_rows = getattr(train_loader.dataset, "N", None)
+        self.n_train_samples = None if n_rows is None else n_rows // self.n_timesteps
 
-        criterion = self.config.loss_function
+        criterion = self.config.loss
         optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
 
         loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
@@ -309,6 +311,8 @@ class MultiONet(OperatorNetwork):
 
         progress_bar.close()
         self.n_epochs = epoch + 1
+        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
+        optimizer.eval()
         self.get_checkpoint(test_loader, criterion)
 
     def setup_criterion(self) -> callable:
@@ -398,6 +402,8 @@ class MultiONet(OperatorNetwork):
             num_workers=num_workers,  # 0 is fine; workers add little here
             pin_memory=pin_memory,
             persistent_workers=False,
+            # Own generator, so iterating never draws from the shared global RNG.
+            generator=torch.Generator(),
         )
         return loader
 

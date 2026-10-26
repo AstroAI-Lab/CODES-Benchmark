@@ -159,6 +159,8 @@ class LatentNeuralODE(AbstractSurrogateModel):
             num_workers=num_workers,
             pin_memory=pin_memory,
             persistent_workers=False,
+            # Own generator, so iterating never draws from the shared global RNG.
+            generator=torch.Generator(),
         )
 
     @time_execution
@@ -184,7 +186,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
                                     If True, trial.report is not used (not supported by Optuna).
         """
         optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-        criterion = self.config.loss_function
+        criterion = self.config.loss
 
         loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
         self.train_loss, self.test_loss, self.MAE = [
@@ -233,6 +235,8 @@ class LatentNeuralODE(AbstractSurrogateModel):
 
         progress_bar.close()
         self.n_epochs = epoch + 1
+        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
+        optimizer.eval()
         self.get_checkpoint(test_loader, criterion)
 
     @time_execution
@@ -248,7 +252,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
         from torch.profiler import ProfilerActivity, profile, record_function
 
         optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-        criterion = self.config.loss_function
+        criterion = self.config.loss
 
         loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
         self.train_loss, self.test_loss, self.MAE = [
@@ -345,6 +349,8 @@ class LatentNeuralODE(AbstractSurrogateModel):
 
         progress_bar.close()
         self.n_epochs = epoch + 1
+        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
+        optimizer.eval()
         self.get_checkpoint(test_loader, criterion)
 
 
@@ -401,6 +407,7 @@ class ModelWrapper(nn.Module):
                 latent_features=latent_dim,
                 layers_factor=self.config.layers_factor,
                 activation=self.config.activation,
+                dtype=dtype,
             )
         elif self.config.model_version == "v2":
             self.encoder = Encoder(
@@ -481,6 +488,7 @@ class ModelWrapper(nn.Module):
                 latent_features=latent_dim,
                 layers_factor=self.config.layers_factor,
                 activation=self.config.activation,
+                dtype=dtype,
             )
         elif self.config.model_version == "v2":
             self.decoder = Decoder(
@@ -753,18 +761,19 @@ class OldEncoder(nn.Module):
         latent_features: int = 5,
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
+        dtype: torch.dtype = torch.float64,
     ):
         super().__init__()
         # Example: coder_layers = [4, 2, 1] scaled by layers_factor.
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]
         layers = []
-        layers.append(nn.Linear(in_features, coder_layers[0], dtype=torch.float64))
+        layers.append(nn.Linear(in_features, coder_layers[0], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[0], coder_layers[1], dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[0], coder_layers[1], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[1], coder_layers[2], dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[1], coder_layers[2], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[2], latent_features, dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[2], latent_features, dtype=dtype))
         layers.append(nn.Tanh())
         self.mlp = nn.Sequential(*layers)
 
@@ -783,19 +792,20 @@ class OldDecoder(nn.Module):
         latent_features: int = 5,
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
+        dtype: torch.dtype = torch.float64,
     ):
         super().__init__()
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]
         # Reverse the order for the decoder.
         coder_layers.reverse()
         layers = []
-        layers.append(nn.Linear(latent_features, coder_layers[0], dtype=torch.float64))
+        layers.append(nn.Linear(latent_features, coder_layers[0], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[0], coder_layers[1], dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[0], coder_layers[1], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[1], coder_layers[2], dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[1], coder_layers[2], dtype=dtype))
         layers.append(activation)
-        layers.append(nn.Linear(coder_layers[2], out_features, dtype=torch.float64))
+        layers.append(nn.Linear(coder_layers[2], out_features, dtype=dtype))
         layers.append(nn.Tanh())
         self.mlp = nn.Sequential(*layers)
 

@@ -61,7 +61,8 @@ def prepare_workspace(master_cfg_path: Path, config: dict) -> dict:
 
     if dst_cfg.exists():
         stored_config = read_yaml_config(dst_cfg)
-        if stored_config != config:
+        # Compare both files parsed the same way; `config` already has extra keys.
+        if stored_config != read_yaml_config(master_cfg_path):
             decision = _prompt_config_decision(dst_cfg, master_cfg_path)
             if decision == "use":
                 print(
@@ -128,6 +129,6 @@ def delete_studies_if_requested(config: dict, main_study_name: str, db_url: str)
         try:
             optuna.delete_study(study_name=name, storage=db_url)
             print(f"Deleted existing study '{name}'.")
-        except KeyError or TypeError:
+        except (KeyError, TypeError):
             # study didn't exist
             pass

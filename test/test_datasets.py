@@ -670,3 +670,37 @@ class TestIntegration:
 
         finally:
             os.chdir(original_cwd)
+
+
+class TestCheckAndLoadDataEdgeCases:
+    """Loading a small synthetic dataset with transformations that used to fail."""
+
+    @pytest.fixture
+    def toy_dataset(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        rng = np.random.default_rng(0)
+        data = rng.uniform(0.1, 1.0, size=(20, 6, 3)).astype(np.float32)
+        data[0, 0, 0] = 0.0
+        params = rng.uniform(1.0, 2.0, size=(20, 2)).astype(np.float32)
+        create_dataset("toy", data, params=params)
+        return "toy"
+
+    def test_log_transform_rejects_non_positive_data(self, toy_dataset):
+        """Non-positive values must not silently turn into -inf or NaN."""
+        with pytest.raises(DatasetError, match="non-positive"):
+            check_and_load_data(toy_dataset, verbose=False, log=True)
+
+    def test_tolerance_makes_data_loggable(self, toy_dataset):
+        (train, test, val), *_ = check_and_load_data(
+            toy_dataset, verbose=False, log=True, tolerance=1e-10
+        )
+        assert all(np.all(np.isfinite(d)) for d in (train, test, val))
+
+    @pytest.mark.parametrize("verbose", [False, True])
+    def test_parameters_without_normalisation(self, toy_dataset, verbose):
+        """Parametric data must load with normalisation disabled."""
+        _, (train_params, _, _), _, _, data_info, _ = check_and_load_data(
+            toy_dataset, verbose=verbose, log=False, normalisation_mode="disable"
+        )
+        assert train_params is not None
+        assert data_info["mode"] == "disable"

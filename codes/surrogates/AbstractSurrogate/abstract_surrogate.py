@@ -13,7 +13,7 @@ from torch import Tensor, nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from codes.utils import create_model_dir, parse_hyperparameters
+from codes.utils import create_model_dir, get_version_info, parse_hyperparameters
 
 
 class AbstractSurrogateModel(ABC, nn.Module):
@@ -126,7 +126,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         self.checkpointing: bool = False
         self.best_test_loss: float | None = None
         self.best_epoch: int | None = None
-        self._checkpoint_path: str | None = None
+        self._best_state: dict[str, Tensor] | None = None
 
     @classmethod
     def register(cls, surrogate: type["AbstractSurrogateModel"]):
@@ -320,9 +320,9 @@ class AbstractSurrogateModel(ABC, nn.Module):
             hyperparameters.pop("optuna_trial", None)
 
         # Add some additional information to the model and hyperparameters
-        self.train_duration = (
-            self.fit.duration if hasattr(self.fit, "duration") else None
-        )
+        # Read the duration from the instance; fit.duration is shared by all instances
+        # of the class and may belong to a model trained concurrently.
+        self.train_duration = getattr(self, "fit_duration", None)
         hyperparameters["train_duration"] = self.train_duration
         hyperparameters["n_epochs"] = self.n_epochs
         hyperparameters["normalisation"] = self.normalisation
@@ -333,6 +333,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
                 f"{devinfo.name} ({devinfo.total_memory / 1e9:.2f}GB), CUDA {devinfo.major}.{devinfo.minor}"
             )
         hyperparameters["date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        hyperparameters.update(get_version_info())
 
         # Recursively parse hyperparameters to make them yaml-serializable
         clean_hyperparameters = parse_hyperparameters(hyperparameters.copy())
@@ -466,9 +467,12 @@ class AbstractSurrogateModel(ABC, nn.Module):
 
                     # data = data.to("cpu")
                     data = (data + 1) * (dmax - dmin) / 2 + dmin
-                elif self.normalisation["mode"] == "standardize":
+                elif self.normalisation["mode"] in ("standardise", "standardize"):
+                    # The data pipeline writes "standardise"; accept both spellings.
                     mean = self.normalisation["mean"]
                     std = self.normalisation["std"]
+                    mean = np.array(mean) if isinstance(mean, list) else mean
+                    std = np.array(std) if isinstance(std, list) else std
                     if isinstance(data, Tensor) and isinstance(mean, np.ndarray):
                         mean = Tensor(mean).to(data.device)
                         std = Tensor(std).to(data.device)
@@ -564,37 +568,23 @@ class AbstractSurrogateModel(ABC, nn.Module):
 
     def setup_checkpoint(self) -> None:
         """
-        Prepare everything needed to save the single 'best' checkpoint.
+        Prepare tracking of the best weights seen during training.
         Must be called before any call to `self.checkpoint(...)`.
+
+        The best weights are kept in memory per model instance, so models trained
+        concurrently (e.g. on several devices) cannot overwrite each other's checkpoint.
         """
         if not self.checkpointing:
             return
 
         self.best_test_loss = float("inf")
         self.best_epoch = -1
-
-        # Build a small folder under `trained/<training_id>/<ModelClass>/`.
-        training_id = self.training_id
-        if training_id is None:
-            raise RuntimeError(
-                "Cannot call setup_checkpoint(): Attribute `self.training_id` is missing."
-            )
-
-        model_dir = os.path.join(
-            os.getcwd(),
-            "trained",
-            training_id,
-            self.__class__.__name__,
-        )
-        os.makedirs(model_dir, exist_ok=True)
-
-        # We’ll store exactly one file called "best_checkpoint.pth"
-        self._checkpoint_path = os.path.join(model_dir, "best_checkpoint.pth")
+        self._best_state = None
 
     def checkpoint(self, test_loss: float, epoch: int) -> None:
         """
-        If save_best is True and test_loss < self.best_test_loss,
-        overwrite the single-file checkpoint on disk and update best_test_loss/epoch.
+        If checkpointing is enabled and test_loss < self.best_test_loss, store a copy of
+        the current weights and update best_test_loss/epoch.
         """
         if not self.checkpointing:
             return
@@ -604,63 +594,41 @@ class AbstractSurrogateModel(ABC, nn.Module):
                 "You must call setup_checkpoint() before calling checkpoint()."
             )
 
-        # If this epoch is strictly better than anything before, overwrite:
         if test_loss < self.best_test_loss:
             self.best_test_loss = test_loss
             self.best_epoch = epoch
-            torch.save(self.state_dict(), self._checkpoint_path)
+            self._best_state = {
+                k: v.detach().to("cpu", copy=True) for k, v in self.state_dict().items()
+            }
 
     def get_checkpoint(
         self,
         test_loader: torch.utils.data.DataLoader,
-        criterion: nn.Module,
+        criterion: nn.Module | None = None,
     ) -> None:
         """
-        After training, compare the current model’s test loss to the best recorded loss.
-        If the final model is better, keep it; otherwise load the saved best checkpoint.
+        After training, compare the final weights with the best stored weights and keep
+        whichever reaches the lower test loss. Both losses are the log-space L1 that
+        `validate` reports, so the comparison is like for like.
 
         Args:
             test_loader (DataLoader): DataLoader for computing final test loss.
-            criterion (nn.Module): Loss function used for evaluation.
+            criterion (nn.Module, optional): Unused; kept for backward compatibility.
         """
-        if not self.checkpointing:
-            return
-
-        if self.best_epoch is None or self.best_epoch < 0:
-            return
-
-        if self._checkpoint_path is None or not os.path.isfile(self._checkpoint_path):
-            print(
-                f"Warning: no checkpoint file found at {self._checkpoint_path}. "
-                "Skipping load of best weights."
-            )
-            self.best_epoch = -1
-            self.best_test_loss = None
+        if not self.checkpointing or self._best_state is None:
             return
 
         self.eval()
         with torch.inference_mode():
-            preds, targets = self.predict(test_loader)
-            final_loss = criterion(preds, targets).item()
+            preds, targets = self.predict(test_loader, leave_log=True)
+            final_loss = self.L1(preds, targets).item()
 
         if final_loss < self.best_test_loss:
-            try:
-                os.remove(self._checkpoint_path)
-            except Exception:
-                pass
             self.best_epoch = self.n_epochs - 1
             self.best_test_loss = final_loss
-            return
-
-        checkpoint_state = torch.load(
-            self._checkpoint_path, map_location=self.device, weights_only=True
-        )
-        self.load_state_dict(checkpoint_state)
-
-        try:
-            os.remove(self._checkpoint_path)
-        except Exception:
-            pass
+        else:
+            self.load_state_dict(self._best_state)
+        self._best_state = None
 
     def validate(
         self,
@@ -745,7 +713,8 @@ class AbstractSurrogateModel(ABC, nn.Module):
         Patches ScheduleFree optimizers to have a no-op scheduler.step().
         For ScheduleFree optimizers, use lr warmup for the first 1% of epochs.
         For Poly scheduler, use a power decay based on self.config.poly_power.
-        For Cosine scheduler, use a minimum learning rate defined by self.config.eta_min.
+        For Cosine scheduler, anneal to the minimum learning rate
+        self.config.eta_min * self.config.learning_rate.
 
         Args:
             epochs (int): The number of epochs the training will run for.
@@ -832,11 +801,10 @@ class AbstractSurrogateModel(ABC, nn.Module):
         elif scheduler_name == "cosine":
             from torch.optim.lr_scheduler import CosineAnnealingLR
 
-            eta_min = self.config.eta_min
             scheduler = CosineAnnealingLR(
                 optimizer,
                 T_max=epochs,
-                eta_min=eta_min,
+                eta_min=self.config.eta_min * self.config.learning_rate,
             )
         elif scheduler_name == "poly":
             from torch.optim.lr_scheduler import LambdaLR

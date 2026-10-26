@@ -56,8 +56,10 @@ class FullyConnectedConfig:
     hidden_size: int = 310
     num_hidden_layers: int = 1
     # cloud_final_fine, trial 37
-    eta_min: float = 0.00266
-    beta: float = 8.39
+    # Tuned as an absolute learning rate of 0.00266; CODES >= 0.2.0 reads eta_min as a
+    # fraction of learning_rate.
+    eta_min: float = 0.00266 / 0.00215
+    # beta: float = 8.39  # tuned, but CODES < 0.2.0 trained with the default 1.0
     learning_rate: float = 0.00215
     regularization_factor: float = 3.42e-04
 

@@ -9,6 +9,8 @@ import yaml
 from torch import nn
 from torch.utils.data import Dataset, IterableDataset
 
+from codes.utils import make_shuffle_generator
+
 
 def custom_collate_fn(batch):
     """
@@ -70,11 +72,12 @@ class FlatBatchIterable(IterableDataset):
         self.N = branch_t.size(0)
         self.bs = batch_size
         self.shuffle = shuffle
+        self.generator = make_shuffle_generator() if shuffle else None
 
     def __iter__(self):
         # new permutation (or sequential) each epoch/iterator
         if self.shuffle:
-            perm = torch.randperm(self.N)
+            perm = torch.randperm(self.N, generator=self.generator)
         else:
             perm = torch.arange(self.N)
 
