@@ -1,5 +1,6 @@
 import copy
 import os
+from time import perf_counter
 
 import numpy as np
 import optuna
@@ -199,8 +200,9 @@ def finetune_model(
         list[dict]: Per epoch means of the data, rollout and total loss, and the
         number of batches skipped because their loss was not finite.
     """
+    start = perf_counter()
     device = model.device
-    criterion = getattr(model.config, "loss_function", None) or nn.MSELoss()
+    criterion = model.config.loss
     optimizer = torch.optim.Adam(model.parameters(), lr=ft["learning_rate"])
     traj_all = torch.tensor(train, dtype=torch.float32)
     params_all = (
@@ -260,11 +262,13 @@ def finetune_model(
                     weight = (
                         float(ft["rollout_decay"]) ** k
                         if ft["rollout_aggregation"] == "sum_decay"
-                        else 1.0 / steps
+                        else 1.0
                     )
                     loss_roll = loss_roll + weight * criterion(state, target)
                     n_graded += 1
                 if n_graded:
+                    if ft["rollout_aggregation"] == "mean":
+                        loss_roll = loss_roll / n_graded
                     total = (1.0 - w_roll) * loss_data + w_roll * loss_roll
 
             # A diverging warmup can make the loss non finite, which would wreck
@@ -285,6 +289,7 @@ def finetune_model(
             {k: v / max(n_batches, 1) for k, v in sums.items()} | {"skipped": skipped}
         )
     model.eval()
+    model.fit_duration = perf_counter() - start
     return history
 
 
@@ -466,9 +471,10 @@ def run_finetuning(conf: dict, device: str) -> dict:
         print(f"Before finetuning: score {base_score:.4g}")
 
         if ft["optuna"]:
-            hp, best_trial, state = _search(ft, surr_name, train_once, score)
+            hp, best_trial, state, duration = _search(ft, surr_name, train_once, score)
             model = load_trained_model(surr_name, conf, data, device)
             model.load_state_dict(state)
+            model.fit_duration = duration
             history = None
         else:
             hp, best_trial = ft, None
@@ -519,7 +525,8 @@ def _search(ft: dict, surr_name: str, train_once, score):
     trial's weights are kept, so the best trial can come from an earlier session.
 
     Returns:
-        tuple: Settings of the best trial, its number and its state dict.
+        tuple: Settings of the best trial, its number, state dict and finetuning
+        duration (None for older trials without timing metadata).
     """
     opt = ft["optuna"]
     run_dir = os.path.join("trained", ft["training_id"])
@@ -539,6 +546,7 @@ def _search(ft: dict, surr_name: str, train_once, score):
     def objective(trial):
         hp = {**ft, **make_optuna_params(trial, opt.get("params", {}))}
         model, _ = train_once(surr_name, hp, ft["seed"] + trial.number)
+        trial.set_user_attr("train_duration", model.fit_duration)
         rng = np.random.default_rng(ft["seed"] + trial.number)
         step_sizes = eval_step_sizes(hp["eval_dt_range"], int(hp["eval_n_dt"]), rng)
         value, _ = score(model, step_sizes)
@@ -553,4 +561,9 @@ def _search(ft: dict, surr_name: str, train_once, score):
     state = torch.load(
         os.path.join(trial_dir, f"trial{best.number}.pth"), map_location="cpu"
     )
-    return {**ft, **best.params}, best.number, state
+    return (
+        {**ft, **best.params},
+        best.number,
+        state,
+        best.user_attrs.get("train_duration"),
+    )

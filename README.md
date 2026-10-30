@@ -68,19 +68,14 @@ CODES follows [semantic versioning](https://semver.org/). [CHANGELOG.md](CHANGEL
 
 ## Citation & Publications using CODES
 
-If you use `CODES` in your research, please cite the original paper, which was accepted to the ML4PS@NeurIPS24:
+If you use `CODES` in your research, please cite the software release you used,
+using its Zenodo DOI when available. GitHub's **Cite this repository** button
+provides a software citation based on [CITATION.cff](CITATION.cff). Include the
+version used in your methods; [GitHub releases](https://github.com/AstroAI-Lab/CODES-Benchmark/releases)
+identify the corresponding code snapshots.
 
-```bibtex
-@misc{janssen2024codes,
-  title        = {CODES: Benchmarking Coupled ODE Surrogates},
-  author       = {Janssen, Robin and Sulzer, Immanuel and Buck, Tobias},
-  year         = {2024},
-  eprint       = {2410.20886},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.LG},
-  url          = {https://arxiv.org/abs/2410.20886}
-}
-```
+If you use the astrochemical datasets or analysis presented in **Janssen, Branca &
+Buck (2026)**, please also cite that paper, listed below.
 
 ### Related works using CODES
 

@@ -6,6 +6,43 @@ All notable changes to CODES are documented in this file. The format follows
 breaking changes. Changes that alter benchmark results are listed under "Changes
 affecting results".
 
+## [Unreleased]
+
+### Added
+
+- Autoregressive rollout finetuning of trained surrogates, with an optional Optuna
+  search that can resume earlier trials.
+- Fixed-step rollout evaluation, including median absolute log error, non-finite
+  rollout fractions and optional scoring of dynamically changing trajectories.
+- FullyConnectedResidual and MultiONetResidual surrogates, with fallback to their
+  parent's dataset configuration.
+- Optional `gradient_clip` for FullyConnected, MultiONet and LatentNeuralODE training.
+
+### Changes affecting results
+
+- Iterative evaluation now restarts each chunk from the prediction at that chunk's
+  start, rather than the prediction one timestep earlier.
+- Rollout time inputs now follow the stored time grid, including non-uniform grids,
+  rather than assuming evenly spaced linear or logarithmic times. Together these
+  fixes change existing iterative evaluation results, including `mLAE_iter`.
+
+### Fixed
+
+- Preserved the 0.2.0 `SmoothL1Loss` default of `beta: 1.0`; finetuning also uses the
+  configured loss and beta.
+- Mean rollout loss uses the number of steps actually taken when a rollout stops
+  at the end of the stored time span.
+- Saved finetuned models record their finetuning duration, including the selected
+  trial of a resumed search. Trials saved without timing metadata use no duration.
+- Error percentiles work for arrays exceeding PyTorch's quantile size limit.
+- Rollout plots handle zero and non-finite errors.
+- LatentNeuralODE's `loss_weights` can be set in its configuration.
+
+### Changed
+
+- Citation guidance now prioritises the software release, with the A&A paper
+  requested when using its astrochemical datasets or analysis.
+
 ## [0.2.0] - 2026-10-23
 
 This release fixes bugs that affect benchmark results, including those of the A&A paper
@@ -63,5 +100,6 @@ optimizer and seeding fixes below; the conclusions of the paper are unchanged.
 
 The version used for the A&A paper.
 
+[Unreleased]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/AstroAI-Lab/CODES-Benchmark/releases/tag/v0.1.0

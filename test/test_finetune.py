@@ -23,6 +23,9 @@ from codes.surrogates import (
     MultiONet,
     MultiONetResidual,
 )
+from codes.surrogates.AbstractSurrogate.abstract_config import (
+    AbstractSurrogateBaseConfig,
+)
 from codes.utils import elapsed_to_dummy, interp_states
 
 S, M, Q, P = 6, 9, 3, 2
@@ -209,7 +212,67 @@ def finetune_settings(**overrides):
     return {**ft, **overrides}
 
 
+class ConstantSurrogate(torch.nn.Module):
+    """A constant prediction gives known losses even when a rollout stops early."""
+
+    def __init__(self, **config):
+        super().__init__()
+        self.device = "cpu"
+        self.config = AbstractSurrogateBaseConfig(**config)
+        self.value = torch.nn.Parameter(torch.tensor(1.0))
+
+    def forward_from_state(self, state, times, params=None):
+        return self.value.expand(state.shape[0], len(times), state.shape[1])
+
+
 class TestFinetuneModel:
+    def test_smooth_l1_keeps_the_training_default(self):
+        config = AbstractSurrogateBaseConfig(loss_function=torch.nn.SmoothL1Loss())
+        assert config.loss.beta == 1.0
+
+    def test_uses_the_configured_loss(self):
+        model = ConstantSurrogate(loss_function=torch.nn.SmoothL1Loss(), beta=2.5)
+        history = finetune_model(
+            model,
+            np.zeros((2, 3, 1), dtype=np.float32),
+            None,
+            np.linspace(0.0, 1.0, 3),
+            finetune_settings(epochs=1, learning_rate=0.0, rollout_weight=0.0),
+            np.random.default_rng(0),
+        )
+        # SmoothL1Loss with error 1 and beta 2.5 is 1 / (2 * 2.5).
+        assert history[0]["data"] == pytest.approx(0.2)
+
+    @pytest.mark.parametrize(
+        "steps,dt,aggregation,expected",
+        [
+            (1, 0.6, "mean", 1.0),
+            (4, 0.6, "mean", 1.0),
+            (4, 0.4, "mean", 1.0),
+            (4, 0.4, "sum_decay", 1.5),
+        ],
+    )
+    def test_truncated_rollout_loss(self, steps, dt, aggregation, expected):
+        history = finetune_model(
+            ConstantSurrogate(),
+            np.zeros((2, 3, 1), dtype=np.float32),
+            None,
+            np.linspace(0.0, 1.0, 3),
+            finetune_settings(
+                epochs=1,
+                learning_rate=0.0,
+                max_warmup_steps=0,
+                dt_range=[dt, dt],
+                rollout_steps=steps,
+                rollout_aggregation=aggregation,
+                rollout_decay=0.5,
+                rollout_weight=0.5,
+            ),
+            np.random.default_rng(0),
+        )
+        assert history[0]["rollout"] == pytest.approx(expected)
+        assert history[0]["total"] == pytest.approx(0.5 + 0.5 * expected)
+
     @pytest.mark.parametrize("aggregation", ["mean", "sum_decay"])
     def test_updates_the_weights(self, data, aggregation):
         trajectories, params = data
@@ -256,6 +319,37 @@ def test_rollout_score_is_the_geometric_mean_and_filters_dynamic(data):
         rollout_score(model, trajectories, params, TIMES, [1.0], dynamic_span=10.0)
 
 
+def test_search_resumes_trials_without_timing_metadata(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    ft = finetune_config(
+        {
+            "training_id": "base",
+            "surrogates": ["MultiONet"],
+            "finetune": {"dt_range": [0.5, 3.0], "optuna": {"n_trials": 1}},
+        }
+    )
+    run_dir = tmp_path / "trained" / ft["training_id"]
+    trial_dir = run_dir / "multionet_trials"
+    trial_dir.mkdir(parents=True)
+    study = ff.optuna.create_study(
+        study_name=f"{ft['training_id']}_multionet",
+        storage=f"sqlite:///{run_dir / 'multionet_study.db'}",
+    )
+    study.add_trial(ff.optuna.trial.create_trial(value=0.1))
+    weights = make_model(MultiONet).state_dict()
+    torch.save(weights, trial_dir / "trial0.pth")
+
+    def unexpected_call(*args):
+        pytest.fail("A completed search must load the saved trial without retraining.")
+
+    _, trial, restored, duration = ff._search(
+        ft, "MultiONet", unexpected_call, unexpected_call
+    )
+    assert trial == 0
+    assert all(torch.equal(restored[k], v) for k, v in weights.items())
+    assert duration is None
+
+
 @pytest.mark.parametrize("search", [False, True])
 def test_run_finetuning_writes_a_run_that_run_eval_can_load(
     data, tmp_path, monkeypatch, search
@@ -273,9 +367,15 @@ def test_run_finetuning_writes_a_run_that_run_eval_can_load(
             "timesteps": TIMES,
         },
     )
-    monkeypatch.setattr(
-        ff, "load_trained_model", lambda name, conf, d, device: make_model(MultiONet)
-    )
+
+    def load_model(name, conf, d, device):
+        model = make_model(MultiONet)
+        model.fit_duration = 1234.0  # The base training duration must be replaced.
+        return model
+
+    monkeypatch.setattr(ff, "load_trained_model", load_model)
+    clock = iter([10.0, 12.0, 20.0, 25.0])
+    monkeypatch.setattr(ff, "perf_counter", lambda: next(clock), raising=False)
     conf = {
         "training_id": "base",
         "surrogates": ["MultiONet"],
@@ -309,3 +409,13 @@ def test_run_finetuning_writes_a_run_that_run_eval_can_load(
     assert exported["training_id"] == "base_finetune"
     assert exported["interpolation"]["enabled"] is False
     assert "finetune" not in exported
+    duration = [2.0, 5.0][summary["best_trial"]] if search else 2.0
+    restored = make_model(MultiONet)
+    restored.load("base_finetune", "MultiONet", "multionet_main")
+    assert restored.train_duration == duration
+    if search:
+        # No new trials: restore the selected trial's time along with its weights.
+        resumed = run_finetuning(conf, "cpu")["MultiONet"]
+        assert resumed["best_trial"] == summary["best_trial"]
+        restored.load("base_finetune", "MultiONet", "multionet_main")
+        assert restored.train_duration == duration

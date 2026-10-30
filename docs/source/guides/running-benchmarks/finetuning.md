@@ -21,7 +21,7 @@ Each batch optimises `(1 - rollout_weight) * data_loss + rollout_weight * rollou
   1. A target elapsed time is drawn as `0.9 * horizon * u ** start_bias`, with `u` uniform in [0, 1]. `start_bias > 1` moves it towards early times.
   2. The model steps from the true initial state until it has covered that time, **without gradients** (at most `max_warmup_steps` steps). The graded part of the rollout therefore starts from a state the model reached itself, which is where rollout errors arise.
   3. Optionally, Gaussian noise of scale `noise` is added to that state.
-  4. The model takes `rollout_steps` further steps **with gradients**. Each step is compared with the reference trajectory at the time reached, and the step losses are averaged (`rollout_aggregation: mean`) or summed with weights `rollout_decay ** k` (`sum_decay`).
+  4. The model takes up to `rollout_steps` further steps **with gradients**, stopping at the end of the stored time span. Each step is compared with the reference trajectory at the time reached, and the step losses are averaged over the steps actually taken (`rollout_aggregation: mean`) or summed with weights `rollout_decay ** k` (`sum_decay`).
 
   Step size is sampled log uniformly from `dt_range` for each step, because coupled simulations may utilize varying step sizes. A model finetuned at one fixed step size tends to work at that step size only.
 
@@ -96,7 +96,7 @@ The study is stored in SQLite under `trained/<finetune training_id>/` (set `optu
 
 ## Outputs and evaluation
 
-- `trained/<finetune training_id>/<Surrogate>/<surrogate>_main.pth` — the finetuned models, saved as an ordinary training run.
+- `trained/<finetune training_id>/<Surrogate>/<surrogate>_main.pth` — the finetuned models, saved as an ordinary training run. Their recorded training duration is the finetuning time, or the selected trial's finetuning time for a search. Older search trials without timing metadata have no recorded duration.
 - `trained/<finetune training_id>/config.yaml` — a copy of your config for that run. Modality blocks and loss plots are switched off, because only the main model is finetuned and the stored loss curves belong to the original training.
 - `results/<finetune training_id>/<surrogate>_finetune.yaml` — the score and the median error per step size before and after finetuning, the settings used, and for a search the best trial.
 

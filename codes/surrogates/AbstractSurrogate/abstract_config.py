@@ -25,7 +25,7 @@ class AbstractSurrogateBaseConfig:
         activation (nn.Module | None): Activation module used in the model.
         loss_function (nn.Module | None): Loss function used for training.
         beta (float): Beta parameter forwarded to SmoothL1Loss (used only if
-            loss_function is nn.SmoothL1Loss). Defaults to 0.0.
+            loss_function is nn.SmoothL1Loss). Defaults to 1.0, PyTorch's default.
         gradient_clip (float): Maximum gradient norm. Set to 0 to disable clipping.
     """
 
@@ -38,7 +38,7 @@ class AbstractSurrogateBaseConfig:
     eta_min: float = 0.1  # Fraction of learning_rate; only if scheduler == "cosine"
     activation: nn.Module | None = None
     loss_function: nn.Module | None = None  # Options: nn.MSELoss(), nn.SmoothL1Loss()
-    beta: float = 0.0  # Used only if loss_function == nn.SmoothL1Loss()
+    beta: float = 1.0  # Used only if loss_function == nn.SmoothL1Loss()
     gradient_clip: float = 0.0  # Max gradient norm, 0 disables clipping
 
     def __post_init__(self) -> None:
