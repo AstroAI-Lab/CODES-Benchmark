@@ -23,13 +23,36 @@ python run_eval.py --config config.yaml
 | Switch | Effect |
 | --- | --- |
 | `losses` | Saves epoch-wise train/test loss plots. |
-| `iterative` | Runs multi-step rollouts to measure drift over time, defaulting to brackets of 10 steps. |
+| `iterative` | Runs multi-step rollouts to measure drift over time. Set to `true`, or to a block of options (see below). |
 | `gradients` | Correlates gradient norms with prediction errors. |
 | `timing` | Measures inference latency (multiple passes). |
 | `compute` | Records parameter counts and memory usage. |
 | `compare` | Builds cross-surrogate comparison tables/plots (requires ≥2 surrogates). |
 
 Leave switches off to skip expensive analyses and plotting functions. But compared to the training, eval is very lightweight: it only loads models and runs inference on the test set, and hence usually takes a few minutes at most. 
+
+## Iterative rollouts
+
+With `iterative` enabled, the model is fed its own predictions instead of the true states, as it would be when coupled to a solver. `iterative: true` uses the defaults, options are set with:
+
+```yaml
+iterative:
+  mode: fixed_step   # "grid" (default) or "fixed_step"
+  dt: 5.0            # fixed_step only: step size in the units of the timesteps
+```
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `mode` | `"grid"` | `"grid"` restarts the model from its own prediction every `interval` stored timesteps. `"fixed_step"` advances the model by one constant step size `dt` per call, as a solver with a fixed step would. |
+| `interval` | `10` | `grid` only: stored timesteps per restart. |
+| `dt` | required for `fixed_step` | Step size in the units of the dataset timesteps. The rollout runs to the end of the stored time span; the reference is interpolated onto the times it lands on. |
+| `max_steps` | none | `fixed_step` only: cap on the number of steps. |
+| `dynamic_span` | none | If set, the median error is also reported separately for trajectories in which some quantity changes by at least this much over the time span and for the rest, in the units of the `*_log` metrics. |
+| `example` | `"median_error"` | Sample in the example plot: `"median_error"`, `"dynamic"` (the trajectory that changes most) or a sample index. |
+
+Besides the RMSE, MAE and percentile errors, the iterative evaluation reports the median absolute log error and the fraction of rollout entries that are not finite, so a diverging rollout shows up instead of distorting the averages. The example plot is saved as `example_preds_iterative.png`, or `example_preds_iterative_dt<dt>.png` in `fixed_step` mode.
+
+Iterative rollouts measure how a model behaves when used autoregressively. To improve that behaviour, see :doc:`finetuning`.
 
 ## Troubleshooting
 

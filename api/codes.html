@@ -184,6 +184,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/modalities.html">Modalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
@@ -203,6 +204,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -401,6 +403,7 @@
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_interpolation"><code class="docutils literal notranslate"><span class="pre">evaluate_interpolation()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_iterative_predictions"><code class="docutils literal notranslate"><span class="pre">evaluate_iterative_predictions()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_sparse"><code class="docutils literal notranslate"><span class="pre">evaluate_sparse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.fixed_step_rollout"><code class="docutils literal notranslate"><span class="pre">fixed_step_rollout()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.run_benchmark"><code class="docutils literal notranslate"><span class="pre">run_benchmark()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.tabular_comparison"><code class="docutils literal notranslate"><span class="pre">tabular_comparison()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.benchmark.html#codes.benchmark.bench_fcts.time_inference"><code class="docutils literal notranslate"><span class="pre">time_inference()</span></code></a></li>
@@ -544,6 +547,32 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="codes.finetune.html">codes.finetune package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codes.finetune.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.finetune.html#module-codes.finetune.finetune_fcts">codes.finetune.finetune_fcts module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.eval_step_sizes"><code class="docutils literal notranslate"><span class="pre">eval_step_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.finetune_config"><code class="docutils literal notranslate"><span class="pre">finetune_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.finetune_model"><code class="docutils literal notranslate"><span class="pre">finetune_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.load_finetune_data"><code class="docutils literal notranslate"><span class="pre">load_finetune_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.load_trained_model"><code class="docutils literal notranslate"><span class="pre">load_trained_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.rollout_errors"><code class="docutils literal notranslate"><span class="pre">rollout_errors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.rollout_score"><code class="docutils literal notranslate"><span class="pre">rollout_score()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_fcts.run_finetuning"><code class="docutils literal notranslate"><span class="pre">run_finetuning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codes.finetune.html#module-codes.finetune">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.eval_step_sizes"><code class="docutils literal notranslate"><span class="pre">eval_step_sizes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_config"><code class="docutils literal notranslate"><span class="pre">finetune_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.finetune_model"><code class="docutils literal notranslate"><span class="pre">finetune_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.load_finetune_data"><code class="docutils literal notranslate"><span class="pre">load_finetune_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.load_trained_model"><code class="docutils literal notranslate"><span class="pre">load_trained_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.rollout_errors"><code class="docutils literal notranslate"><span class="pre">rollout_errors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.rollout_score"><code class="docutils literal notranslate"><span class="pre">rollout_score()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.finetune.html#codes.finetune.run_finetuning"><code class="docutils literal notranslate"><span class="pre">run_finetuning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a><ul>
@@ -595,6 +624,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.get_checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.get_registered_classes"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_registered_classes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.load"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.load()</span></code></a></li>
@@ -628,11 +658,16 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnected.fit"><code class="docutils literal notranslate"><span class="pre">FullyConnected.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnected.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnected.forward_from_state"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnected.prepare_data"><code class="docutils literal notranslate"><span class="pre">FullyConnected.prepare_data()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnectedNet"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnectedNet.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnectedResidual"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE</span></code></a><ul>
@@ -663,8 +698,13 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.forward_from_state"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONetResidual"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.MultiONetResidual.forward"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.ODE"><code class="docutils literal notranslate"><span class="pre">ODE</span></code></a><ul>
@@ -802,7 +842,9 @@
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.create_dataset"><code class="docutils literal notranslate"><span class="pre">create_dataset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.create_hdf5_dataset"><code class="docutils literal notranslate"><span class="pre">create_hdf5_dataset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.download_data"><code class="docutils literal notranslate"><span class="pre">download_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.elapsed_to_dummy"><code class="docutils literal notranslate"><span class="pre">elapsed_to_dummy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.get_data_subset"><code class="docutils literal notranslate"><span class="pre">get_data_subset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.interp_states"><code class="docutils literal notranslate"><span class="pre">interp_states()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.normalize_data"><code class="docutils literal notranslate"><span class="pre">normalize_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.data_utils.print_data_info"><code class="docutils literal notranslate"><span class="pre">print_data_info()</span></code></a></li>
 </ul>
@@ -837,9 +879,11 @@
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.create_model_dir"><code class="docutils literal notranslate"><span class="pre">create_model_dir()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.determine_batch_size"><code class="docutils literal notranslate"><span class="pre">determine_batch_size()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.download_data"><code class="docutils literal notranslate"><span class="pre">download_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.elapsed_to_dummy"><code class="docutils literal notranslate"><span class="pre">elapsed_to_dummy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.get_data_subset"><code class="docutils literal notranslate"><span class="pre">get_data_subset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.get_progress_bar"><code class="docutils literal notranslate"><span class="pre">get_progress_bar()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.get_version_info"><code class="docutils literal notranslate"><span class="pre">get_version_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.interp_states"><code class="docutils literal notranslate"><span class="pre">interp_states()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.load_and_save_config"><code class="docutils literal notranslate"><span class="pre">load_and_save_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.load_task_list"><code class="docutils literal notranslate"><span class="pre">load_task_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.utils.html#codes.utils.make_description"><code class="docutils literal notranslate"><span class="pre">make_description()</span></code></a></li>

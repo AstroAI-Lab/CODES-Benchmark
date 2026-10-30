@@ -186,6 +186,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-benchmarks/finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running-benchmarks/modalities.html">Modalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="running-benchmarks/architectures.html">Baseline Architectures</a></li>
@@ -205,6 +206,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -440,6 +442,11 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code> already serializes weights, optimizer state, and scheduler state, and <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> expects that layout. If you modify the format, verify that evaluation still loads checkpoints without custom flags.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">predict</span></code> and the evaluation pipeline assume consistent output shapes, so avoid ad-hoc reshaping in downstream scripts—handle it in <code class="docutils literal notranslate"><span class="pre">forward</span></code> or <code class="docutils literal notranslate"><span class="pre">prepare_data</span></code>. This uniform path is what keeps the benchmark fair across models.</p></li>
+</ul>
+</li>
+<li><p><strong>Optional: rollout finetuning</strong></p>
+<ul class="simple">
+<li><p>To support <code class="docutils literal notranslate"><span class="pre">run_finetuning.py</span></code>, implement <code class="docutils literal notranslate"><span class="pre">forward_from_state(self,</span> <span class="pre">state,</span> <span class="pre">times,</span> <span class="pre">params=None)</span> <span class="pre">-&gt;</span> <span class="pre">Tensor</span></code>. It receives initial states of shape <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">n_quantities)</span></code> in normalised units, time inputs of shape <code class="docutils literal notranslate"><span class="pre">(n_times,)</span></code> in the dummy time coordinate the model is trained on, and optional parameters, and returns the predicted states of shape <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">n_times,</span> <span class="pre">n_quantities)</span></code>. Pack the inputs exactly as <code class="docutils literal notranslate"><span class="pre">prepare_data</span></code> does and call <code class="docutils literal notranslate"><span class="pre">forward</span></code>, so the result matches <code class="docutils literal notranslate"><span class="pre">predict</span></code>. See the implementations in <code class="docutils literal notranslate"><span class="pre">FullyConnected</span></code> and <code class="docutils literal notranslate"><span class="pre">MultiONet</span></code>.</p></li>
 </ul>
 </li>
 </ol>

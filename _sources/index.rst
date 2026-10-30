@@ -31,6 +31,7 @@ Looking for a bird’s-eye view first? Start with the **User Guide**. Already co
 
    API Reference Overview <api-reference>
    codes.benchmark package <codes.benchmark>
+   codes.finetune package <codes.finetune>
    codes.surrogates package <codes.surrogates>
    codes.train package <codes.train>
    codes.tune package <codes.tune>

@@ -185,6 +185,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/modalities.html">Modalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
@@ -204,6 +205,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -520,6 +522,20 @@
 </li>
       </ul></li>
       <li>
+    codes.finetune
+
+      <ul>
+        <li><a href="api/codes.finetune.html#module-codes.finetune">module</a>, <a href="codes.finetune.html#module-codes.finetune">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    codes.finetune.finetune_fcts
+
+      <ul>
+        <li><a href="api/codes.finetune.html#module-codes.finetune.finetune_fcts">module</a>, <a href="codes.finetune.html#module-codes.finetune.finetune_fcts">[1]</a>
+</li>
+      </ul></li>
+      <li>
     codes.surrogates
 
       <ul>
@@ -666,6 +682,8 @@
         <li><a href="api/codes.train.html#module-codes.train">module</a>, <a href="codes.train.html#module-codes.train">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     codes.train.train_fcts
 
@@ -673,8 +691,6 @@
         <li><a href="api/codes.train.html#module-codes.train.train_fcts">module</a>, <a href="codes.train.html#module-codes.train.train_fcts">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     codes.tune
 
@@ -958,6 +974,12 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/codes.utils.html#codes.utils.elapsed_to_dummy">elapsed_to_dummy() (in module codes.utils)</a>, <a href="codes.utils.html#codes.utils.elapsed_to_dummy">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.utils.html#codes.utils.data_utils.elapsed_to_dummy">(in module codes.utils.data_utils)</a>, <a href="codes.utils.html#codes.utils.data_utils.elapsed_to_dummy">[1]</a>
+</li>
+      </ul></li>
       <li><a href="api/codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.encode_params">encode_params (codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig attribute)</a>, <a href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.encode_params">[1]</a>
 </li>
       <li><a href="api/codes.surrogates.html#codes.surrogates.Encoder">Encoder (class in codes.surrogates)</a>, <a href="codes.surrogates.html#codes.surrogates.Encoder">[1]</a>
@@ -982,20 +1004,26 @@
         <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min">(codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig attribute)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.eval_step_sizes">eval_step_sizes() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.eval_step_sizes">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.eval_step_sizes">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.eval_step_sizes">[1]</a>
+</li>
+      </ul></li>
       <li><a href="api/codes.benchmark.html#codes.benchmark.evaluate_accuracy">evaluate_accuracy() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.evaluate_accuracy">[1]</a>
 
       <ul>
         <li><a href="api/codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_accuracy">(in module codes.benchmark.bench_fcts)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_accuracy">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.benchmark.html#codes.benchmark.evaluate_batchsize">evaluate_batchsize() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.evaluate_batchsize">[1]</a>
 
       <ul>
         <li><a href="api/codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_batchsize">(in module codes.benchmark.bench_fcts)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_fcts.evaluate_batchsize">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.benchmark.html#codes.benchmark.evaluate_compute">evaluate_compute() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.evaluate_compute">[1]</a>
 
       <ul>
@@ -1050,6 +1078,18 @@
 </li>
       <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FCPrebatchedDataset">FCPrebatchedDataset (class in codes.surrogates.FCNN.fcnn)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FCPrebatchedDataset">[1]</a>
 </li>
+      <li><a href="api/codes.finetune.html#codes.finetune.finetune_config">finetune_config() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.finetune_config">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.finetune_config">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.finetune_config">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.finetune_model">finetune_model() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.finetune_model">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.finetune_model">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.finetune_model">[1]</a>
+</li>
+      </ul></li>
       <li><a href="api/codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode.ModelWrapper.first_derivative">first_derivative() (codes.surrogates.LatentNeuralODE.latent_neural_ode.ModelWrapper method)</a>, <a href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode.ModelWrapper.first_derivative">[1]</a>
 
       <ul>
@@ -1088,6 +1128,8 @@
         <li><a href="api/codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode.LatentNeuralODE.fit_profile">(codes.surrogates.LatentNeuralODE.latent_neural_ode.LatentNeuralODE method)</a>, <a href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode.LatentNeuralODE.fit_profile">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.benchmark.html#codes.benchmark.bench_fcts.fixed_step_rollout">fixed_step_rollout() (in module codes.benchmark.bench_fcts)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_fcts.fixed_step_rollout">[1]</a>
+</li>
       <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.don_utils.FlatBatchIterable">FlatBatchIterable (class in codes.surrogates.DeepONet.don_utils)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.don_utils.FlatBatchIterable">[1]</a>
 </li>
       <li><a href="api/codes.surrogates.html#codes.surrogates.FlatSeqBatchIterable">FlatSeqBatchIterable (class in codes.surrogates)</a>, <a href="codes.surrogates.html#codes.surrogates.FlatSeqBatchIterable">[1]</a>
@@ -1137,6 +1179,8 @@
 </li>
         <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward">(codes.surrogates.DeepONet.deeponet.MultiONet method)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward">[1]</a>
 </li>
+        <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual.forward">(codes.surrogates.DeepONet.deeponet.MultiONetResidual method)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual.forward">[1]</a>
+</li>
         <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward">(codes.surrogates.DeepONet.deeponet.OperatorNetwork method)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.OperatorNetwork.forward">[1]</a>
 </li>
         <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.TrunkNet.forward">(codes.surrogates.DeepONet.deeponet.TrunkNet method)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.TrunkNet.forward">[1]</a>
@@ -1147,9 +1191,13 @@
 </li>
         <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet.forward">(codes.surrogates.FCNN.fcnn.FullyConnectedNet method)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet.forward">[1]</a>
 </li>
+        <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual.forward">(codes.surrogates.FCNN.fcnn.FullyConnectedResidual method)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual.forward">[1]</a>
+</li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnected.forward">(codes.surrogates.FullyConnected method)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnected.forward">[1]</a>
 </li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnectedNet.forward">(codes.surrogates.FullyConnectedNet method)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnectedNet.forward">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnectedResidual.forward">(codes.surrogates.FullyConnectedResidual method)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnectedResidual.forward">[1]</a>
 </li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.LatentNeuralODE.forward">(codes.surrogates.LatentNeuralODE method)</a>
 </li>
@@ -1185,6 +1233,8 @@
 </li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.MultiONet.forward">(codes.surrogates.MultiONet method)</a>, <a href="codes.surrogates.html#codes.surrogates.MultiONet.forward">[1]</a>
 </li>
+        <li><a href="api/codes.surrogates.html#codes.surrogates.MultiONetResidual.forward">(codes.surrogates.MultiONetResidual method)</a>, <a href="codes.surrogates.html#codes.surrogates.MultiONetResidual.forward">[1]</a>
+</li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.ODE.forward">(codes.surrogates.ODE method)</a>, <a href="codes.surrogates.html#codes.surrogates.ODE.forward">[1]</a>
 </li>
         <li><a href="api/codes.surrogates.html#codes.surrogates.Polynomial.forward">(codes.surrogates.Polynomial method)</a>, <a href="codes.surrogates.html#codes.surrogates.Polynomial.forward">[1]</a>
@@ -1194,6 +1244,22 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.forward_from_state">forward_from_state() (codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel method)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.forward_from_state">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.forward_from_state">(codes.surrogates.AbstractSurrogate.AbstractSurrogateModel method)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.forward_from_state">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward_from_state">(codes.surrogates.AbstractSurrogateModel method)</a>, <a href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward_from_state">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward_from_state">(codes.surrogates.DeepONet.deeponet.MultiONet method)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward_from_state">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.forward_from_state">(codes.surrogates.FCNN.fcnn.FullyConnected method)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.forward_from_state">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnected.forward_from_state">(codes.surrogates.FullyConnected method)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnected.forward_from_state">[1]</a>
+</li>
+        <li><a href="api/codes.surrogates.html#codes.surrogates.MultiONet.forward_from_state">(codes.surrogates.MultiONet method)</a>, <a href="codes.surrogates.html#codes.surrogates.MultiONet.forward_from_state">[1]</a>
+</li>
+      </ul></li>
       <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnected">FullyConnected (class in codes.surrogates)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnected">[1]</a>
 
       <ul>
@@ -1204,6 +1270,12 @@
 
       <ul>
         <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet">(class in codes.surrogates.FCNN.fcnn)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.surrogates.html#codes.surrogates.FullyConnectedResidual">FullyConnectedResidual (class in codes.surrogates)</a>, <a href="codes.surrogates.html#codes.surrogates.FullyConnectedResidual">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual">(class in codes.surrogates.FCNN.fcnn)</a>, <a href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1276,6 +1348,12 @@
         <li><a href="api/codes.utils.html#codes.utils.utils.get_version_info">(in module codes.utils.utils)</a>, <a href="codes.utils.html#codes.utils.utils.get_version_info">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.gradient_clip">gradient_clip (codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig attribute)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.gradient_clip">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.gradient_clip">(codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig attribute)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.gradient_clip">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1306,18 +1384,24 @@
         <li><a href="api/codes.surrogates.html#codes.surrogates.ModelWrapper.identity_loss">(codes.surrogates.ModelWrapper method)</a>, <a href="codes.surrogates.html#codes.surrogates.ModelWrapper.identity_loss">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.benchmark.html#codes.benchmark.inference_time_bar_plot">inference_time_bar_plot() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.inference_time_bar_plot">[1]</a>
 
       <ul>
         <li><a href="api/codes.benchmark.html#codes.benchmark.bench_plots.inference_time_bar_plot">(in module codes.benchmark.bench_plots)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_plots.inference_time_bar_plot">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.tune.html#codes.tune.initialize_optuna_database">initialize_optuna_database() (in module codes.tune)</a>, <a href="codes.tune.html#codes.tune.initialize_optuna_database">[1]</a>
 
       <ul>
         <li><a href="api/codes.tune.html#codes.tune.postgres_fcts.initialize_optuna_database">(in module codes.tune.postgres_fcts)</a>, <a href="codes.tune.html#codes.tune.postgres_fcts.initialize_optuna_database">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.utils.html#codes.utils.interp_states">interp_states() (in module codes.utils)</a>, <a href="codes.utils.html#codes.utils.interp_states">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.utils.html#codes.utils.data_utils.interp_states">(in module codes.utils.data_utils)</a>, <a href="codes.utils.html#codes.utils.data_utils.interp_states">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1370,14 +1454,20 @@
         <li><a href="api/codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.load">(codes.surrogates.AbstractSurrogateModel method)</a>, <a href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.load">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.utils.html#codes.utils.load_and_save_config">load_and_save_config() (in module codes.utils)</a>, <a href="codes.utils.html#codes.utils.load_and_save_config">[1]</a>
 
       <ul>
         <li><a href="api/codes.utils.html#codes.utils.utils.load_and_save_config">(in module codes.utils.utils)</a>, <a href="codes.utils.html#codes.utils.utils.load_and_save_config">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.load_finetune_data">load_finetune_data() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.load_finetune_data">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.load_finetune_data">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.load_finetune_data">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.tune.html#codes.tune.evaluate_tuning.load_loss_history">load_loss_history() (in module codes.tune.evaluate_tuning)</a>, <a href="codes.tune.html#codes.tune.evaluate_tuning.load_loss_history">[1]</a>
 </li>
       <li><a href="api/codes.benchmark.html#codes.benchmark.load_model">load_model() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.load_model">[1]</a>
@@ -1404,6 +1494,12 @@
         <li><a href="api/codes.utils.html#codes.utils.utils.load_task_list">(in module codes.utils.utils)</a>, <a href="codes.utils.html#codes.utils.utils.load_task_list">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.load_trained_model">load_trained_model() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.load_trained_model">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.load_trained_model">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.load_trained_model">[1]</a>
+</li>
+      </ul></li>
       <li><a href="api/codes.tune.html#codes.tune.load_yaml_config">load_yaml_config() (in module codes.tune)</a>, <a href="codes.tune.html#codes.tune.load_yaml_config">[1]</a>
 
       <ul>
@@ -1422,6 +1518,8 @@
         <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function">(codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig attribute)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function">[1]</a>
 </li>
       </ul></li>
+      <li><a href="api/codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.loss_weights">loss_weights (codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig attribute)</a>, <a href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.loss_weights">[1]</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1518,6 +1616,10 @@
 </li>
         <li><a href="api/codes.benchmark.html#module-codes.benchmark.bench_utils">codes.benchmark.bench_utils</a>, <a href="codes.benchmark.html#module-codes.benchmark.bench_utils">[1]</a>
 </li>
+        <li><a href="api/codes.finetune.html#module-codes.finetune">codes.finetune</a>, <a href="codes.finetune.html#module-codes.finetune">[1]</a>
+</li>
+        <li><a href="api/codes.finetune.html#module-codes.finetune.finetune_fcts">codes.finetune.finetune_fcts</a>, <a href="codes.finetune.html#module-codes.finetune.finetune_fcts">[1]</a>
+</li>
         <li><a href="api/codes.surrogates.html#module-codes.surrogates">codes.surrogates</a>, <a href="codes.surrogates.html#module-codes.surrogates">[1]</a>
 </li>
         <li><a href="api/codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate">codes.surrogates.AbstractSurrogate</a>, <a href="codes.surrogates.AbstractSurrogate.html#module-codes.surrogates.AbstractSurrogate">[1]</a>
@@ -1603,6 +1705,12 @@
       </ul></li>
       <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig">MultiONetBaseConfig (class in codes.surrogates.DeepONet.deeponet_config)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet_config.MultiONetBaseConfig">[1]</a>
 </li>
+      <li><a href="api/codes.surrogates.html#codes.surrogates.MultiONetResidual">MultiONetResidual (class in codes.surrogates)</a>, <a href="codes.surrogates.html#codes.surrogates.MultiONetResidual">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual">(class in codes.surrogates.DeepONet.deeponet)</a>, <a href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1957,18 +2065,30 @@
         <li><a href="api/codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor">(codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig attribute)</a>, <a href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.regularization_factor">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.benchmark.html#codes.benchmark.rel_errors_and_uq">rel_errors_and_uq() (in module codes.benchmark)</a>, <a href="codes.benchmark.html#codes.benchmark.rel_errors_and_uq">[1]</a>
 
       <ul>
         <li><a href="api/codes.benchmark.html#codes.benchmark.bench_plots.rel_errors_and_uq">(in module codes.benchmark.bench_plots)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_plots.rel_errors_and_uq">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/codes.train.html#codes.train.DummyLock.release">release() (codes.train.DummyLock method)</a>, <a href="codes.train.html#codes.train.DummyLock.release">[1]</a>
 
       <ul>
         <li><a href="api/codes.train.html#codes.train.train_fcts.DummyLock.release">(codes.train.train_fcts.DummyLock method)</a>, <a href="codes.train.html#codes.train.train_fcts.DummyLock.release">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.rollout_errors">rollout_errors() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.rollout_errors">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.rollout_errors">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.rollout_errors">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.rollout_score">rollout_score() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.rollout_score">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.rollout_score">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.rollout_score">[1]</a>
 </li>
       </ul></li>
       <li><a href="api/codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.rtol">rtol (codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig attribute)</a>, <a href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.rtol">[1]</a>
@@ -1977,6 +2097,12 @@
 
       <ul>
         <li><a href="api/codes.benchmark.html#codes.benchmark.bench_fcts.run_benchmark">(in module codes.benchmark.bench_fcts)</a>, <a href="codes.benchmark.html#codes.benchmark.bench_fcts.run_benchmark">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="api/codes.finetune.html#codes.finetune.run_finetuning">run_finetuning() (in module codes.finetune)</a>, <a href="codes.finetune.html#codes.finetune.run_finetuning">[1]</a>
+
+      <ul>
+        <li><a href="api/codes.finetune.html#codes.finetune.finetune_fcts.run_finetuning">(in module codes.finetune.finetune_fcts)</a>, <a href="codes.finetune.html#codes.finetune.finetune_fcts.run_finetuning">[1]</a>
 </li>
       </ul></li>
   </ul></td>

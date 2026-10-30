@@ -184,6 +184,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides/running-benchmarks/index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/evaluation.html">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/modalities.html">Modalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/running-benchmarks/architectures.html">Baseline Architectures</a></li>
@@ -203,6 +204,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -369,6 +371,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.get_checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.get_registered_classes"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_registered_classes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.load"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.load()</span></code></a></li>
@@ -402,11 +405,16 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.fit"><code class="docutils literal notranslate"><span class="pre">FullyConnected.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.forward_from_state"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.prepare_data"><code class="docutils literal notranslate"><span class="pre">FullyConnected.prepare_data()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedNet"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedNet.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedResidual"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentNeuralODE"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE</span></code></a><ul class="nav section-nav flex-column">
@@ -437,8 +445,13 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.forward_from_state"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONetResidual"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONetResidual.forward"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.ODE"><code class="docutils literal notranslate"><span class="pre">ODE</span></code></a><ul class="nav section-nav flex-column">
@@ -479,6 +492,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.gradient_clip"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.gradient_clip</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_config.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
@@ -498,6 +512,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.get_checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.get_registered_classes"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_registered_classes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel.load"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.load()</span></code></a></li>
@@ -519,6 +534,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.activation"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.activation</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.beta"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.beta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.eta_min"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.eta_min</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.gradient_clip"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.gradient_clip</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.learning_rate"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.learning_rate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateBaseConfig.loss_function"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig.loss_function</span></code></a></li>
@@ -535,6 +551,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.get_checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.get_registered_classes"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_registered_classes()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.AbstractSurrogateModel.load"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.load()</span></code></a></li>
@@ -565,8 +582,13 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.forward_from_state"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONetResidual.forward"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.OperatorNetwork"><code class="docutils literal notranslate"><span class="pre">OperatorNetwork</span></code></a><ul>
@@ -624,11 +646,16 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.fit"><code class="docutils literal notranslate"><span class="pre">FullyConnected.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.forward_from_state"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward_from_state()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected.prepare_data"><code class="docutils literal notranslate"><span class="pre">FullyConnected.prepare_data()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedNet.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.fc_collate_fn"><code class="docutils literal notranslate"><span class="pre">fc_collate_fn()</span></code></a></li>
@@ -699,6 +726,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.encode_params"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.encode_params</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.latent_features"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.latent_features</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.layers_factor"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.layers_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.loss_weights"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.loss_weights</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.model_version"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.model_version</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.ode_layers"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.ode_layers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.LatentNeuralODE.html#codes.surrogates.LatentNeuralODE.latent_neural_ode_config.LatentNeuralODEBaseConfig.ode_tanh_reg"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODEBaseConfig.ode_tanh_reg</span></code></a></li>
@@ -978,6 +1006,31 @@ the current weights and update best_test_loss/epoch.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.AbstractSurrogateModel.forward_from_state">
+<span class="sig-name descname"><span class="pre">forward_from_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.AbstractSurrogateModel.forward_from_state" title="Link to this definition">#</a></dt>
+<dd><p>Predict the states at several time inputs from one initial state.</p>
+<p>Rollout finetuning needs this to run the model on states it produced itself,
+without building a dataloader. Surrogates that support finetuning implement
+it by packing the inputs the same way as their dataloader.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – Initial states of shape (batch, n_quantities), normalised.</p></li>
+<li><p><strong>times</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span>) – Time inputs of shape (n_times,), in the dummy time
+coordinate the model is trained on.</p></li>
+<li><p><strong>params</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Parameters of shape (batch, n_parameters).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Predicted states of shape (batch, n_times, n_quantities).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1388,6 +1441,19 @@ If True, trial.report is not used (not supported by Optuna).</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.FullyConnected.forward_from_state">
+<span class="sig-name descname"><span class="pre">forward_from_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FullyConnected.forward_from_state" title="Link to this definition">#</a></dt>
+<dd><p>Predict the states at several time inputs from one initial state.</p>
+<p>Packs [state, time, params] as create_dataloader does. See
+AbstractSurrogateModel.forward_from_state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="codes.surrogates.FullyConnected.prepare_data">
 <span class="sig-name descname"><span class="pre">prepare_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_train_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FullyConnected.prepare_data" title="Link to this definition">#</a></dt>
 <dd><p>Prepare the data for training, testing, and validation. This method should
@@ -1438,6 +1504,32 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.FullyConnectedResidual">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.surrogates.</span></span><span class="sig-name descname"><span class="pre">FullyConnectedResidual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_quantities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FullyConnectedResidual" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../codes.surrogates.FCNN.html#codes.surrogates.FCNN.fcnn.FullyConnected" title="codes.surrogates.FCNN.fcnn.FullyConnected"><code class="xref py py-class docutils literal notranslate"><span class="pre">FullyConnected</span></code></a></p>
+<p>FullyConnected variant that predicts the change from the initial state.</p>
+<p>The network output is added to the initial state, so it only has to learn
+the deviation from it. Everything downstream still sees absolute states.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.FullyConnectedResidual.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FullyConnectedResidual.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the FullyConnected model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></span>) – (x, targets) - ‘targets’ is included for a consistent interface</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(outputs, targets)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1807,6 +1899,20 @@ If True, trial.report is not used (not supported by Optuna).</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.MultiONet.forward_from_state">
+<span class="sig-name descname"><span class="pre">forward_from_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.MultiONet.forward_from_state" title="Link to this definition">#</a></dt>
+<dd><p>Predict the states at several time inputs from one initial state.</p>
+<p>Packs the branch and trunk inputs as create_dataloader does, with the
+parameters on the side set by params_branch. See
+AbstractSurrogateModel.forward_from_state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="codes.surrogates.MultiONet.prepare_data">
 <span class="sig-name descname"><span class="pre">prepare_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timesteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_train_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_val_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.MultiONet.prepare_data" title="Link to this definition">#</a></dt>
 <dd><p>Prepare the data for training, testing, and validation. This method should
@@ -1846,6 +1952,32 @@ return the DataLoader objects for the training, testing, and validation data.</p
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.surrogates.MultiONetResidual">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.surrogates.</span></span><span class="sig-name descname"><span class="pre">MultiONetResidual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_quantities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.MultiONetResidual" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../codes.surrogates.DeepONet.html#codes.surrogates.DeepONet.deeponet.MultiONet" title="codes.surrogates.DeepONet.deeponet.MultiONet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiONet</span></code></a></p>
+<p>MultiONet variant that predicts the change from the initial state.</p>
+<p>The branch input starts with the initial state, so adding its first N
+columns back onto the output leaves the network to learn the deviation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.MultiONetResidual.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.MultiONetResidual.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the MultiONet model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>tuple</em>) – The input tuple containing branch_input, trunk_input, and targets.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model outputs and the targets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1980,6 +2112,7 @@ registered hooks while the latter silently ignores them.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.get_checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_checkpoint()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.get_registered_classes"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.get_registered_classes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.AbstractSurrogateModel.load"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.load()</span></code></a></li>
@@ -2013,11 +2146,16 @@ registered hooks while the latter silently ignores them.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.fit"><code class="docutils literal notranslate"><span class="pre">FullyConnected.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.forward_from_state"><code class="docutils literal notranslate"><span class="pre">FullyConnected.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnected.prepare_data"><code class="docutils literal notranslate"><span class="pre">FullyConnected.prepare_data()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedNet"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedNet.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedNet.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedResidual"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentNeuralODE"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE</span></code></a><ul class="nav section-nav flex-column">
@@ -2048,8 +2186,13 @@ registered hooks while the latter silently ignores them.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.epoch"><code class="docutils literal notranslate"><span class="pre">MultiONet.epoch()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.fit"><code class="docutils literal notranslate"><span class="pre">MultiONet.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.forward"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.forward_from_state"><code class="docutils literal notranslate"><span class="pre">MultiONet.forward_from_state()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.prepare_data"><code class="docutils literal notranslate"><span class="pre">MultiONet.prepare_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONet.setup_criterion"><code class="docutils literal notranslate"><span class="pre">MultiONet.setup_criterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONetResidual"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.MultiONetResidual.forward"><code class="docutils literal notranslate"><span class="pre">MultiONetResidual.forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.ODE"><code class="docutils literal notranslate"><span class="pre">ODE</span></code></a><ul class="nav section-nav flex-column">

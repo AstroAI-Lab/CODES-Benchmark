@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    codes.benchmark
+   codes.finetune
    codes.surrogates
    codes.train
    codes.tune

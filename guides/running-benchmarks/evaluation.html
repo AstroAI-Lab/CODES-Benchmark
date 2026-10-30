@@ -49,7 +49,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Modalities" href="modalities.html" />
-    <link rel="prev" title="Training Surrogates" href="training.html" />
+    <link rel="prev" title="Rollout Finetuning" href="finetuning.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -186,6 +186,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modalities.html">Modalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architectures.html">Baseline Architectures</a></li>
@@ -205,6 +206,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -364,6 +366,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-evaluations">Launching evaluations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gets-produced">What gets produced</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-switches-recap">Evaluation switches recap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-rollouts">Iterative rollouts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
             </nav>
@@ -411,7 +414,7 @@
 <td><p>Saves epoch-wise train/test loss plots.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iterative</span></code></p></td>
-<td><p>Runs multi-step rollouts to measure drift over time, defaulting to brackets of 10 steps.</p></td>
+<td><p>Runs multi-step rollouts to measure drift over time. Set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, or to a block of options (see below).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gradients</span></code></p></td>
 <td><p>Correlates gradient norms with prediction errors.</p></td>
@@ -429,6 +432,52 @@
 </table>
 </div>
 <p>Leave switches off to skip expensive analyses and plotting functions. But compared to the training, eval is very lightweight: it only loads models and runs inference on the test set, and hence usually takes a few minutes at most.</p>
+</section>
+<section id="iterative-rollouts">
+<h2>Iterative rollouts<a class="headerlink" href="#iterative-rollouts" title="Link to this heading">#</a></h2>
+<p>With <code class="docutils literal notranslate"><span class="pre">iterative</span></code> enabled, the model is fed its own predictions instead of the true states, as it would be when coupled to a solver. <code class="docutils literal notranslate"><span class="pre">iterative:</span> <span class="pre">true</span></code> uses the defaults, options are set with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterative</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fixed_step</span><span class="w">   </span><span class="c1"># "grid" (default) or "fixed_step"</span>
+<span class="w">  </span><span class="nt">dt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0</span><span class="w">            </span><span class="c1"># fixed_step only: step size in the units of the timesteps</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;grid&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;grid&quot;</span></code> restarts the model from its own prediction every <code class="docutils literal notranslate"><span class="pre">interval</span></code> stored timesteps. <code class="docutils literal notranslate"><span class="pre">&quot;fixed_step&quot;</span></code> advances the model by one constant step size <code class="docutils literal notranslate"><span class="pre">dt</span></code> per call, as a solver with a fixed step would.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">interval</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid</span></code> only: stored timesteps per restart.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dt</span></code></p></td>
+<td><p>required for <code class="docutils literal notranslate"><span class="pre">fixed_step</span></code></p></td>
+<td><p>Step size in the units of the dataset timesteps. The rollout runs to the end of the stored time span; the reference is interpolated onto the times it lands on.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max_steps</span></code></p></td>
+<td><p>none</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_step</span></code> only: cap on the number of steps.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_span</span></code></p></td>
+<td><p>none</p></td>
+<td><p>If set, the median error is also reported separately for trajectories in which some quantity changes by at least this much over the time span and for the rest, in the units of the <code class="docutils literal notranslate"><span class="pre">*_log</span></code> metrics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">example</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;median_error&quot;</span></code></p></td>
+<td><p>Sample in the example plot: <code class="docutils literal notranslate"><span class="pre">&quot;median_error&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;dynamic&quot;</span></code> (the trajectory that changes most) or a sample index.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Besides the RMSE, MAE and percentile errors, the iterative evaluation reports the median absolute log error and the fraction of rollout entries that are not finite, so a diverging rollout shows up instead of distorting the averages. The example plot is saved as <code class="docutils literal notranslate"><span class="pre">example_preds_iterative.png</span></code>, or <code class="docutils literal notranslate"><span class="pre">example_preds_iterative_dt&lt;dt&gt;.png</span></code> in <code class="docutils literal notranslate"><span class="pre">fixed_step</span></code> mode.</p>
+<p>Iterative rollouts measure how a model behaves when used autoregressively. To improve that behaviour, see :doc:<code class="docutils literal notranslate"><span class="pre">finetuning</span></code>.</p>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
@@ -452,12 +501,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="training.html"
+       href="finetuning.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Training Surrogates</p>
+        <p class="prev-next-title">Rollout Finetuning</p>
       </div>
     </a>
     <a class="right-next"
@@ -490,6 +539,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-evaluations">Launching evaluations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gets-produced">What gets produced</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-switches-recap">Evaluation switches recap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-rollouts">Iterative rollouts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
   </nav></div>

@@ -186,6 +186,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Running Benchmarks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tuning.html">Hyperparameter Tuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="training.html">Training Surrogates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finetuning.html">Rollout Finetuning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="evaluation.html">Evaluation &amp; Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modalities.html">Modalities</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Baseline Architectures</a></li>
@@ -205,6 +206,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../api-reference.html">API Reference Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../codes.benchmark.html">codes.benchmark package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codes.finetune.html">codes.finetune package</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../codes.surrogates.html">codes.surrogates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.AbstractSurrogate.html">codes.surrogates.AbstractSurrogate package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../codes.surrogates.DeepONet.html">codes.surrogates.DeepONet package</a></li>
@@ -363,6 +365,7 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multionet-deeponet-variant">MultiONet (DeepONet variant)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fullyconnected-fcnn">FullyConnected (FCNN)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#residual-variants">Residual variants</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latentneuralode">LatentNeuralODE</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latentpolynomial-latentpoly">LatentPolynomial (LatentPoly)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#working-with-configs">Working with configs</a></li>
@@ -411,6 +414,15 @@
 </figcaption>
 </figure>
 </section>
+<section id="residual-variants">
+<h2>Residual variants<a class="headerlink" href="#residual-variants" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Classes</strong>: <code class="docutils literal notranslate"><span class="pre">MultiONetResidual</span></code> and <code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual</span></code>, defined next to their parents in the same files.</p></li>
+<li><p><strong>Idea</strong>: The network output is added to the initial state, so the model learns only the change from the input: <code class="docutils literal notranslate"><span class="pre">x(t)</span> <span class="pre">=</span> <span class="pre">x(0)</span> <span class="pre">+</span> <span class="pre">f(x(0),</span> <span class="pre">t)</span></code>. Architecture and hyperparameters are those of the parent.</p></li>
+<li><p><strong>Configs</strong>: Without a dataclass of their own in <code class="docutils literal notranslate"><span class="pre">surrogates_config.py</span></code>, they use the parent’s (<code class="docutils literal notranslate"><span class="pre">MultiONetConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">FullyConnectedConfig</span></code>).</p></li>
+<li><p><strong>When to use</strong>: Datasets where states change little over a step, and autoregressive use, where the model is fed its own predictions (see :doc:<code class="docutils literal notranslate"><span class="pre">finetuning</span></code>).</p></li>
+</ul>
+</section>
 <section id="latentneuralode">
 <h2>LatentNeuralODE<a class="headerlink" href="#latentneuralode" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -445,7 +457,7 @@
 <h2>Working with configs<a class="headerlink" href="#working-with-configs" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Each surrogate has a config dataclass inheriting from <code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code>. Shared fields include learning rate, optimizer (<code class="docutils literal notranslate"><span class="pre">adamw</span></code>/<code class="docutils literal notranslate"><span class="pre">sgd</span></code>), scheduler (<code class="docutils literal notranslate"><span class="pre">cosine</span></code>, <code class="docutils literal notranslate"><span class="pre">poly</span></code>, <code class="docutils literal notranslate"><span class="pre">schedulefree</span></code>), activation, and loss definition.</p></li>
-<li><p>Dataset-specific defaults live in <code class="docutils literal notranslate"><span class="pre">datasets/&lt;name&gt;/surrogates_config.py</span></code>. When <code class="docutils literal notranslate"><span class="pre">dataset.use_optimal_params:</span> <span class="pre">true</span></code>, CODES loads the corresponding dataclass and merges it with any overrides from <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>.</p></li>
+<li><p>Dataset-specific defaults live in <code class="docutils literal notranslate"><span class="pre">datasets/&lt;name&gt;/surrogates_config.py</span></code>. When <code class="docutils literal notranslate"><span class="pre">dataset.use_optimal_params:</span> <span class="pre">true</span></code>, CODES loads the corresponding dataclass and merges it with any overrides from <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>. A surrogate that subclasses another one falls back to its parent’s dataclass when it has none of its own.</p></li>
 <li><p>During tuning you reference config fields by name inside <code class="docutils literal notranslate"><span class="pre">optuna_params</span></code> so the sampled values get injected before training. Optional architectural variants (e.g., parameter routing choices) are exposed as categorical hyperparameters so studies can discover the best scheme per dataset.</p></li>
 </ul>
 <p>If you introduce a new surrogate, follow the same pattern: <code class="docutils literal notranslate"><span class="pre">codes/surrogates/&lt;Name&gt;/</span></code>, config dataclass, and an entry in the docs so downstream users know how to configure it.</p>
@@ -501,6 +513,7 @@
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multionet-deeponet-variant">MultiONet (DeepONet variant)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fullyconnected-fcnn">FullyConnected (FCNN)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#residual-variants">Residual variants</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latentneuralode">LatentNeuralODE</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latentpolynomial-latentpoly">LatentPolynomial (LatentPoly)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#working-with-configs">Working with configs</a></li>

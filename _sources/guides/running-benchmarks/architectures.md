@@ -34,6 +34,13 @@ alt: FullyConnected schematic
 FCNN consumes the initial state, desired time, and optional parameters with a single fully connected stack.
 ```
 
+## Residual variants
+
+- **Classes**: `MultiONetResidual` and `FullyConnectedResidual`, defined next to their parents in the same files.
+- **Idea**: The network output is added to the initial state, so the model learns only the change from the input: `x(t) = x(0) + f(x(0), t)`. Architecture and hyperparameters are those of the parent.
+- **Configs**: Without a dataclass of their own in `surrogates_config.py`, they use the parent's (`MultiONetConfig`, `FullyConnectedConfig`).
+- **When to use**: Datasets where states change little over a step, and autoregressive use, where the model is fed its own predictions (see :doc:`finetuning`).
+
 ## LatentNeuralODE
 
 - **Files**: `codes/surrogates/LatentNeuralODE/latent_neural_ode.py`, config `latent_neural_ode_config.py`.
@@ -67,7 +74,7 @@ LatentPoly learns parameter-aware polynomial coefficients that evolve the latent
 ## Working with configs
 
 - Each surrogate has a config dataclass inheriting from `AbstractSurrogateBaseConfig`. Shared fields include learning rate, optimizer (`adamw`/`sgd`), scheduler (`cosine`, `poly`, `schedulefree`), activation, and loss definition.
-- Dataset-specific defaults live in `datasets/<name>/surrogates_config.py`. When `dataset.use_optimal_params: true`, CODES loads the corresponding dataclass and merges it with any overrides from `config.yaml`.
+- Dataset-specific defaults live in `datasets/<name>/surrogates_config.py`. When `dataset.use_optimal_params: true`, CODES loads the corresponding dataclass and merges it with any overrides from `config.yaml`. A surrogate that subclasses another one falls back to its parent's dataclass when it has none of its own.
 - During tuning you reference config fields by name inside `optuna_params` so the sampled values get injected before training. Optional architectural variants (e.g., parameter routing choices) are exposed as categorical hyperparameters so studies can discover the best scheme per dataset.
 
 If you introduce a new surrogate, follow the same pattern: `codes/surrogates/<Name>/`, config dataclass, and an entry in the docs so downstream users know how to configure it.

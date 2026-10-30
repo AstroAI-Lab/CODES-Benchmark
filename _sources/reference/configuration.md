@@ -1,6 +1,6 @@
 # Configuration Reference
 
-All orchestration happens through YAML configuration files. This page documents every configuration option used by `run_training.py` and `run_eval.py`, including which keys are required and which ones have defaults.
+All orchestration happens through YAML configuration files. This page documents every configuration option used by `run_training.py`, `run_finetuning.py` and `run_eval.py`, including which keys are required and which ones have defaults.
 
 ## How defaults work
 
@@ -55,11 +55,51 @@ All switches default to `false` if omitted.
 | Key | Default | Notes |
 | --- | --- | --- |
 | `losses` | `false` | Plots training and test losses. |
-| `iterative` | `false` | Iterative roll-out evaluation. |
+| `iterative` | `false` | Iterative roll-out evaluation. `true` or a block of options, see below. |
 | `gradients` | `false` | Gradient vs error analysis. |
 | `timing` | `false` | Inference timing benchmarks. |
 | `compute` | `false` | Memory/parameter count benchmarks. |
 | `compare` | `false` | Cross-surrogate comparison plots/tables. |
+
+## Iterative block (optional)
+
+`iterative` may be a block instead of `true`. Details in the evaluation guide, section *Iterative rollouts*.
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `iterative.mode` | `"grid"` | `"grid"` or `"fixed_step"`. |
+| `iterative.interval` | `10` | `grid`: stored timesteps per restart. |
+| `iterative.dt` | None | `fixed_step`: step size in the units of the timesteps. Required for `fixed_step`. |
+| `iterative.max_steps` | None | `fixed_step`: cap on the number of steps. |
+| `iterative.dynamic_span` | None | Also report errors separately for trajectories that change by at least this much, in the units of the `*_log` metrics. |
+| `iterative.example` | `"median_error"` | Plotted sample: `"median_error"`, `"dynamic"` or an index. |
+
+## Finetune block (optional)
+
+Read by `run_finetuning.py` only. Step sizes are in the units of the dataset timesteps, errors in the units of the `*_log` metrics. Details in the finetuning guide.
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `finetune.dt_range` | None | Required. Smallest and largest step size to train on. |
+| `finetune.training_id` | `<training_id>_finetune` | Run the finetuned models are saved as. |
+| `finetune.surrogates` | `surrogates` | Surrogates to finetune. |
+| `finetune.seed` | `seed` | Seed of the finetuning and of the search. |
+| `finetune.epochs` | `75` | Finetuning epochs. |
+| `finetune.batch_size` | `1024` | Trajectories per batch. |
+| `finetune.learning_rate` | `1e-5` | Adam learning rate. |
+| `finetune.gradient_clip` | `1.0` | Maximum gradient norm, `0` disables clipping. |
+| `finetune.rollout_weight` | `0.05` | Share of the loss given to the rollout term. |
+| `finetune.rollout_steps` | `10` | Graded rollout steps per batch. |
+| `finetune.rollout_aggregation` | `"mean"` | `"mean"` or `"sum_decay"`. |
+| `finetune.rollout_decay` | `1.0` | Step weight ratio for `sum_decay`. |
+| `finetune.start_bias` | `1.0` | Above 1 starts the graded steps earlier. |
+| `finetune.noise` | `0.0` | Noise on the rollout start state, normalised units. |
+| `finetune.max_warmup_steps` | `1000` | Cap on the steps without gradients before grading. |
+| `finetune.eval_dt_range` | `dt_range` | Step sizes the score is taken over. |
+| `finetune.eval_n_dt` | `4` | Number of step sizes in the score. |
+| `finetune.eval_samples` | `2000` | Test trajectories used for the score. |
+| `finetune.dynamic_span` | None | Score only trajectories that change by at least this much. |
+| `finetune.optuna` | None | Search: `n_trials`, `params` (same format as tuning), optional `storage`, `study_name`. |
 
 ## Metric options
 
