@@ -44,33 +44,47 @@ Edit `pyproject.toml`, then update the lockfile and the pinned requirements:
 
 ```bash
 uv lock
-uv export --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
+uv export --locked --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
 ```
 
 CI fails if `uv.lock` is out of date with `pyproject.toml`.
 
 ## Code style and formatting
 
-This repository uses:
+This repository uses [Ruff](https://docs.astral.sh/ruff/) for linting, import sorting,
+and formatting, including the tutorial notebook. The rules cover pycodestyle (`E`),
+Pyflakes (`F`), import sorting (`I`), simplification (`SIM`), and Python upgrades (`UP`),
+targeting Python 3.11. Line length is handled by the formatter; import placement has
+exceptions for standalone scripts that configure their import path.
 
-- [Black](https://black.readthedocs.io/en/stable/) for formatting
-- [isort](https://pycqa.github.io/isort/) for import sorting
+CI runs the Ruff version pinned in `uv.lock`. Pre-commit uses the same version, and
+`required-version` in `pyproject.toml` rejects mismatches. When upgrading Ruff, update
+the dependency pin, `required-version`, and the hook revision together, then refresh
+`uv.lock` and `requirements.txt`.
 
-CI checks both on every pull request and fails if a file needs reformatting, so run them before pushing.
-
-Run both locally with:
+Apply lint fixes and format before pushing:
 
 ```bash
-black .
-isort .
+uv run --locked ruff check --fix .
+uv run --locked ruff format .
+```
+
+Run the checks used by CI with:
+
+```bash
+uv run --locked ruff check .
+uv run --locked ruff format --check .
 ```
 
 If you use pre-commit, install hooks once and run them across the repository:
 
 ```bash
-pre-commit install
-pre-commit run --all-files
+uv run --locked pre-commit install
+uv run --locked pre-commit run --all-files
 ```
+
+With the pip setup, run `ruff` and `pre-commit` directly from the activated
+environment after installing `requirements.txt`.
 
 ## Tests and documentation checks
 

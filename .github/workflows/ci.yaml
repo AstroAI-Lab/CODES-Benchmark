@@ -28,11 +28,11 @@ jobs:
       - name: Check that uv.lock matches pyproject.toml
         run: uv lock --check
 
-      - name: Check formatting
+      - name: Check lint and formatting with Ruff
         run: |
           uv sync --locked --only-group dev
-          uv run --no-sync black --check .
-          uv run --no-sync isort --check-only .
+          uv run --no-sync ruff check --output-format=github .
+          uv run --no-sync ruff format --check .
 
   test:
     runs-on: ubuntu-latest

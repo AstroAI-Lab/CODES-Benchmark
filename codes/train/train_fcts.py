@@ -1,3 +1,4 @@
+import contextlib
 import os
 import threading
 import traceback
@@ -244,10 +245,8 @@ def worker(
             # Workers share the JSON task list, so serialise the read-modify-write.
             with threadlock:
                 current_list = load_task_list(task_list_filepath)
-                try:
+                with contextlib.suppress(ValueError):
                     current_list.remove(list(task))
-                except ValueError:
-                    pass
                 save_task_list(current_list, task_list_filepath)
 
         except Exception:
@@ -345,10 +344,8 @@ def sequential_training(tasks, device_list, task_list_filepath: str):
             # Only remove *this* task from JSON if success
             current_list = load_task_list(task_list_filepath)
             task_as_list = list(task)
-            try:
+            with contextlib.suppress(ValueError):
                 current_list.remove(task_as_list)
-            except ValueError:
-                pass
             save_task_list(current_list, task_list_filepath)
 
         except Exception:

@@ -132,25 +132,25 @@ def assert_tensor_properties(
     tensor, expected_shape=None, expected_device=None, expected_dtype=None
 ):
     """Helper function to assert tensor properties."""
-    assert isinstance(
-        tensor, torch.Tensor
-    ), f"Expected torch.Tensor, got {type(tensor)}"
+    assert isinstance(tensor, torch.Tensor), (
+        f"Expected torch.Tensor, got {type(tensor)}"
+    )
 
     if expected_shape is not None:
-        assert (
-            tensor.shape == expected_shape
-        ), f"Expected shape {expected_shape}, got {tensor.shape}"
+        assert tensor.shape == expected_shape, (
+            f"Expected shape {expected_shape}, got {tensor.shape}"
+        )
 
     if expected_device is not None:
         expected_device_type = expected_device.split(":")[0]
-        assert (
-            tensor.device.type == expected_device_type
-        ), f"Expected device {expected_device_type}, got {tensor.device.type}"
+        assert tensor.device.type == expected_device_type, (
+            f"Expected device {expected_device_type}, got {tensor.device.type}"
+        )
 
     if expected_dtype is not None:
-        assert (
-            tensor.dtype == expected_dtype
-        ), f"Expected dtype {expected_dtype}, got {tensor.dtype}"
+        assert tensor.dtype == expected_dtype, (
+            f"Expected dtype {expected_dtype}, got {tensor.dtype}"
+        )
 
 
 def assert_model_state_consistency(
@@ -163,23 +163,23 @@ def assert_model_state_consistency(
         # Check that parameter shapes match
         params1 = list(model1.parameters())
         params2 = list(model2.parameters())
-        assert len(params1) == len(
-            params2
-        ), "Models should have same number of parameters"
+        assert len(params1) == len(params2), (
+            "Models should have same number of parameters"
+        )
 
         for p1, p2 in zip(params1, params2):
-            assert (
-                p1.shape == p2.shape
-            ), f"Parameter shapes don't match: {p1.shape} vs {p2.shape}"
+            assert p1.shape == p2.shape, (
+                f"Parameter shapes don't match: {p1.shape} vs {p2.shape}"
+            )
 
     if check_attributes:
         # Check basic attributes
         basic_attrs = ["n_quantities", "n_timesteps", "n_parameters"]
         for attr in basic_attrs:
             if hasattr(model1, attr) and hasattr(model2, attr):
-                assert getattr(model1, attr) == getattr(
-                    model2, attr
-                ), f"Attribute {attr} doesn't match"
+                assert getattr(model1, attr) == getattr(model2, attr), (
+                    f"Attribute {attr} doesn't match"
+                )
 
 
 # Export utility functions for use in test modules

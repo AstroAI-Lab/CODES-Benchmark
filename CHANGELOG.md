@@ -40,6 +40,9 @@ affecting results".
 
 ### Changed
 
+- Replaced Black and isort with Ruff for linting, import sorting and formatting.
+  CI and pre-commit use the same pinned Ruff version. The rule set covers `E`, `F`,
+  `I`, `SIM` and `UP` on Python files and the tutorial notebook.
 - Citation guidance now prioritises the software release, with the A&A paper
   requested when using its astrochemical datasets or analysis.
 

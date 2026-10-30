@@ -26,6 +26,7 @@ dist/
 data.hdf5
 .venv
 .pytest_cache
+.ruff_cache/
 *.egg-info
 .flake8
 dont_need.html

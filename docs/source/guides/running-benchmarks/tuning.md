@@ -93,6 +93,7 @@ CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect st
 - Python REPL / script:
   ```python
   import optuna
+
   study = optuna.create_study(
       study_name="primordial_MultiONet",
       storage="postgresql+psycopg2://optuna_user@localhost:5432/primordial",

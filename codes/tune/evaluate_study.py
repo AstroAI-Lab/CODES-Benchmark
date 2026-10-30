@@ -40,7 +40,7 @@ def load_study_config(study_name: str) -> dict:
     """
 
     config_path = os.path.join("tuned", "studies", study_name, "optuna_config.yaml")
-    with open(config_path, "r") as file:
+    with open(config_path) as file:
         return yaml.safe_load(file)
 
 

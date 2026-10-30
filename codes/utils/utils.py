@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 
 def read_yaml_config(config_path):
-    with open(config_path, "r", encoding="utf-8") as file:
+    with open(config_path, encoding="utf-8") as file:
         config = yaml.safe_load(file)
 
     # Parse for "None" strings
@@ -220,10 +220,7 @@ def make_description(mode: str, device: str, metric: str, surrogate_name: str) -
     surrogate_name = surrogate_name.ljust(14)
     mode = mode.ljust(13)
     metric = metric.ljust(2)
-    if device == "":
-        device = device.ljust(6)
-    else:
-        device = f"({device})".ljust(8)
+    device = device.ljust(6) if device == "" else f"({device})".ljust(8)
 
     description = f"{surrogate_name} {mode} {metric} {device}"
     return description
@@ -304,7 +301,7 @@ def load_task_list(filepath: str | None) -> list:
         list: The loaded list of tasks
     """
     if os.path.exists(filepath):
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             tasks = json.load(f)
         return tasks
     else:
@@ -341,11 +338,10 @@ def check_training_status(config: dict) -> tuple[str, bool]:
 
         # Check if cuda is available if the device is set to cuda
         for device in config["devices"]:
-            if "cuda" in device:
-                if not torch.cuda.is_available():
-                    raise ValueError(
-                        "You have selected at least one cuda device, but CUDA is not available. Please adjust the device settings in config.yaml."
-                    )
+            if "cuda" in device and not torch.cuda.is_available():
+                raise ValueError(
+                    "You have selected at least one cuda device, but CUDA is not available. Please adjust the device settings in config.yaml."
+                )
 
         # Check if the configurations are the same
         errors = []

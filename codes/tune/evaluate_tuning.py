@@ -1,7 +1,6 @@
 import argparse
 import math
 import os
-import re
 import subprocess
 import sys
 import time
@@ -221,7 +220,6 @@ def compute_pareto_plot_data(
                 "skipping highlight."
             )
 
-    y = points[:, 1]
     y_min = 0
     y_max = best_point[1] * 1.3
 
@@ -250,8 +248,8 @@ def summarize_pareto_tradeoff(data: dict):
     y_rel = y_span / max(abs(min_y), 1e-12)
     print(
         f"{suffix}: Pareto span Δdex={x_span:.4f} "
-        f"(x{ x_rel:.2f} relative), inference time span={y_span:.4f}s "
-        f"(x{ y_rel:.2f} relative)"
+        f"(x{x_rel:.2f} relative), inference time span={y_span:.4f}s "
+        f"(x{y_rel:.2f} relative)"
     )
     best_err, best_time = float(best_point[0]), float(best_point[1])
     print(
@@ -857,7 +855,6 @@ def evaluate_tuning(
                 f"Models folder for surrogate '{suffix}' not found in {models_root}. Available: {available}"
             )
             continue
-        models_dir = os.path.join(models_root, match)
 
         # # Collect top trials' loss histories
         # records = []

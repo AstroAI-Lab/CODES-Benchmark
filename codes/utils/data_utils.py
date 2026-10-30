@@ -1,7 +1,6 @@
 import os
 import urllib.request
 from math import isclose
-from typing import Optional, Union
 
 import h5py
 import numpy as np
@@ -164,7 +163,7 @@ def check_and_load_data(
                 print("Parameters normalized.")
                 print(f"Parameters info: {params_info}")
 
-        data_info["log10_transform"] = True if log else False
+        data_info["log10_transform"] = bool(log)
 
         for data in (train_data, test_data, val_data):
             if data.ndim != 3:
@@ -296,28 +295,20 @@ def normalize_data(
         # Standardize the training data
         train_data_norm = (train_data - mean) / std
 
-        if test_data is not None:
-            test_data_norm = (test_data - mean) / std
-        else:
-            test_data_norm = None
+        test_data_norm = (test_data - mean) / std if test_data is not None else None
 
-        if val_data is not None:
-            val_data_norm = (val_data - mean) / std
-        else:
-            val_data_norm = None
+        val_data_norm = (val_data - mean) / std if val_data is not None else None
 
     return data_info, train_data_norm, test_data_norm, val_data_norm
 
 
 def create_dataset(
     name: str,
-    data: Union[np.ndarray, tuple[np.ndarray, np.ndarray, np.ndarray]],
-    params: Optional[
-        Union[np.ndarray, tuple[np.ndarray, np.ndarray, np.ndarray]]
-    ] = None,
+    data: np.ndarray | tuple[np.ndarray, np.ndarray, np.ndarray],
+    params: np.ndarray | tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
     split: tuple[float, float, float] = (0.7, 0.1, 0.2),
-    timesteps: Optional[np.ndarray] = None,
-    labels: Optional[list[str]] = None,
+    timesteps: np.ndarray | None = None,
+    labels: list[str] | None = None,
 ):
     """
     Creates a new dataset in the data directory.
@@ -501,11 +492,11 @@ def create_hdf5_dataset(
     val_data: np.ndarray,
     dataset_name: str,
     data_dir: str = "datasets",
-    timesteps: Optional[np.ndarray] = None,
-    labels: Optional[list[str]] = None,
-    train_params: Optional[np.ndarray] = None,
-    test_params: Optional[np.ndarray] = None,
-    val_params: Optional[np.ndarray] = None,
+    timesteps: np.ndarray | None = None,
+    labels: list[str] | None = None,
+    train_params: np.ndarray | None = None,
+    test_params: np.ndarray | None = None,
+    val_params: np.ndarray | None = None,
 ):
     """
     Create an HDF5 file for a dataset with train, test, and validation data, along with optional timesteps and parameters.
@@ -672,7 +663,7 @@ def download_data(dataset_name: str, path: str | None = None, verbose: bool = Tr
             print_data_info(data_path)
         return
 
-    with open("datasets/data_sources.yaml", "r", encoding="utf-8") as file:
+    with open("datasets/data_sources.yaml", encoding="utf-8") as file:
         data_sources = yaml.safe_load(file)
 
     try:
@@ -704,15 +695,12 @@ def print_data_info(data_path):
         print("Dataset Info:")
 
         def _attr_or_default(name, default=None):
-            return f.attrs[name] if name in f.attrs else default
+            return f.attrs.get(name, default)
 
         # infer n_quantities if missing
         n_quantities = _attr_or_default("n_quantities")
         if n_quantities is None:
-            if "train" in f:
-                n_quantities = f["train"].shape[-1]
-            else:
-                n_quantities = "unknown"
+            n_quantities = f["train"].shape[-1] if "train" in f else "unknown"
 
         train_samples = _attr_or_default(
             "n_train_samples", f["train"].shape[0] if "train" in f else 0
@@ -729,10 +717,7 @@ def print_data_info(data_path):
 
         n_parameters = _attr_or_default("n_parameters")
         if n_parameters is None:
-            if "train_params" in f:
-                n_parameters = f["train_params"].shape[-1]
-            else:
-                n_parameters = 0
+            n_parameters = f["train_params"].shape[-1] if "train_params" in f else 0
 
         if n_parameters:
             print(

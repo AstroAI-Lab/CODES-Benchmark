@@ -94,7 +94,7 @@ class FullyConnectedNet(nn.Module):
         num_hidden_layers,
         activation=nn.ReLU(),
     ):
-        super(FullyConnectedNet, self).__init__()
+        super().__init__()
         layers = [nn.Linear(input_size, hidden_size), activation]
         for _ in range(num_hidden_layers - 1):
             layers += [nn.Linear(hidden_size, hidden_size), activation]
@@ -206,9 +206,9 @@ class FullyConnected(AbstractSurrogateModel):
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
-        assert (
-            timesteps.shape[0] == dataset_train.shape[1]
-        ), "Number of timesteps in timesteps array and dataset must match."
+        assert timesteps.shape[0] == dataset_train.shape[1], (
+            "Number of timesteps in timesteps array and dataset must match."
+        )
 
         nw = getattr(self.config, "num_workers", 0)
 
@@ -347,9 +347,8 @@ class FullyConnected(AbstractSurrogateModel):
         n_samples, n_timesteps, n_quantities = data.shape
         total = n_samples * n_timesteps
 
-        if pin_memory:
-            if "cuda" not in self.device:
-                pin_memory = False
+        if pin_memory and "cuda" not in self.device:
+            pin_memory = False
 
         init_states = data[:, 0, :]  # (n_samples, n_quantities)
         rep_init = np.repeat(

@@ -95,9 +95,8 @@ class LatentPoly(AbstractSurrogateModel):
         num_workers: int = 0,
         pin_memory: bool = True,
     ):
-        if pin_memory:
-            if "cuda" not in self.device:
-                pin_memory = False
+        if pin_memory and "cuda" not in self.device:
+            pin_memory = False
 
         data_t = torch.from_numpy(data).float()
         t_t = torch.from_numpy(timesteps).float()
@@ -135,9 +134,9 @@ class LatentPoly(AbstractSurrogateModel):
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
-        assert (
-            timesteps.shape[0] == dataset_train.shape[1]
-        ), "Number of timesteps in timesteps array and dataset must match."
+        assert timesteps.shape[0] == dataset_train.shape[1], (
+            "Number of timesteps in timesteps array and dataset must match."
+        )
 
         nw = getattr(self.config, "num_workers", 0)
 
@@ -363,10 +362,7 @@ class PolynomialModelWrapper(nn.Module):
             encoder_input = x0  # Encoder gets only the raw data.
         else:
             # Otherwise, concatenate fixed parameters to the encoder input (if provided).
-            if params is not None:
-                encoder_input = torch.cat([x0, params], dim=1)
-            else:
-                encoder_input = x0
+            encoder_input = torch.cat([x0, params], dim=1) if params is not None else x0
         z0 = self.encoder(encoder_input)
         t = t_range.unsqueeze(0).repeat(current_batch_size, 1)
         if self.config.coeff_network and (params is not None):

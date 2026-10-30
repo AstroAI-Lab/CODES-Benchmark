@@ -6,7 +6,6 @@ The functions in this module are invoked by `run_eval.py` and populate the metri
 dictionary that later feeds the comparative plots and CSV exports.
 """
 
-import os
 from contextlib import redirect_stdout
 from typing import Any
 
@@ -586,7 +585,6 @@ def evaluate_iterative_predictions(
             )
 
     iterative_preds_log = model.denormalize(iterative_preds, leave_log=True)
-    full_preds_log = model.denormalize(full_preds, leave_log=True)
     targets_log = model.denormalize(targets, leave_log=True)
     iterative_preds = model.denormalize(iterative_preds)
     full_preds_real = model.denormalize(full_preds)
@@ -835,8 +833,7 @@ def evaluate_compute(
                 )
     else:
         print(
-            "Skipping GPU memory profiling for compute evaluation "
-            "(CUDA not available)."
+            "Skipping GPU memory profiling for compute evaluation (CUDA not available)."
         )
 
     # Count the number of trainable parameters
@@ -2188,9 +2185,8 @@ def tabular_comparison(all_metrics: dict, config: dict) -> None:
     print()
 
     txt_path = f"results/{config['training_id']}/metrics_table.txt"
-    with open(txt_path, "w") as f:
-        with redirect_stdout(f):
-            print(table)
+    with open(txt_path, "w") as f, redirect_stdout(f):
+        print(table)
 
     make_comparison_csv(metrics=all_metrics, config=config)
     save_table_csv(headers, rows, config)

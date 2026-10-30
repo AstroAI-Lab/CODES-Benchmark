@@ -36,8 +36,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
-    "isort>=6.0.1",
+    "ruff==0.17.3",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
@@ -55,15 +54,22 @@ pythonpath = ["."]
 [tool.setuptools.packages.find]
 include = ["codes*"]
 
-[tool.black]
+[tool.ruff]
+required-version = "==0.17.3"
 line-length = 88
-target-version = ['py311']
-include = '\.pyi?$'
+target-version = "py311"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
+[tool.ruff.lint]
+select = ["E", "F", "I", "SIM", "UP"]
+ignore = ["E501"]  # Ruff format handles line length where practical.
+
+[tool.ruff.lint.per-file-ignores]
+# Keep the established package-level public re-exports.
+"codes/__init__.py" = ["F403"]
+# These standalone scripts set up sys.path before importing project modules.
+"datasets/_data_analysis/analyse_all_datasets.py" = ["E402"]
+"datasets/_data_analysis/analyse_dataset.py" = ["E402"]
+"datasets/_data_generation/generate_data.py" = ["E402"]
 
 [tool.coverage.run]
 source = ["codes"]

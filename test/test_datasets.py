@@ -22,7 +22,7 @@ def get_available_datasets():
     if not os.path.exists(data_sources_path):
         return []
 
-    with open(data_sources_path, "r", encoding="utf-8") as f:
+    with open(data_sources_path, encoding="utf-8") as f:
         data_sources = yaml.safe_load(f)
 
     return list(data_sources.keys())
@@ -81,33 +81,33 @@ class TestDataSourcesYaml:
 
     def test_data_sources_yaml_exists(self):
         """Test that data_sources.yaml exists and is readable."""
-        assert os.path.exists(
-            "datasets/data_sources.yaml"
-        ), "data_sources.yaml file not found"
+        assert os.path.exists("datasets/data_sources.yaml"), (
+            "data_sources.yaml file not found"
+        )
 
     def test_data_sources_yaml_format(self):
         """Test that data_sources.yaml has correct format."""
-        with open("datasets/data_sources.yaml", "r", encoding="utf-8") as f:
+        with open("datasets/data_sources.yaml", encoding="utf-8") as f:
             data_sources = yaml.safe_load(f)
 
-        assert isinstance(
-            data_sources, dict
-        ), "data_sources.yaml should contain a dictionary"
+        assert isinstance(data_sources, dict), (
+            "data_sources.yaml should contain a dictionary"
+        )
         assert len(data_sources) > 0, "data_sources.yaml should not be empty"
 
     def test_data_sources_urls(self):
         """Test that all datasets have valid URL format."""
-        with open("datasets/data_sources.yaml", "r", encoding="utf-8") as f:
+        with open("datasets/data_sources.yaml", encoding="utf-8") as f:
             data_sources = yaml.safe_load(f)
 
         for dataset_name, url in data_sources.items():
-            assert isinstance(
-                dataset_name, str
-            ), f"Dataset name {dataset_name} should be string"
+            assert isinstance(dataset_name, str), (
+                f"Dataset name {dataset_name} should be string"
+            )
             assert isinstance(url, str), f"URL for {dataset_name} should be string"
-            assert url.startswith(
-                ("http://", "https://")
-            ), f"URL for {dataset_name} should start with http:// or https://"
+            assert url.startswith(("http://", "https://")), (
+                f"URL for {dataset_name} should start with http:// or https://"
+            )
 
     def test_expected_datasets_present(self):
         """Test that expected datasets are present in data_sources.yaml."""
@@ -121,9 +121,9 @@ class TestDataSourcesYaml:
         ]
 
         for dataset in expected_datasets:
-            assert (
-                dataset in AVAILABLE_DATASETS
-            ), f"Expected dataset {dataset} not found in data_sources.yaml"
+            assert dataset in AVAILABLE_DATASETS, (
+                f"Expected dataset {dataset} not found in data_sources.yaml"
+            )
 
 
 class TestDownloadData:
@@ -147,12 +147,12 @@ class TestDownloadData:
 
         try:
             download_data(dataset_name, path=download_path, verbose=False)
-            assert os.path.exists(
-                download_path
-            ), f"Dataset {dataset_name} was not downloaded"
-            assert (
-                os.path.getsize(download_path) > 0
-            ), f"Downloaded file for {dataset_name} is empty"
+            assert os.path.exists(download_path), (
+                f"Dataset {dataset_name} was not downloaded"
+            )
+            assert os.path.getsize(download_path) > 0, (
+                f"Downloaded file for {dataset_name} is empty"
+            )
         except Exception as e:
             pytest.skip(f"Download failed for {dataset_name}: {e}")
 
@@ -169,7 +169,7 @@ class TestDownloadData:
         if AVAILABLE_DATASETS:
             download_data(dataset_name, path=download_path, verbose=False)
 
-            with open(download_path, "r") as f:
+            with open(download_path) as f:
                 content = f.read()
             assert content == "dummy content", "Existing file should not be overwritten"
 
@@ -186,30 +186,30 @@ class TestLocalDatasets:
             # Check required datasets exist
             required_datasets = ["train", "test", "val"]
             for req_dataset in required_datasets:
-                assert (
-                    req_dataset in f
-                ), f"Dataset {dataset_name} missing required '{req_dataset}' data"
+                assert req_dataset in f, (
+                    f"Dataset {dataset_name} missing required '{req_dataset}' data"
+                )
 
             # Check data shapes
             train_data = f["train"]
             test_data = f["test"]
             val_data = f["val"]
 
-            assert (
-                len(train_data.shape) == 3
-            ), f"Train data in {dataset_name} should be 3D"
-            assert (
-                len(test_data.shape) == 3
-            ), f"Test data in {dataset_name} should be 3D"
+            assert len(train_data.shape) == 3, (
+                f"Train data in {dataset_name} should be 3D"
+            )
+            assert len(test_data.shape) == 3, (
+                f"Test data in {dataset_name} should be 3D"
+            )
             assert len(val_data.shape) == 3, f"Val data in {dataset_name} should be 3D"
 
             # Check consistent dimensions
-            assert (
-                train_data.shape[1] == test_data.shape[1] == val_data.shape[1]
-            ), f"Inconsistent timestep dimensions in {dataset_name}"
-            assert (
-                train_data.shape[2] == test_data.shape[2] == val_data.shape[2]
-            ), f"Inconsistent quantity dimensions in {dataset_name}"
+            assert train_data.shape[1] == test_data.shape[1] == val_data.shape[1], (
+                f"Inconsistent timestep dimensions in {dataset_name}"
+            )
+            assert train_data.shape[2] == test_data.shape[2] == val_data.shape[2], (
+                f"Inconsistent quantity dimensions in {dataset_name}"
+            )
 
     @pytest.mark.parametrize("dataset_name", LOCAL_DATASETS)
     def test_local_dataset_timesteps(self, dataset_name):
@@ -221,12 +221,12 @@ class TestLocalDatasets:
                 timesteps = f["timesteps"]
                 train_data = f["train"]
 
-                assert (
-                    len(timesteps.shape) == 1
-                ), f"Timesteps in {dataset_name} should be 1D"
-                assert (
-                    timesteps.shape[0] == train_data.shape[1]
-                ), f"Timesteps length doesn't match data timesteps in {dataset_name}"
+                assert len(timesteps.shape) == 1, (
+                    f"Timesteps in {dataset_name} should be 1D"
+                )
+                assert timesteps.shape[0] == train_data.shape[1], (
+                    f"Timesteps length doesn't match data timesteps in {dataset_name}"
+                )
 
     @pytest.mark.parametrize("dataset_name", LOCAL_DATASETS)
     def test_local_dataset_parameters(self, dataset_name):
@@ -247,19 +247,19 @@ class TestLocalDatasets:
                 val_data = f["val"]
 
                 # Check parameter shapes
-                assert (
-                    len(train_params.shape) == 2
-                ), f"Train params in {dataset_name} should be 2D"
-                assert (
-                    train_params.shape[0] == train_data.shape[0]
-                ), f"Train params count doesn't match train data samples in {dataset_name}"
+                assert len(train_params.shape) == 2, (
+                    f"Train params in {dataset_name} should be 2D"
+                )
+                assert train_params.shape[0] == train_data.shape[0], (
+                    f"Train params count doesn't match train data samples in {dataset_name}"
+                )
 
-                assert (
-                    test_params.shape[0] == test_data.shape[0]
-                ), f"Test params count doesn't match test data samples in {dataset_name}"
-                assert (
-                    val_params.shape[0] == val_data.shape[0]
-                ), f"Val params count doesn't match val data samples in {dataset_name}"
+                assert test_params.shape[0] == test_data.shape[0], (
+                    f"Test params count doesn't match test data samples in {dataset_name}"
+                )
+                assert val_params.shape[0] == val_data.shape[0], (
+                    f"Val params count doesn't match val data samples in {dataset_name}"
+                )
 
 
 class TestCheckAndLoadData:
@@ -342,9 +342,9 @@ class TestCheckAndLoadData:
                 )
 
                 data_info = result[4]
-                assert (
-                    "mode" in data_info
-                ), f"Data info should contain normalization mode for {mode}"
+                assert "mode" in data_info, (
+                    f"Data info should contain normalization mode for {mode}"
+                )
 
             except Exception as e:
                 pytest.fail(f"Failed to load dataset with {mode} normalization: {e}")
