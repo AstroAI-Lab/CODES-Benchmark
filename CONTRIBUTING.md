@@ -47,7 +47,16 @@ uv lock
 uv export --locked --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
 ```
 
-CI fails if `uv.lock` is out of date with `pyproject.toml`.
+CI fails if `uv.lock` is out of date with `pyproject.toml`, or if `requirements.txt`
+does not match the locked export above.
+
+Development builds use `0.3.0.dev0`; saved models and metrics also record the git
+commit. `CITATION.cff` describes the latest archived release, currently 0.2.0, with
+that release's DOI. Before tagging a new release, update its version and release
+date and remove the previous release's DOI if the new one is not yet available.
+Once Zenodo creates the new archive, add its release DOI to the citation metadata
+without moving the published tag. The README's DOI badge covers all archived
+versions.
 
 ## Code style and formatting
 

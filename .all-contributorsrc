@@ -76,6 +76,17 @@
           "infra",
           "userTesting"
         ]
+    },
+    {
+      "login": "Prime-73",
+      "name": "Gianluca Möschter",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77167261?v=4",
+      "profile": "https://github.com/Prime-73",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ]
 }
