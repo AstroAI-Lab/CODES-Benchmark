@@ -1,6 +1,6 @@
 from .AbstractSurrogate import AbstractSurrogateModel, SurrogateModel
-from .DeepONet.deeponet import BranchNet, MultiONet, TrunkNet
-from .FCNN.fcnn import FullyConnected, FullyConnectedNet
+from .DeepONet.deeponet import BranchNet, MultiONet, MultiONetResidual, TrunkNet
+from .FCNN.fcnn import FullyConnected, FullyConnectedNet, FullyConnectedResidual
 from .LatentNeuralODE.latent_neural_ode import (
     ODE,
     Decoder,
@@ -17,10 +17,12 @@ __all__ = [
     "AbstractSurrogateModel",
     "SurrogateModel",
     "MultiONet",
+    "MultiONetResidual",
     "TrunkNet",
     "BranchNet",
     "FullyConnected",
     "FullyConnectedNet",
+    "FullyConnectedResidual",
     "LatentNeuralODE",
     "ModelWrapper",
     "ODE",

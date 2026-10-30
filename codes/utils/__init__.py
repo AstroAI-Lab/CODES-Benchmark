@@ -3,7 +3,9 @@ from .data_utils import (
     create_dataset,
     create_hdf5_dataset,
     download_data,
+    elapsed_to_dummy,
     get_data_subset,
+    interp_states,
     normalize_data,
 )
 from .utils import (
@@ -32,6 +34,8 @@ __all__ = [
     "create_hdf5_dataset",
     "download_data",
     "get_data_subset",
+    "elapsed_to_dummy",
+    "interp_states",
     "normalize_data",
     "read_yaml_config",
     "time_execution",

@@ -20,6 +20,8 @@ from codes.utils import (
     batch_factor_to_float,
     check_and_load_data,
     determine_batch_size,
+    elapsed_to_dummy,
+    interp_states,
 )
 
 from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; plot_uncertainty_confidence,
@@ -360,6 +362,85 @@ def evaluate_accuracy(
     return accuracy_metrics
 
 
+def fixed_step_rollout(
+    model,
+    targets: np.ndarray,
+    full_preds: np.ndarray,
+    timesteps: np.ndarray,
+    val_params: np.ndarray,
+    batch_size: int,
+    it_conf: dict,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Roll the surrogate forward with one constant step size.
+
+    The grid mode restarts the model at stored timesteps, so on a non uniform grid
+    the step size changes along the trajectory. A solver usually holds one step size
+    instead, which this reproduces: the model advances its own prediction by dt at
+    every step and the reference is interpolated onto the times the rollout lands on.
+
+    Args:
+        model: Loaded surrogate instance.
+        targets (np.ndarray): Ground truth on the stored grid, normalised.
+        full_preds (np.ndarray): One shot predictions on the stored grid, normalised.
+        timesteps (np.ndarray): Times the data is stored on.
+        val_params (np.ndarray): Optional parameters aligned with the data.
+        batch_size (int): Batch size for the per step forward pass.
+        it_conf (dict): Iterative config, read for "dt" and "max_steps".
+
+    Returns:
+        tuple: Rollout predictions, interpolated targets, interpolated one shot
+        predictions, and the times all three sit on.
+    """
+    if "dt" not in it_conf:
+        raise ValueError("iterative mode 'fixed_step' needs a step size 'dt'.")
+    dt = float(it_conf["dt"])
+    horizon = float(timesteps[-1]) - float(timesteps[0])
+    n_steps = int(horizon // dt)
+    if it_conf.get("max_steps") is not None:
+        n_steps = min(n_steps, int(it_conf["max_steps"]))
+    if n_steps < 1:
+        raise ValueError(f"dt={dt:g} exceeds the stored horizon {horizon:g}.")
+
+    n_samples, _, n_quantities = targets.shape
+    query = float(timesteps[0]) + dt * np.arange(1, n_steps + 1)
+    preds = np.zeros((n_samples, n_steps + 1, n_quantities))
+    preds[:, 0, :] = targets[:, 0, :]
+
+    original_n_timesteps = model.n_timesteps
+    model.n_timesteps = 2
+    step_times = np.array([0.0, float(elapsed_to_dummy(dt, timesteps))])
+    for k in range(n_steps):
+        ds = np.zeros((n_samples, 2, n_quantities))
+        ds[:, 0, :] = preds[:, k, :]
+        loader, _, _ = model.prepare_data(
+            dataset_train=ds,
+            dataset_test=None,
+            dataset_val=None,
+            timesteps=step_times,
+            batch_size=batch_size,
+            shuffle=False,
+            dataset_train_params=val_params,
+            dataset_test_params=None,
+            dataset_val_params=None,
+            dummy_timesteps=False,
+        )
+        step_preds, _ = model.predict(
+            data_loader=loader, leave_log=True, leave_norm=True
+        )
+        preds[:, k + 1, :] = step_preds[:, 1, :].detach().cpu().numpy()
+    model.n_timesteps = original_n_timesteps
+
+    plot_times = np.concatenate([[float(timesteps[0])], query])
+    ref = np.concatenate(
+        [targets[:, :1, :], interp_states(targets, timesteps, query)], axis=1
+    )
+    one_shot = np.concatenate(
+        [full_preds[:, :1, :], interp_states(full_preds, timesteps, query)], axis=1
+    )
+    return preds, ref, one_shot, plot_times
+
+
 def evaluate_iterative_predictions(
     model,
     surr_name: str,
@@ -400,12 +481,31 @@ def evaluate_iterative_predictions(
         data_loader=val_loader, leave_log=True, leave_norm=True
     )
     targets = targets.detach().cpu().numpy()
+    full_preds = full_preds.detach().cpu().numpy()
     n_samples, n_timesteps, n_quantities = targets.shape
 
     original_n_timesteps = model.n_timesteps
 
-    # how many timesteps per chunk
-    iter_interval = 10  # conf["iterative"]["interval"]
+    # The iterative block may be a plain bool or a dict carrying the keys read here.
+    it_conf = conf.get("iterative", True)
+    it_conf = it_conf if isinstance(it_conf, dict) else {}
+    iter_interval = it_conf.get("interval", 10)
+    mode = it_conf.get("mode", "grid")
+    if mode not in ("grid", "fixed_step"):
+        raise ValueError(
+            f"Unknown iterative mode {mode!r}, use 'grid' or 'fixed_step'."
+        )
+
+    # Largest change of any quantity over the stored horizon, in the units of the
+    # *_log metrics. Taken on the stored grid so the split does not depend on mode.
+    trajectory_span = np.ptp(model.denormalize(targets, leave_log=True), axis=1).max(
+        axis=1
+    )
+    dynamic_span = it_conf.get("dynamic_span")
+    dynamic_mask = (
+        trajectory_span >= float(dynamic_span) if dynamic_span is not None else None
+    )
+
     # batch size same as in run_benchmark
     surr_idx = conf["surrogates"].index(surr_name)
     if isinstance(conf["batch_size"], list):
@@ -413,76 +513,83 @@ def evaluate_iterative_predictions(
     else:
         batch_size = conf["batch_size"]
 
-    # container for the piecewise predictions; seed t=0 with ground truth so errors
-    # are computed only on actual predictions for t>=1 while keeping shape intact
-    iterative_preds = np.zeros_like(targets)
-
-    # number of chunks
-    n_chunks = (n_timesteps + iter_interval - 1) // iter_interval
-
-    T_min = float(timesteps[0])
-    T_max = float(timesteps[-1])
-    log_ts = bool(conf["dataset"].get("log_timesteps", False))
-    log_ratio = np.log(T_max / T_min) if log_ts else None
-
-    for i in range(n_chunks):
-        start = i * iter_interval
-        end = min(start + iter_interval, n_timesteps - 1)
-        model.n_timesteps = end - start + 1
-
-        init_state = targets[:, 0, :] if i == 0 else iterative_preds[:, start - 1, :]
-        ds = np.zeros((n_samples, model.n_timesteps, n_quantities))
-        ds[:, 0, :] = init_state
-
-        real_chunk = timesteps[start : end + 1]
-        # Step 1: subtract first real time in the chunk
-        delta_real = real_chunk - real_chunk[0]
-
-        if log_ts:
-            # Step 2: map "T_min + delta_real" into dummy space
-            shifted = T_min + delta_real
-            u_chunk = np.log(shifted / T_min) / log_ratio
-        else:
-            shifted = T_min + delta_real
-            u_chunk = (shifted - T_min) / (T_max - T_min)
-
-        dt = u_chunk
-
-        if not (np.all(dt >= 0) and dt[-1] <= 1.0):
-            raise ValueError(f"Invalid dummy times for chunk {i}: {dt}")
-
-        train_loader, _, _ = model.prepare_data(
-            dataset_train=ds,
-            dataset_test=None,
-            dataset_val=None,
-            timesteps=dt,
-            batch_size=batch_size,
-            shuffle=False,
-            dataset_train_params=val_params,
-            dataset_test_params=None,
-            dataset_val_params=None,
-            dummy_timesteps=False,
+    if mode == "fixed_step":
+        iterative_preds, targets, full_preds, plot_timesteps = fixed_step_rollout(
+            model,
+            targets,
+            full_preds,
+            timesteps,
+            val_params,
+            batch_size,
+            it_conf,
         )
+        n_timesteps = iterative_preds.shape[1]
+        iter_interval = 1
+        plot_interval = n_timesteps
+        dt = float(it_conf["dt"])
+        plot_fname = f"example_preds_iterative_dt{dt:g}.png"
+        plot_subtitle = f"Fixed step dt={dt:g}, {n_timesteps - 1} steps"
+    else:
+        plot_timesteps = timesteps
+        plot_interval = iter_interval
+        plot_fname = "example_preds_iterative.png"
+        plot_subtitle = None
+        # container for the piecewise predictions; seed t=0 with ground truth so errors
+        # are computed only on actual predictions for t>=1 while keeping shape intact
+        iterative_preds = np.zeros_like(targets)
 
-        # predict this chunk and insert into the global array
-        preds_chunk, _ = model.predict(
-            data_loader=train_loader, leave_log=True, leave_norm=True
-        )
-        # We predict steps 1..(chunk_len-1) relative to the provided init state (index 0).
-        # Map these to global indices [start+1 .. end] inclusively.
-        if i == 0:
-            iterative_preds[:, start : end + 1, :] = (
-                preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+        # number of chunks
+        n_chunks = (n_timesteps + iter_interval - 1) // iter_interval
+
+        for i in range(n_chunks):
+            start = i * iter_interval
+            end = min(start + iter_interval, n_timesteps - 1)
+            model.n_timesteps = end - start + 1
+
+            # Elapsed times are measured from timesteps[start], so the chunk starts
+            # from the prediction at index start.
+            init_state = targets[:, 0, :] if i == 0 else iterative_preds[:, start, :]
+            ds = np.zeros((n_samples, model.n_timesteps, n_quantities))
+            ds[:, 0, :] = init_state
+
+            real_chunk = timesteps[start : end + 1]
+            dt = elapsed_to_dummy(real_chunk - real_chunk[0], timesteps)
+
+            if not (np.all(dt >= 0) and dt[-1] <= 1.0):
+                raise ValueError(f"Invalid dummy times for chunk {i}: {dt}")
+
+            train_loader, _, _ = model.prepare_data(
+                dataset_train=ds,
+                dataset_test=None,
+                dataset_val=None,
+                timesteps=dt,
+                batch_size=batch_size,
+                shuffle=False,
+                dataset_train_params=val_params,
+                dataset_test_params=None,
+                dataset_val_params=None,
+                dummy_timesteps=False,
             )
-        iterative_preds[:, start + 1 : end + 1, :] = (
-            preds_chunk[:, 1 : model.n_timesteps, :].detach().cpu().numpy()
-        )
+
+            # predict this chunk and insert into the global array
+            preds_chunk, _ = model.predict(
+                data_loader=train_loader, leave_log=True, leave_norm=True
+            )
+            # We predict steps 1..(chunk_len-1) relative to the provided init state (index 0).
+            # Map these to global indices [start+1 .. end] inclusively.
+            if i == 0:
+                iterative_preds[:, start : end + 1, :] = (
+                    preds_chunk[:, : model.n_timesteps, :].detach().cpu().numpy()
+                )
+            iterative_preds[:, start + 1 : end + 1, :] = (
+                preds_chunk[:, 1 : model.n_timesteps, :].detach().cpu().numpy()
+            )
 
     iterative_preds_log = model.denormalize(iterative_preds, leave_log=True)
     full_preds_log = model.denormalize(full_preds, leave_log=True)
     targets_log = model.denormalize(targets, leave_log=True)
     iterative_preds = model.denormalize(iterative_preds)
-    full_preds_real = model.denormalize(full_preds.detach().cpu().numpy())
+    full_preds_real = model.denormalize(full_preds)
     targets = model.denormalize(targets)
 
     # compute error metrics
@@ -498,8 +605,36 @@ def evaluate_iterative_predictions(
     percentile = conf.get("error_percentile", 99)
     percentile_abs_error_log = float(np.percentile(abs_errors_log, percentile))
 
-    errors = np.mean(np.abs(iterative_preds - targets), axis=(1, 2))
-    example_idx = int(np.argsort(np.abs(errors - np.median(errors)))[0])
+    # Medians skip non finite entries, which are reported as a fraction instead so
+    # that a diverging rollout shows up rather than poisoning the statistic.
+    def _median_and_nonfinite(values: np.ndarray) -> tuple[float, float]:
+        if values.size == 0:
+            return float("nan"), 0.0
+        finite = np.isfinite(values)
+        median = float(np.median(values[finite])) if finite.any() else float("inf")
+        return median, float(1.0 - finite.mean())
+
+    median_abs_error_log, nonfinite_fraction = _median_and_nonfinite(abs_errors_log)
+    split_metrics = {}
+    if dynamic_mask is not None:
+        for name, mask in (("dynamic", dynamic_mask), ("static", ~dynamic_mask)):
+            median, nonfinite = _median_and_nonfinite(abs_errors_log[mask])
+            split_metrics[f"median_absolute_error_log_{name}"] = median
+            split_metrics[f"nonfinite_fraction_{name}"] = nonfinite
+            split_metrics[f"n_{name}"] = int(mask.sum())
+
+    # "median_error" plots the sample with the median error, "dynamic" the one that
+    # changes most over the horizon, and an int a fixed sample.
+    example = it_conf.get("example", "median_error")
+    if isinstance(example, int):
+        example_idx = int(example)
+    elif example == "dynamic":
+        example_idx = int(np.argmax(trajectory_span))
+    elif example == "median_error":
+        errors = np.mean(np.abs(iterative_preds - targets), axis=(1, 2))
+        example_idx = int(np.argsort(np.abs(errors - np.median(errors)))[0])
+    else:
+        raise ValueError(f"Unknown iterative example {example!r}.")
 
     # Restore original number of timesteps
     model.n_timesteps = original_n_timesteps
@@ -510,8 +645,10 @@ def evaluate_iterative_predictions(
         iterative_preds,
         full_preds_real,
         targets,
-        timesteps,
-        iter_interval=iter_interval,
+        plot_timesteps,
+        iter_interval=plot_interval,
+        fname=plot_fname,
+        subtitle=plot_subtitle,
         example_idx=example_idx,
         labels=labels,
         save=True,
@@ -522,11 +659,16 @@ def evaluate_iterative_predictions(
         "root_mean_squared_error_log": rmse_log,
         "mean_absolute_error_log": mae_log,
         "percentile_absolute_error_log": percentile_abs_error_log,
+        "median_absolute_error_log": median_abs_error_log,
+        "nonfinite_fraction": nonfinite_fraction,
+        **split_metrics,
         "mean_squared_error": mse,
         "mean_absolute_error": mae,
         "absolute_errors": abs_errors,
         "absolute_errors_log": abs_errors_log,
         "iteration_interval": iter_interval,
+        # In fixed_step mode the rollout lands on its own times, not the stored grid.
+        "rollout_timesteps": plot_timesteps,
     }
 
 
@@ -1494,7 +1636,9 @@ def compare_iterative(metrics: dict[str, dict], config: dict) -> None:
     plot_errors_over_time(
         mean_iterative_errors,
         median_iterative_errors,
-        surrogate_metrics["timesteps"],
+        surrogate_metrics["iterative"].get(
+            "rollout_timesteps", surrogate_metrics["timesteps"]
+        ),
         config,
         mode="iterative",
         iter_interval=surrogate_metrics["iterative"]["iteration_interval"],

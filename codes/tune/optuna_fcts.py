@@ -321,10 +321,10 @@ def training_run(
     )
 
     preds, targets = model.predict(test_loader, leave_log=True)
-    p99_dex = torch.quantile(
-        (preds - targets).abs().flatten(),
-        float(config.get("target_percentile", 0.99)),
-    ).item()
+    abs_err = (preds - targets).abs().flatten()
+    q = float(config.get("target_percentile", 0.99))
+    # torch.quantile caps its input at 2**24 elements; numpy.percentile does not.
+    p99_dex = float(np.percentile(abs_err.detach().cpu().numpy(), 100.0 * q))
     p99_dex = min(p99_dex, config.get("loss_cap", 20))
 
     parts = study_name.split("_")

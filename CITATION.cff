@@ -1,7 +1,8 @@
 cff-version: 1.2.0
 message: >-
-  If you use CODES in your research, please cite the paper below. To refer to a
-  specific version of the software, cite it with the version number.
+  If you use CODES in your research, please cite the software release you used,
+  using its Zenodo DOI when available. If you use the astrochemical datasets or
+  analysis of Janssen, Branca & Buck (2026), please also cite that paper.
 title: "CODES: Benchmarking Coupled ODE Surrogates"
 type: software
 authors:
@@ -25,25 +26,24 @@ keywords:
   - ordinary differential equations
   - benchmark
   - astrochemistry
-preferred-citation:
-  type: conference-paper
-  title: "CODES: Benchmarking Coupled ODE Surrogates"
-  authors:
-    - family-names: Janssen
-      given-names: Robin
-      orcid: "https://orcid.org/0009-0006-4356-3059"
-    - family-names: Sulzer
-      given-names: Immanuel
-    - family-names: Buck
-      given-names: Tobias
-      orcid: "https://orcid.org/0000-0003-2027-399X"
-  year: 2024
-  collection-title: "Machine Learning and the Physical Sciences Workshop at NeurIPS 2024"
-  identifiers:
-    - type: other
-      value: "arXiv:2410.20886"
-  url: "https://arxiv.org/abs/2410.20886"
 references:
+  - type: conference-paper
+    title: "CODES: Benchmarking Coupled ODE Surrogates"
+    authors:
+      - family-names: Janssen
+        given-names: Robin
+        orcid: "https://orcid.org/0009-0006-4356-3059"
+      - family-names: Sulzer
+        given-names: Immanuel
+      - family-names: Buck
+        given-names: Tobias
+        orcid: "https://orcid.org/0000-0003-2027-399X"
+    year: 2024
+    collection-title: "Machine Learning and the Physical Sciences Workshop at NeurIPS 2024"
+    identifiers:
+      - type: other
+        value: "arXiv:2410.20886"
+    url: "https://arxiv.org/abs/2410.20886"
   - type: article
     title: "Systematic selection of surrogate models for nonequilibrium chemistry"
     authors:

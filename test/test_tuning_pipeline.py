@@ -220,10 +220,8 @@ def test_training_run_single_objective(monkeypatch, tmp_path):
     monkeypatch.setattr(
         "codes.tune.optuna_fcts.make_optuna_params", lambda trial, params: {}
     )
-    # patch quantile
-    import torch
-
-    monkeypatch.setattr(torch, "quantile", lambda x, q: torch.tensor(7.0))
+    # patch the percentile training_run reports
+    monkeypatch.setattr("codes.tune.optuna_fcts.np.percentile", lambda x, q: 7.0)
     # Run
     trial = type("T", (object,), {"number": 0})()
     val = __import__("codes.tune.optuna_fcts", fromlist=["training_run"]).training_run(
@@ -285,9 +283,7 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
     monkeypatch.setattr(
         "codes.tune.optuna_fcts.measure_inference_time", lambda m, dur: [1.0, 2.0, 3.0]
     )
-    import torch
-
-    monkeypatch.setattr(torch, "quantile", lambda x, q: torch.tensor(5.0))
+    monkeypatch.setattr("codes.tune.optuna_fcts.np.percentile", lambda x, q: 5.0)
 
     trial = type("T", (object,), {"number": 2})()
     val = __import__("codes.tune.optuna_fcts", fromlist=["training_run"]).training_run(

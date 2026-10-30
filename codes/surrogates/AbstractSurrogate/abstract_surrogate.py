@@ -214,6 +214,30 @@ class AbstractSurrogateModel(ABC, nn.Module):
         """
         pass
 
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """
+        Predict the states at several time inputs from one initial state.
+
+        Rollout finetuning needs this to run the model on states it produced itself,
+        without building a dataloader. Surrogates that support finetuning implement
+        it by packing the inputs the same way as their dataloader.
+
+        Args:
+            state (Tensor): Initial states of shape (batch, n_quantities), normalised.
+            times (Tensor): Time inputs of shape (n_times,), in the dummy time
+                coordinate the model is trained on.
+            params (Tensor | None): Parameters of shape (batch, n_parameters).
+
+        Returns:
+            Tensor: Predicted states of shape (batch, n_times, n_quantities).
+        """
+        raise NotImplementedError(
+            f"{type(self).__name__} does not implement forward_from_state, so it "
+            "cannot be used for rollout finetuning."
+        )
+
     def predict(
         self, data_loader: DataLoader, leave_log: bool = False, leave_norm: bool = False
     ) -> tuple[Tensor, Tensor]:

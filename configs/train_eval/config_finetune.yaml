@@ -1,0 +1,29 @@
+# Train surrogates, finetune them for autoregressive rollout, evaluate both.
+#   python run_training.py   --config configs/train_eval/config_finetune.yaml
+#   python run_finetuning.py --config configs/train_eval/config_finetune.yaml
+#   python run_eval.py       --config configs/train_eval/config_finetune.yaml
+#   python run_eval.py       --config trained/example_config_finetune_finetune/config.yaml
+training_id: "example_config_finetune"
+surrogates: ["MultiONet", "MultiONetResidual"]
+batch_size: [256, 256]
+epochs: [40, 40]
+dataset:
+  name: "simple_reaction"
+devices: ["cpu"]
+# Keep the best weights seen during training rather than the last ones.
+checkpoint: true
+
+# Roll the models out with one constant step size, as a solver would.
+iterative:
+  mode: fixed_step
+  dt: 0.1
+
+finetune:
+  epochs: 20
+  batch_size: 64
+  learning_rate: 1.0e-5
+  rollout_weight: 0.05
+  rollout_steps: 8
+  # Step sizes the finetuned model should handle, in the units of the timesteps.
+  dt_range: [0.03, 0.3]
+  eval_n_dt: 3

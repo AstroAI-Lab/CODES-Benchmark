@@ -544,10 +544,15 @@ def plot_example_iterative_predictions(
     labels: list[str] | None = None,
     save: bool = False,
     show_title: bool = True,
+    fname: str = "example_preds_iterative.png",
+    subtitle: str | None = None,
 ) -> None:
     """
     Plot one sample's full iterative trajectory:
     ground truth vs. chained predictions, with retrigger lines.
+
+    With dataset.log_timesteps set the time axis is logarithmic and t=0, which a
+    log axis cannot show, is left out.
     """
     # choose example if not given
     if example_idx is None:
@@ -556,6 +561,10 @@ def plot_example_iterative_predictions(
 
     n_q = min(iterative_preds.shape[2], num_quantities)
     per_plot = min(10, n_q)
+
+    log_time = bool(conf.get("dataset", {}).get("log_timesteps", False))
+    mask = timesteps > 0 if log_time else np.ones_like(timesteps, dtype=bool)
+    t_plot = timesteps[mask]
 
     n_plots = int(np.ceil(n_q / per_plot))
     # colors = plt.cm.viridis(np.linspace(0, 0.95, per_plot))
@@ -569,19 +578,19 @@ def plot_example_iterative_predictions(
         start, end = pi * per_plot, min((pi + 1) * per_plot, n_q)
         for qi in range(start, end):
             c = colors[qi % per_plot]
-            gt = targets[example_idx, :, qi]
-            pr = iterative_preds[example_idx, :, qi]
-            ax.plot(timesteps, gt, "-", color=c)
-            ax.plot(timesteps, pr, "--", color=c)
-            init_pr = full_preds[example_idx, :, qi]
-            ax.plot(timesteps, init_pr, ":", color=c)
+            gt = targets[example_idx, mask, qi]
+            pr = iterative_preds[example_idx, mask, qi]
+            ax.plot(t_plot, gt, "-", color=c)
+            ax.plot(t_plot, pr, "--", color=c)
+            init_pr = full_preds[example_idx, mask, qi]
+            ax.plot(t_plot, init_pr, ":", color=c)
         # retrigger lines
-        for t in timesteps[::iter_interval]:
+        for t in t_plot[::iter_interval]:
             ax.axvline(x=t, linestyle=":", linewidth=0.8, alpha=0.7)
         if conf.get("dataset", {}).get("log10_transform", True):
             ax.set_yscale("log")
-        ax.set_xlim(timesteps.min(), timesteps.max())
-        if conf["dataset"].get("log_timesteps", False):
+        ax.set_xlim(t_plot.min(), t_plot.max())
+        if log_time:
             ax.set_xscale("log")
         ax.set_ylabel("Abundance")
         if labels is not None:
@@ -617,16 +626,14 @@ def plot_example_iterative_predictions(
     fig.align_ylabels()
 
     if show_title:
-        title = (
-            f"Iterative Prediction Example ({surr_name})\n"
-            f"Sample {example_idx}, Interval {iter_interval}"
+        title = f"Iterative Prediction Example ({surr_name})\n" + (
+            subtitle or f"Sample {example_idx}, Interval {iter_interval}"
         )
         plt.suptitle(title, y=0.97)
 
     plt.tight_layout(rect=[0.05, 0.03, 0.95, 0.92])
 
     if save and conf:
-        fname = "example_preds_iterative.png"
         save_plot(plt, fname, conf, surr_name)
 
     plt.close()
@@ -1035,7 +1042,9 @@ def plot_error_distribution_per_quantity(
             q_errors = q_errors[q_errors > 0]
             data_per_quantity.append(np.log10(q_errors))
         elif mode == "deltadex":
-            q_errors = q_errors[q_errors >= 0]
+            # Exact zeros, as a residual model gives where it reproduces its input,
+            # have no log and would make the axis limits invalid.
+            q_errors = q_errors[q_errors > 0]
             data_per_quantity.append(np.log10(q_errors))  # q_errors)
         else:
             raise ValueError(f"Unknown mode: {mode}")
@@ -1660,7 +1669,13 @@ def plot_errors_over_time(
     elif mode == "iterative":
         # Single backslash inside raw string to render the LaTeX Delta properly
         plt.ylabel(r"Log-MAE ($\Delta dex$)")
-        plt.ylim(bottom=0, top=min(np.max(list(mean_errors.values())) * 1.1, 5))
+        # A diverging rollout can leave non finite entries.
+        finite_means = np.concatenate(
+            [np.asarray(v).ravel() for v in mean_errors.values()]
+        )
+        finite_means = finite_means[np.isfinite(finite_means)]
+        top = min(float(np.max(finite_means)) * 1.1, 5) if finite_means.size else 5
+        plt.ylim(bottom=0, top=top)
         fname = "iterative_delta_dex_time.png"
         title = "Comparison of Δdex Errors Over Time for Iterative Predictions"
         # Add subtle dashed vertical lines at every n-th timestep if provided and valid

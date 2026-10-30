@@ -166,6 +166,30 @@ class FullyConnected(AbstractSurrogateModel):
         x, targets = inputs
         return self.model(x), targets
 
+    def forward_from_state(
+        self,
+        state: torch.Tensor,
+        times: torch.Tensor,
+        params: torch.Tensor | None = None,
+    ) -> torch.Tensor:
+        """
+        Predict the states at several time inputs from one initial state.
+
+        Packs [state, time, params] as create_dataloader does. See
+        AbstractSurrogateModel.forward_from_state.
+        """
+        B, N = state.shape
+        T = times.shape[0]
+        x = [
+            state.unsqueeze(1).expand(B, T, N),
+            times.view(1, T, 1).expand(B, T, 1),
+        ]
+        if params is not None:
+            x.append(params.unsqueeze(1).expand(B, T, params.shape[1]))
+        x = torch.cat(x, dim=2).reshape(B * T, -1)
+        out, _ = self((x, None))
+        return out.reshape(B, T, N)
+
     def prepare_data(
         self,
         dataset_train: np.ndarray,
@@ -300,6 +324,8 @@ class FullyConnected(AbstractSurrogateModel):
             outputs, targets = self((inputs, targets))
             loss = criterion(outputs, targets)
             loss.backward()
+            if self.config.gradient_clip > 0:
+                nn.utils.clip_grad_norm_(self.parameters(), self.config.gradient_clip)
             optimizer.step()
 
     def create_dataloader(
@@ -360,3 +386,20 @@ class FullyConnected(AbstractSurrogateModel):
 
 
 AbstractSurrogateModel.register(FullyConnected)
+
+
+class FullyConnectedResidual(FullyConnected):
+    """
+    FullyConnected variant that predicts the change from the initial state.
+
+    The network output is added to the initial state, so it only has to learn
+    the deviation from it. Everything downstream still sees absolute states.
+    """
+
+    def forward(self, inputs: tuple) -> torch.Tensor:
+        outputs, targets = super().forward(inputs)
+        x = inputs[0].to(self.device, non_blocking=True)
+        return outputs + x[:, : self.N], targets
+
+
+AbstractSurrogateModel.register(FullyConnectedResidual)

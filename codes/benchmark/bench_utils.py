@@ -413,6 +413,7 @@ def clean_metrics(metrics: dict, conf: dict) -> dict:
     if conf.get("iterative", False):
         write_metrics["iterative"].pop("absolute_errors", None)
         write_metrics["iterative"].pop("absolute_errors_log", None)
+        write_metrics["iterative"].pop("rollout_timesteps", None)
     if conf.get("gradients", False):
         write_metrics["gradients"].pop("gradients", None)
         write_metrics["gradients"].pop("max_counts", None)
@@ -708,16 +709,28 @@ def get_model_config(surr_name: str, config: dict) -> dict:
             raise ImportError(f"Failed to load config module from {config_file}")
         spec.loader.exec_module(config_module)
 
-        # Look for the dataclass matching the surr_name + 'Config'
-        config_class = None
-        target_class_name = f"{surr_name}config".lower()
-        for name, obj in inspect.getmembers(config_module, inspect.isclass):
-            if (
-                hasattr(obj, "__dataclass_fields__")
-                and name.lower() == target_class_name
-            ):
-                config_class = obj
-                break
+        # Look for the dataclass matching the surr_name + 'Config'. A surrogate that
+        # subclasses another one, such as a residual variant, falls back to the
+        # parent's config when it has none of its own.
+        dataclasses_by_name = {
+            name.lower(): obj
+            for name, obj in inspect.getmembers(config_module, inspect.isclass)
+            if hasattr(obj, "__dataclass_fields__")
+        }
+        surrogate_class = get_surrogate(surr_name)
+        candidates = [surr_name] + [
+            base.__name__
+            for base in (surrogate_class.__mro__[1:] if surrogate_class else ())
+            if base in surrogate_classes
+        ]
+        config_class = next(
+            (
+                dataclasses_by_name[f"{name}config".lower()]
+                for name in candidates
+                if f"{name}config".lower() in dataclasses_by_name
+            ),
+            None,
+        )
 
         if config_class:
             # Instantiate the dataclass and convert it to a dictionary

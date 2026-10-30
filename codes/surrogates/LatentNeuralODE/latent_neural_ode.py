@@ -219,6 +219,10 @@ class LatentNeuralODE(AbstractSurrogateModel):
                 # total loss now takes params into account for identity term
                 loss = self.model.total_loss(x_true, x_pred, params, criterion)
                 loss.backward()
+                if self.config.gradient_clip > 0:
+                    nn.utils.clip_grad_norm_(
+                        self.parameters(), self.config.gradient_clip
+                    )
                 optimizer.step()
 
             scheduler.step()
@@ -331,6 +335,10 @@ class LatentNeuralODE(AbstractSurrogateModel):
                     x_pred, x_true = self((x_true, t_range, params))
                     loss = self.model.total_loss(x_true, x_pred, params, criterion)
                     loss.backward()
+                    if self.config.gradient_clip > 0:
+                        nn.utils.clip_grad_norm_(
+                            self.parameters(), self.config.gradient_clip
+                        )
                     optimizer.step()
 
             if not (profiled and epoch == 0):

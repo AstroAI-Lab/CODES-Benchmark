@@ -28,6 +28,8 @@ class LatentNeuralODEBaseConfig(AbstractSurrogateBaseConfig):
         atol (float): Absolute tolerance for the ODE solver.
         encode_params (bool): Whether to encode parameters in the encoder.
             - If False, parameters are passed after the encoder, as additional inputs to the ODE network.
+        loss_weights (tuple): Weights of the trajectory, identity, first derivative and
+            second derivative loss terms.
     """
 
     model_version: str = "v2"
@@ -41,3 +43,4 @@ class LatentNeuralODEBaseConfig(AbstractSurrogateBaseConfig):
     rtol: float = 1e-6
     atol: float = 1e-6
     encode_params: bool = False
+    loss_weights: tuple = (100.0, 1.0, 1.0, 1.0)

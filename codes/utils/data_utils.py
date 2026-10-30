@@ -746,3 +746,45 @@ def print_data_info(data_path):
             f" - Total of {total_samples} samples, train/test/val split is {train_samples}/{test_samples}/{val_samples}."
         )
         print(f" - Labels: {labels if labels is not None else 'No labels provided'}")
+
+
+def elapsed_to_dummy(elapsed, timesteps: np.ndarray) -> np.ndarray:
+    """
+    Map elapsed times to the dummy time input of a model trained with dummy timesteps.
+
+    Training pairs the initial state at timesteps[0] with the index fraction of each
+    stored time, so an elapsed time maps to the index fraction of timesteps[0] plus
+    that time. On a non uniform grid this is the only consistent map.
+
+    Args:
+        elapsed (float | np.ndarray): Elapsed times, in the units of timesteps.
+        timesteps (np.ndarray): Times the data is stored on.
+
+    Returns:
+        np.ndarray: Dummy time inputs in [0, 1].
+    """
+    grid = np.linspace(0.0, 1.0, len(timesteps))
+    return np.interp(timesteps[0] + np.asarray(elapsed, dtype=float), timesteps, grid)
+
+
+def interp_states(
+    arr: np.ndarray, timesteps: np.ndarray, query: np.ndarray
+) -> np.ndarray:
+    """
+    Trajectory values at arbitrary times, interpolated in the stored index coordinate.
+
+    Interpolating in the index rather than in time matches the dummy time input the
+    models are trained on, which keeps it consistent on non uniform grids.
+
+    Args:
+        arr (np.ndarray): Trajectories of shape (n_samples, n_timesteps, n_quantities).
+        timesteps (np.ndarray): Times the trajectories are stored on.
+        query (np.ndarray): Times to interpolate onto.
+
+    Returns:
+        np.ndarray: Values of shape (n_samples, len(query), n_quantities).
+    """
+    fi = np.interp(query, timesteps, np.arange(len(timesteps)))
+    i0 = np.clip(np.floor(fi).astype(int), 0, len(timesteps) - 2)
+    w = (fi - i0)[None, :, None]
+    return (1.0 - w) * arr[:, i0, :] + w * arr[:, i0 + 1, :]

@@ -50,6 +50,8 @@ Every surrogate must inherit from `codes.surrogates.AbstractSurrogate.AbstractSu
 5. **Checkpointing + evaluation**  
    - `AbstractSurrogateModel` already serializes weights, optimizer state, and scheduler state, and `run_eval.py` expects that layout. If you modify the format, verify that evaluation still loads checkpoints without custom flags.
    - `predict` and the evaluation pipeline assume consistent output shapes, so avoid ad-hoc reshaping in downstream scripts—handle it in `forward` or `prepare_data`. This uniform path is what keeps the benchmark fair across models.
+6. **Optional: rollout finetuning**
+   - To support `run_finetuning.py`, implement `forward_from_state(self, state, times, params=None) -> Tensor`. It receives initial states of shape `(batch, n_quantities)` in normalised units, time inputs of shape `(n_times,)` in the dummy time coordinate the model is trained on, and optional parameters, and returns the predicted states of shape `(batch, n_times, n_quantities)`. Pack the inputs exactly as `prepare_data` does and call `forward`, so the result matches `predict`. See the implementations in `FullyConnected` and `MultiONet`.
 
 Before submitting a PR or relying on the surrogate in large runs, train it with the minimal config and confirm that `run_eval.py` + `predict` behave as expected.
 
