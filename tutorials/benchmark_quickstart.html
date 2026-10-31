@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Benchmark Quickstart &#8212; CODES  documentation</title>
+    <title>Benchmark Quickstart &#8212; CODES 0.3.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/documentation_options.js?v=55c93ed0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
@@ -52,7 +52,7 @@
     <link rel="prev" title="Tutorials" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
+  <meta name="docsearch:version" content="0.3" />
   </head>
   
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="CODES  documentation - Home"/>
-    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="CODES  documentation - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="CODES 0.3.0.dev0 documentation - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="CODES 0.3.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -147,7 +147,7 @@
           
           
           
-          <a href="https://github.com/robin-janssen/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/AstroAI-Lab/CODES-Benchmark" title="CODES GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">CODES GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -392,13 +392,18 @@ validate your environment and to inspect the outputs of a short benchmark run.</
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">find_repo_root</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">start</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">'codes'</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">'docs'</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">"codes"</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">"docs"</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">path</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Could not locate repo root; start the kernel from within the project directory.'</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="s2">"Could not locate repo root; start the kernel from within the project directory."</span>
+    <span class="p">)</span>
+
 
 <span class="n">repo_root</span> <span class="o">=</span> <span class="n">find_repo_root</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">repo_root</span><span class="p">)</span>
@@ -564,13 +569,16 @@ Running accuracy benchmark...
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use tree visualization if available</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
 <span class="n">tree_cmd</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"tree"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tree_cmd</span><span class="p">:</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>trained/<span class="o">{</span>training_id<span class="o">}</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>results/<span class="o">{</span>training_id<span class="o">}</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>plots/<span class="o">{</span>training_id<span class="o">}</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"The 'tree' command is not available. Please install it to visualize the directory structure."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">"The 'tree' command is not available. Please install it to visualize the directory structure."</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -686,12 +694,12 @@ accuracy:
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loading plot </span><span class="si">{</span><span class="n">plot_file</span><span class="si">}</span><span class="s2"> for surrogate </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
         <span class="n">axs</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
         <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
             <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">col</span> <span class="o">+=</span> <span class="mi">1</span>
-        
+
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -720,17 +728,20 @@ But since CODES is a benchmark, the crucial part is to compare different surroga
 <p>Additionally, we can run some more evaluations even with the two models we trained above (one per surrogate). To do this, let us rerun <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> with modified configuration!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-    <span class="s2">"losses"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"gradients"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"timing"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"compute"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"compare"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s2">"iterative"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">})</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"losses"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"gradients"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"timing"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"compute"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"compare"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"iterative"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 <span class="c1"># Replace the saved config file with the updated one</span>
 <span class="n">saved_config_path</span> <span class="o">=</span> <span class="n">repo_root</span> <span class="o">/</span> <span class="s2">"trained"</span> <span class="o">/</span> <span class="n">training_id</span> <span class="o">/</span> <span class="s2">"config.yaml"</span>
-<span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">saved_config_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">saved_config_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Check contents of updated config file</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Updated Configuration for Additional Evaluations:"</span><span class="p">)</span>
@@ -866,13 +877,16 @@ CLI table metrics saved to results/example_config_minimal/metrics_table.csv
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use tree visualization if available</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
 <span class="n">tree_cmd</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"tree"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tree_cmd</span><span class="p">:</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>trained/<span class="o">{</span>training_id<span class="o">}</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>results/<span class="o">{</span>training_id<span class="o">}</span>
     <span class="o">!</span><span class="s2">"{tree_cmd}"</span><span class="w"> </span>-L<span class="w"> </span><span class="m">3</span><span class="w"> </span>plots/<span class="o">{</span>training_id<span class="o">}</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"The 'tree' command is not available. Please install it to visualize the directory structure."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">"The 'tree' command is not available. Please install it to visualize the directory structure."</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -934,7 +948,11 @@ CLI table metrics saved to results/example_config_minimal/metrics_table.csv
 <p>Let us look at some of the additional plots we generated during this extended evaluation. We will start with results for one of the surrogates (<code class="docutils literal notranslate"><span class="pre">FullyConnected</span></code>), and then look at comparison plots across all surrogates.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"losses_main.jpg"</span><span class="p">,</span> <span class="s2">"example_preds_iterative.jpg"</span><span class="p">,</span> <span class="s2">"gradient_error_heatmap.jpg"</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"losses_main.jpg"</span><span class="p">,</span>
+    <span class="s2">"example_preds_iterative.jpg"</span><span class="p">,</span>
+    <span class="s2">"gradient_error_heatmap.jpg"</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Displaying new plots from </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_plot_identifiers</span><span class="p">):</span>
@@ -949,7 +967,7 @@ CLI table metrics saved to results/example_config_minimal/metrics_table.csv
         <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Plot </span><span class="si">{</span><span class="n">plot_id</span><span class="si">}</span><span class="s2"> not found in </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -973,7 +991,13 @@ Showing plot gradient_error_heatmap.jpg
 <p>Now, let us look at some comparison plots across the two surrogates we trained.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comparison_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"accuracy_rel_errors_time_models.jpg"</span><span class="p">,</span> <span class="s2">"accuracy_error_dist_deltadex.jpg"</span><span class="p">,</span> <span class="s2">"losses_main_model.jpg"</span><span class="p">,</span> <span class="s2">"iterative_delta_dex_time.jpg"</span><span class="p">,</span> <span class="s2">"timing_inference.jpg"</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comparison_plot_identifiers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"accuracy_rel_errors_time_models.jpg"</span><span class="p">,</span>
+    <span class="s2">"accuracy_error_dist_deltadex.jpg"</span><span class="p">,</span>
+    <span class="s2">"losses_main_model.jpg"</span><span class="p">,</span>
+    <span class="s2">"iterative_delta_dex_time.jpg"</span><span class="p">,</span>
+    <span class="s2">"timing_inference.jpg"</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Displaying comparison plots from </span><span class="si">{</span><span class="n">plots_dir</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
 <span class="c1"># This time, the plots live directly in plots_dir</span>
@@ -984,7 +1008,7 @@ Showing plot gradient_error_heatmap.jpg
         <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">plot_file</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="k">else</span><span class="p">:</span>
