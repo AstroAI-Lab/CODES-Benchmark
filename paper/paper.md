@@ -202,8 +202,20 @@ content.
 
 # Acknowledgements
 
-<!-- TODO: add funding sources (e.g. DFG, Carl Zeiss Stiftung, computing time grants). -->
-We thank all contributors to the `CODES` repository. TODO: acknowledge
-financial support and computing resources.
+<!-- TODO: confirm the DFG grant number and official name of the COSMOS
+project; check all funder wording against the funders' current guidance. -->
+We thank all contributors to the `CODES` repository. This work is funded by
+the Carl-Zeiss-Stiftung through the CZS Nexus programme. We further acknowledge
+funding by the Deutsche Forschungsgemeinschaft (DFG, German Research
+Foundation) through the COSMOS project (project number TODO) and under
+Germany's Excellence Strategy EXC 2181/1 - 390900948 (the Heidelberg
+STRUCTURES Excellence Cluster). The authors gratefully acknowledge the
+computing time made available to them on the high-performance computer HoreKa
+at the NHR Center KIT. This center is jointly supported by the Federal
+Ministry of Research, Technology and Space and the Ministry of Science,
+Research and the Arts of Baden-Württemberg, as part of the National
+High-Performance Computing (NHR) joint funding program
+(<https://www.nhr-verein.de/en/our-partners>). HoreKa is partly funded by the
+German Research Foundation (DFG).
 
 # References
