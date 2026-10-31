@@ -54,8 +54,9 @@ to use for a given problem. `CODES` (Coupled ODE Surrogates) is a Python
 package that trains and evaluates such surrogates on equal footing. From a
 single configuration file, it tunes, trains and evaluates several surrogate
 architectures on the same data. It then reports not only how accurate each one
-is, but also how fast it is, how it behaves outside the training regime, how
-much data it needs and how reliable its uncertainty estimates are.
+is, but also how fast it is, how much memory it needs (measured by its
+parameter count and memory footprint), how it behaves outside the training
+regime, how much data it needs and how reliable its uncertainty estimates are.
 
 # Statement of need
 
@@ -65,7 +66,8 @@ simulations in astrophysics and astrochemistry
 fields with stiff kinetics. The literature proposes a wide range of
 architectures, including fully connected networks, operator networks such as
 DeepONet [@Lu:2021], latent neural ODEs [@Chen:2018; @Rubanova:2019] and
-autoencoders with simple latent dynamics [@Grassi:2022; @Sulzer:2023]. Each of
+autoencoders with simple latent dynamics
+[@Grassi:2022; @Sulzer:2023; @Nockolds:2025]. Each of
 these is usually published with its own data pipeline, normalisation choices,
 training budget and error metric. Results therefore cannot be compared across
 papers, and practitioners who need a surrogate for a new chemical network have
@@ -74,7 +76,8 @@ no systematic way to choose one.
 `CODES` addresses this gap. It is aimed at two audiences:
 
 - **Domain scientists** who have a set of ODE trajectories (for example from a
-  chemistry code such as KROME [@Grassi:2014] or UCLCHEM [@Holdship:2017]) and
+  chemistry code such as KROME [@Grassi:2014], UCLCHEM [@Holdship:2017] or the
+  JAX-based Carbox [@Vermarien:2025]) and
   want to know which surrogate meets their accuracy target within their runtime
   budget.
 - **Machine-learning researchers** who develop new surrogate architectures and
@@ -170,14 +173,25 @@ commit that produced it.
 # Research impact statement
 
 `CODES` was first presented at the Machine Learning and the Physical Sciences
-workshop at NeurIPS 2024 [@Janssen:2024]. It has since been used for a
-systematic study of surrogate selection for non-equilibrium astrochemistry,
-published in *Astronomy & Astrophysics* [@Janssen:2026]. That study trained and
-compared all surrogate families on four challenging chemical networks and
-derived practical guidance on which architecture to choose for which kind of
-problem. The autoregressive finetuning and rollout evaluation were developed
-in a bachelor's thesis at Heidelberg University.
-<!-- TODO: add thesis reference and any further publications, theses or external users. -->
+workshop at NeurIPS 2024 [@Janssen:2024]. That contribution focused on the
+machine-learning results, comparing the accuracy of different surrogate
+architectures for astrochemistry, and not on the software itself. The
+framework has since been used for a systematic study of surrogate selection
+for non-equilibrium astrochemistry, published in *Astronomy & Astrophysics*
+[@Janssen:2026]. That study trained and compared all surrogate families on four
+astrochemical datasets generated with KROME and derived practical guidance on
+which architecture to choose for which kind of problem.
+
+`CODES` is also used beyond these two papers. Gianluca Möschter developed the
+autoregressive finetuning and rollout evaluation in his bachelor's thesis at
+Heidelberg University.
+<!-- TODO: cite G. Möschter's paper once it is on arXiv. -->
+Lorenzo Branca uses `CODES` to develop the chemistry emulators of the
+astronomix code (Branca et al., in preparation).
+<!-- TODO: cite L. Branca's astronomix emulator paper once it is on arXiv.
+TODO: add any further external users or citing works (check Google Scholar /
+ADS citations of the repository, Janssen et al. 2024 and Janssen et al. 2026). -->
+
 All datasets used in these works are publicly archived on Zenodo and can be
 downloaded with a script included in the repository, so the published
 comparisons can be reproduced and extended to new architectures. The
@@ -187,18 +201,18 @@ contributions from developers outside the core team.
 
 # AI usage disclosure
 
-<!-- TODO: The authors must complete and verify this section. JOSS requires
-naming the tools/models (with versions), where they were used (code, docs,
-paper) and the nature of the assistance, plus a confirmation of human review. -->
-Generative AI was used during the preparation of this submission. The first
-draft of this paper was prepared with the assistance of Claude Code (Anthropic;
-model and version: TODO), based on the repository contents, and was
-subsequently revised by the authors. AI coding assistants were also used for
-parts of the software development and documentation (TODO: specify tools,
-versions and scope, e.g. code generation, refactoring, test scaffolding). All
-AI-assisted outputs were reviewed, edited and validated by the human authors,
-who made all core design decisions and take full responsibility for the
-content.
+<!-- TODO: fill in the model name and version, and confirm the list of
+AI-assisted pull requests. -->
+`CODES` was developed without generative AI assistance. The architecture, the
+benchmark design and almost all of the code and documentation, up to and
+including release 0.2.0, were written by hand, primarily by Robin Janssen.
+Only the most recent pull requests (October 2026, after release 0.2.0) used
+an AI assistant, Claude Code (Anthropic; model and version: TODO), for code
+review and bug fixing; every AI-suggested change was reviewed, tested and
+accepted by the human authors. Claude Code was also used to prepare the first
+draft of this paper from the repository contents, which the authors then
+revised and verified. The human authors made all design decisions and take
+full responsibility for the software and the paper.
 
 # Acknowledgements
 
