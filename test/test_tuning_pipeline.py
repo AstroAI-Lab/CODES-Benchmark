@@ -1,10 +1,14 @@
 import math
 import queue
 from datetime import datetime, timedelta
+from types import SimpleNamespace
 
+import optuna
 import pytest
 from optuna.trial import TrialState
 
+import codes.surrogates.AbstractSurrogate.abstract_surrogate as abstract_surrogate
+from codes.surrogates import FullyConnected
 from codes.tune.optuna_fcts import (
     MODULE_REGISTRY,
     create_objective,
@@ -116,6 +120,74 @@ def test_make_optuna_params_conditional(conditional_params):
     p2["scheduler"]["choices"] = ["cosine"]
     out2 = make_optuna_params(trial2, p2)
     assert "eta_min" in out2
+
+
+@pytest.mark.parametrize("loss_name", ["mse", "smoothl1"])
+def test_loss_beta_is_only_tuned_for_smooth_l1(loss_name):
+    trial = DummyTrial()
+    params = make_optuna_params(
+        trial,
+        {
+            "loss_function": {"choices": [loss_name]},
+            "beta": {"type": "float", "low": 0.1, "high": 2.5},
+        },
+    )
+    assert isinstance(params["loss_function"], MODULE_REGISTRY[loss_name])
+    if loss_name == "smoothl1":
+        assert params["beta"] == 2.5
+        assert trial.suggested["beta"] == 2.5
+    else:
+        assert "beta" not in params
+        assert "beta" not in trial.suggested
+
+
+@pytest.fixture
+def timed_trial(monkeypatch):
+    study = optuna.create_study()
+    trial = study.ask()
+    model = FullyConnected(
+        device="cpu",
+        n_quantities=1,
+        n_timesteps=2,
+        config={"hidden_size": 4, "num_hidden_layers": 1},
+    )
+    model.optuna_trial = trial
+    model._trial_start_time = 90.0
+    monkeypatch.setattr(abstract_surrogate, "time", SimpleNamespace(time=lambda: 100.0))
+    return model, trial
+
+
+@pytest.mark.parametrize("threshold", [0.0, 50.0])
+def test_time_pruning_stops_slow_trials_and_records_reason(timed_trial, threshold):
+    model, trial = timed_trial
+    trial.study.set_user_attr("runtime_threshold", threshold)
+    # Ten elapsed seconds after ten of 100 epochs projects a 100-second run.
+    with pytest.raises(optuna.TrialPruned, match="Projected total time 100.0s"):
+        model.time_pruning(current_epoch=10, total_epochs=100)
+    assert "100.0s" in trial.user_attrs["prune_reason"]
+    assert f"threshold {threshold:.1f}s" in trial.user_attrs["prune_reason"]
+
+
+@pytest.mark.parametrize("threshold", [None, 100.0, 150.0])
+def test_time_pruning_keeps_trials_within_budget(timed_trial, threshold):
+    model, trial = timed_trial
+    if threshold is not None:
+        trial.study.set_user_attr("runtime_threshold", threshold)
+    model.time_pruning(current_epoch=10, total_epochs=100)
+    assert "prune_reason" not in trial.user_attrs
+
+
+def test_time_pruning_respects_warmup(timed_trial):
+    model, trial = timed_trial
+    trial.study.set_user_attr("runtime_threshold", 0.0)
+    model.time_pruning(current_epoch=9, total_epochs=100)
+    assert "prune_reason" not in trial.user_attrs
+
+
+def test_time_pruning_allows_training_without_an_optuna_trial(timed_trial):
+    model, _ = timed_trial
+    model.optuna_trial = None
+    model.time_pruning(current_epoch=10, total_epochs=100)
 
 
 # --------- Tests for maybe_set_runtime_threshold ----------
