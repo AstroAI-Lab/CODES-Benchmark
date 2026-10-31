@@ -121,9 +121,9 @@ def plot_example_trajectories_paper(
 
     # Ensure the labels list matches the number of quantities
     if labels is not None:
-        assert (
-            len(labels) == total_quantities
-        ), "Labels must match the number of quantities."
+        assert len(labels) == total_quantities, (
+            "Labels must match the number of quantities."
+        )
 
     # Create subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4), sharey=True)
@@ -248,9 +248,9 @@ def plot_example_trajectories_poster(
 
     # Ensure the labels list matches the number of quantities
     if labels is not None:
-        assert (
-            len(labels) == total_quantities
-        ), "Labels must match the number of quantities."
+        assert len(labels) == total_quantities, (
+            "Labels must match the number of quantities."
+        )
 
     # Create subplots
     fig, (ax1, ax2) = plt.subplots(

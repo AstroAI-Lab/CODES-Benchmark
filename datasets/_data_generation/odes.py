@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 
@@ -1463,9 +1463,6 @@ def lotka_volterra(t: float, n: np.ndarray) -> np.ndarray:
     return derivatives
 
 
-import numpy as np
-
-
 def parametric_lotka_volterra(
     t: float, n: np.ndarray, params: np.ndarray
 ) -> np.ndarray:
@@ -1532,7 +1529,7 @@ def parametric_lotka_volterra(
     return np.array([dp1_dt, dp2_dt, dp3_dt, dq1_dt, dq2_dt, dq3_dt])
 
 
-FUNCS: Dict[str, Dict[str, Any]] = {
+FUNCS: dict[str, dict[str, Any]] = {
     "lotka_volterra": {
         "func": lotka_volterra,
         "tsteps": np.linspace(0, 100, 101),

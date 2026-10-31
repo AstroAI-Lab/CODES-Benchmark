@@ -56,11 +56,10 @@ def check_benchmark(conf: dict) -> None:
     """
     # Check whether cuda devices have been selected and if they are available
     for device in conf.get("devices", []):
-        if "cuda" in device:
-            if not torch.cuda.is_available():
-                raise ValueError(
-                    "You have selected at least one cuda device, but CUDA is not available. Please adjust the device settings in config.yaml."
-                )
+        if "cuda" in device and not torch.cuda.is_available():
+            raise ValueError(
+                "You have selected at least one cuda device, but CUDA is not available. Please adjust the device settings in config.yaml."
+            )
     # Check for the training directory and load the training configuration
     print("\nChecking benchmark configuration...")
     training_id = conf.get("training_id")
@@ -122,7 +121,7 @@ def check_benchmark(conf: dict) -> None:
             )
 
     # Check if there are any additional keys in the benchmark dataset not present in training
-    for key in benchmark_dataset.keys():
+    for key in benchmark_dataset:
         if key not in training_dataset:
             raise ValueError(
                 f"Additional dataset setting '{key}' found in benchmark configuration that is not present in training configuration."
@@ -604,7 +603,7 @@ def make_comparison_csv(metrics: dict, config: dict) -> None:
     """
 
     # Clean the metrics
-    for surr_name in metrics.keys():
+    for surr_name in metrics:
         metrics[surr_name] = clean_metrics(metrics[surr_name], config)
 
     # cleaned_metrics = convert_to_standard_types(metrics)
@@ -615,7 +614,7 @@ def make_comparison_csv(metrics: dict, config: dict) -> None:
     }
 
     # Convert all numerical values to scientific notation
-    for surr_name in flattened_metrics.keys():
+    for surr_name in flattened_metrics:
         flattened_metrics[surr_name] = convert_dict_to_scientific_notation(
             flattened_metrics[surr_name]
         )
@@ -643,7 +642,7 @@ def make_comparison_csv(metrics: dict, config: dict) -> None:
         # Write each row with the values corresponding to each model
         for key in all_keys:
             row = [key]
-            for surr_name in metrics.keys():
+            for surr_name in metrics:
                 value = flattened_metrics[surr_name].get(
                     key, "N/A"
                 )  # Use 'N/A' if key is missing

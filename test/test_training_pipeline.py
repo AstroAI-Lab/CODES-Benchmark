@@ -109,7 +109,6 @@ def test_uq_members_get_distinct_seeds(minimal_config):
 
 
 class TestTrainAndSaveModel:
-
     @patch("codes.train.train_fcts.load_and_save_config")
     @patch("codes.train.train_fcts.make_description")
     @patch("codes.train.train_fcts.set_random_seeds")

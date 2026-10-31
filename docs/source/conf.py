@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from importlib import metadata
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -14,6 +15,8 @@ from sphinx.deprecation import RemovedInSphinx10Warning
 project = "CODES"
 copyright = "2026, Robin Janssen"
 author = "Robin Janssen"
+release = metadata.version("codes")
+version = ".".join(release.split(".")[:2])
 
 # -- General configuration ---------------------------------------------------
 
@@ -78,7 +81,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "CODES GitHub",
-            "url": "https://github.com/robin-janssen/CODES-Benchmark",
+            "url": "https://github.com/AstroAI-Lab/CODES-Benchmark",
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
         },

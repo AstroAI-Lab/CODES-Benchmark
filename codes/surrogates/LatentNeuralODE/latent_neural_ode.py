@@ -1,4 +1,4 @@
-from typing import Optional
+import contextlib
 
 import numpy as np
 import torch
@@ -91,9 +91,9 @@ class LatentNeuralODE(AbstractSurrogateModel):
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
-        assert (
-            timesteps.shape[0] == dataset_train.shape[1]
-        ), "Number of timesteps in timesteps array and dataset must match."
+        assert timesteps.shape[0] == dataset_train.shape[1], (
+            "Number of timesteps in timesteps array and dataset must match."
+        )
 
         nw = getattr(self.config, "num_workers", 0)
 
@@ -140,9 +140,8 @@ class LatentNeuralODE(AbstractSurrogateModel):
         num_workers: int = 0,
         pin_memory: bool = True,
     ):
-        if pin_memory:
-            if "cuda" not in self.device:
-                pin_memory = False
+        if pin_memory and "cuda" not in self.device:
+            pin_memory = False
 
         data_t = torch.from_numpy(data).float()
         t_t = torch.from_numpy(timesteps).float()
@@ -268,10 +267,9 @@ class LatentNeuralODE(AbstractSurrogateModel):
         self.model.train()
         # If optimizer.train() is a no-op or not needed, consider removing it;
         # leave it only if it's a custom wrapper that actually requires it.
-        try:
+        # Standard PyTorch optimizers do not have a .train() method.
+        with contextlib.suppress(AttributeError):
             optimizer.train()
-        except AttributeError:
-            pass  # standard PyTorch optimizers don't have .train()
 
         self.setup_checkpoint()
 
@@ -684,7 +682,7 @@ class ODEWithParams(nn.Module):
         self.base_ode = base_ode
         self.latent_dim = latent_dim
         self.n_parameters = n_parameters
-        self.p_const: Optional[Tensor] = None
+        self.p_const: Tensor | None = None
 
     def set_params(self, params: Tensor):
         # params: [batch, n_parameters]

@@ -73,9 +73,9 @@ class TestAbstractSurrogateModelInterface:
                 # Check that the method exists in the base class
                 assert hasattr(AbstractSurrogateModel, method)
                 # Check that the subclass doesn't override it
-                assert (
-                    method not in model_class.__dict__
-                ), f"{model_class.__name__} overrides protected method {method}"
+                assert method not in model_class.__dict__, (
+                    f"{model_class.__name__} overrides protected method {method}"
+                )
 
 
 class TestSurrogateModelInitialization:
@@ -137,9 +137,9 @@ class TestDataPreparation:
 
         # Test training loader
         train_batch = next(iter(train_loader))
-        assert (
-            train_batch[0].size(0) <= constants["batch_size"]
-        ), f"Train batch size {train_batch[0].size(0)} exceeds {constants['batch_size']}"
+        assert train_batch[0].size(0) <= constants["batch_size"], (
+            f"Train batch size {train_batch[0].size(0)} exceeds {constants['batch_size']}"
+        )
 
         # Test other loaders
         test_batch = next(iter(test_loader))
@@ -578,7 +578,7 @@ class TestSaveLoad:
 
             assert yaml_path.exists()
 
-            with open(yaml_path, "r") as f:
+            with open(yaml_path) as f:
                 config = yaml.safe_load(f)
 
             assert isinstance(config, dict)

@@ -1,9 +1,9 @@
 # CODES Benchmark
 
-[![codecov](https://codecov.io/github/robin-janssen/CODES-Benchmark/branch/main/graph/badge.svg?token=TNF9ISCAJK)](https://codecov.io/github/robin-janssen/CODES-Benchmark) ![Static Badge](https://img.shields.io/badge/license-GPLv3-blue) ![Static Badge](https://img.shields.io/badge/NeurIPS-2024-green)
+[![codecov](https://codecov.io/github/AstroAI-Lab/CODES-Benchmark/branch/main/graph/badge.svg)](https://codecov.io/github/AstroAI-Lab/CODES-Benchmark) ![Static Badge](https://img.shields.io/badge/license-GPLv3-blue) ![Static Badge](https://img.shields.io/badge/NeurIPS-2024-green)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23810176.svg)](https://doi.org/10.5281/zenodo.23810176)
 [![All Contributors](https://img.shields.io/github/all-contributors/AstroAI-Lab/CODES-Benchmark?color=ee8449&style=flat-square)](#contributors)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Code style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/)
 
 🎉 Accepted to the ML4PS workshop @ NeurIPS 2024
 
@@ -66,13 +66,16 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 
 CODES follows [semantic versioning](https://semver.org/). [CHANGELOG.md](CHANGELOG.md) lists the changes in each release, including every change that affects benchmark results. Saved models and metrics record the CODES version and commit that produced them.
 
+Development builds for the next release use `0.3.0.dev0`. When using an unreleased
+build, record the git commit as well as the package version.
+
 ## Citation & Publications using CODES
 
-If you use `CODES` in your research, please cite the software release you used,
-using its Zenodo DOI when available. GitHub's **Cite this repository** button
-provides a software citation based on [CITATION.cff](CITATION.cff). Include the
-version used in your methods; [GitHub releases](https://github.com/AstroAI-Lab/CODES-Benchmark/releases)
-identify the corresponding code snapshots.
+If you use `CODES` in your research, please cite the archived software release you
+used. [CODES 0.2.0](https://doi.org/10.5281/zenodo.23810177) is archived on Zenodo;
+you can export its citation there or use GitHub's **Cite this repository** button,
+which reads [CITATION.cff](CITATION.cff). Include the version used in your methods.
+The DOI badge above links to [all archived versions](https://doi.org/10.5281/zenodo.23810176).
 
 If you use the astrochemical datasets or analysis presented in **Janssen, Branca &
 Buck (2026)**, please also cite that paper, listed below.
@@ -110,7 +113,7 @@ In short: open or pick an issue, make your changes in a branch, and submit a pul
       <td align="center" valign="top" width="14.28%"><a href="https://tobibu.github.io"><img src="https://avatars.githubusercontent.com/u/7574273?v=4?s=100" width="100px;" alt="Tobias Buck"/><br /><sub><b>Tobias Buck</b></sub></a><br /><a href="#ideas-TobiBu" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-TobiBu" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-TobiBu" title="Project Management">📆</a> <a href="#research-TobiBu" title="Research">🔬</a> <a href="https://github.com/AstroAI-Lab/CODES-Benchmark/pulls?q=is%3Apr+reviewed-by%3ATobiBu" title="Reviewed Pull Requests">👀</a> <a href="#talk-TobiBu" title="Talks">📢</a> <a href="#mentoring-TobiBu" title="Mentoring">🧑‍🏫</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/lorenzobranca"><img src="https://avatars.githubusercontent.com/u/57775402?v=4?s=100" width="100px;" alt="Lorenzo Branca"/><br /><sub><b>Lorenzo Branca</b></sub></a><br /><a href="#data-lorenzobranca" title="Data">🔣</a> <a href="#ideas-lorenzobranca" title="Ideas, Planning, & Feedback">🤔</a> <a href="#research-lorenzobranca" title="Research">🔬</a> <a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=lorenzobranca" title="Tests">⚠️</a> <a href="#talk-lorenzobranca" title="Talks">📢</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Immi000"><img src="https://avatars.githubusercontent.com/u/100942429?v=4?s=100" width="100px;" alt="Immanuel Sulzer"/><br /><sub><b>Immanuel Sulzer</b></sub></a><br /><a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Immi000" title="Code">💻</a> <a href="#content-Immi000" title="Content">🖋</a> <a href="#data-Immi000" title="Data">🔣</a> <a href="#design-Immi000" title="Design">🎨</a> <a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Immi000" title="Documentation">📖</a> <a href="#infra-Immi000" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#userTesting-Immi000" title="User Testing">📓</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Prime-73"><img src="https://avatars.githubusercontent.com/u/77167261?v=4?s=100" width="100px;" alt="Gianluca Möschter"/><br /><sub><b>Gianluca Möschter</b></sub></a><br /><a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Prime-73" title="Code">💻</a> <a href="#data-Prime-73" title="Data">🔣</a> <a href="#research-Prime-73" title="Research">🔬</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Prime-73"><img src="https://avatars.githubusercontent.com/u/77167261?v=4?s=100" width="100px;" alt="Gianluca Möschter"/><br /><sub><b>Gianluca Möschter</b></sub></a><br /><a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Prime-73" title="Code">💻</a> <a href="#data-Prime-73" title="Data">🔣</a> <a href="#research-Prime-73" title="Research">🔬</a> <a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Prime-73" title="Documentation">📖</a> <a href="https://github.com/AstroAI-Lab/CODES-Benchmark/commits?author=Prime-73" title="Tests">⚠️</a> <a href="#userTesting-Prime-73" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>

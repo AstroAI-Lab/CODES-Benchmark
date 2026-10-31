@@ -10,6 +10,8 @@ affecting results".
 
 ### Added
 
+- Contributor credit for Gianluca Möschter's code, data, research, documentation,
+  tests and user testing, and inclusion in the software citation author list.
 - Autoregressive rollout finetuning of trained surrogates, with an optional Optuna
   search that can resume earlier trials.
 - Fixed-step rollout evaluation, including median absolute log error, non-finite
@@ -40,6 +42,15 @@ affecting results".
 
 ### Changed
 
+- Updated the checkout, uv setup, Codecov and Pages Actions to current releases
+  compatible with Node 24. CI also checks the pinned requirements against `uv.lock`.
+- Development builds now identify themselves as `0.3.0.dev0`; the documentation
+  displays the installed package version.
+- Added the 0.2.0 release DOI and publication date to citation metadata, an
+  all-versions DOI badge, and corrected repository and Codecov links.
+- Replaced Black and isort with Ruff for linting, import sorting and formatting.
+  CI and pre-commit use the same pinned Ruff version. The rule set covers `E`, `F`,
+  `I`, `SIM` and `UP` on Python files and the tutorial notebook.
 - Citation guidance now prioritises the software release, with the A&A paper
   requested when using its astrochemical datasets or analysis.
 

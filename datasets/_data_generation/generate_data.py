@@ -1,9 +1,10 @@
 import logging
 import sys
 from argparse import ArgumentParser
+from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any
 
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -26,7 +27,7 @@ from datasets._data_generation.odes import FUNCS  # Import FUNCS from odes.py
 
 
 def generate_initial_conditions(
-    num: int, ndim: int, sampling: Dict[str, Any], seed: int = None
+    num: int, ndim: int, sampling: dict[str, Any], seed: int = None
 ) -> np.ndarray:
     """Generates initial conditions using standard Sobol sampling."""
     space = sampling.get("space", "linear")
@@ -57,7 +58,7 @@ def generate_initial_conditions(
 
 def generate_initial_samples(
     num: int,
-    sampling: Dict[str, Any],
+    sampling: dict[str, Any],
     seed: int = None,
 ) -> tuple[np.ndarray, np.ndarray | None]:
     """
@@ -67,7 +68,7 @@ def generate_initial_samples(
     between linear vs. log-uniform sampling across those linear bounds.
     """
     state_bounds = sampling["bounds"]
-    params_bounds = sampling.get("params_bounds", None)
+    params_bounds = sampling.get("params_bounds")
 
     # Determine sampling spaces
     state_space = sampling.get("space", "linear")
@@ -123,7 +124,7 @@ def generate_trajectory(
     func: Callable[..., np.ndarray],
     timesteps: np.ndarray,
     initial_condition: np.ndarray,
-    solver_options: Dict[str, Any] = None,
+    solver_options: dict[str, Any] = None,
     log_time: bool = False,
     final_transform: bool = False,
     params: np.ndarray | None = None,
@@ -161,10 +162,7 @@ def generate_trajectory(
         solver_options = {"method": "DOP853", "atol": 1e-8, "rtol": 1e-8}
 
     # Create a wrapper that passes the parameters if provided.
-    if params is not None:
-        f = partial(func, params=params)
-    else:
-        f = func
+    f = partial(func, params=params) if params is not None else func
 
     if log_time:
         spy = 365.0 * 24.0 * 3600.0
@@ -196,10 +194,10 @@ def create_data(
     func: Callable[..., np.ndarray],
     timesteps: np.ndarray,
     dim: int,
-    sampling: Dict[str, Any],
+    sampling: dict[str, Any],
     seed: int = None,
     init_func: Callable[[int], np.ndarray] = None,
-    solver_options: Dict[str, Any] = None,
+    solver_options: dict[str, Any] = None,
     log_time: bool = False,
     final_transform: bool = False,
     params_bounds: list[tuple[float, float]] | None = None,

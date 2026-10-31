@@ -44,33 +44,56 @@ Edit `pyproject.toml`, then update the lockfile and the pinned requirements:
 
 ```bash
 uv lock
-uv export --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
+uv export --locked --format requirements-txt --no-hashes --no-emit-project -o requirements.txt
 ```
 
-CI fails if `uv.lock` is out of date with `pyproject.toml`.
+CI fails if `uv.lock` is out of date with `pyproject.toml`, or if `requirements.txt`
+does not match the locked export above.
+
+Development builds use `0.3.0.dev0`; saved models and metrics also record the git
+commit. `CITATION.cff` describes the latest archived release, currently 0.2.0, with
+that release's DOI. Before tagging a new release, update its version and release
+date and remove the previous release's DOI if the new one is not yet available.
+Once Zenodo creates the new archive, add its release DOI to the citation metadata
+without moving the published tag. The README's DOI badge covers all archived
+versions.
 
 ## Code style and formatting
 
-This repository uses:
+This repository uses [Ruff](https://docs.astral.sh/ruff/) for linting, import sorting,
+and formatting, including the tutorial notebook. The rules cover pycodestyle (`E`),
+Pyflakes (`F`), import sorting (`I`), simplification (`SIM`), and Python upgrades (`UP`),
+targeting Python 3.11. Line length is handled by the formatter; import placement has
+exceptions for standalone scripts that configure their import path.
 
-- [Black](https://black.readthedocs.io/en/stable/) for formatting
-- [isort](https://pycqa.github.io/isort/) for import sorting
+CI runs the Ruff version pinned in `uv.lock`. Pre-commit uses the same version, and
+`required-version` in `pyproject.toml` rejects mismatches. When upgrading Ruff, update
+the dependency pin, `required-version`, and the hook revision together, then refresh
+`uv.lock` and `requirements.txt`.
 
-CI checks both on every pull request and fails if a file needs reformatting, so run them before pushing.
-
-Run both locally with:
+Apply lint fixes and format before pushing:
 
 ```bash
-black .
-isort .
+uv run --locked ruff check --fix .
+uv run --locked ruff format .
+```
+
+Run the checks used by CI with:
+
+```bash
+uv run --locked ruff check .
+uv run --locked ruff format --check .
 ```
 
 If you use pre-commit, install hooks once and run them across the repository:
 
 ```bash
-pre-commit install
-pre-commit run --all-files
+uv run --locked pre-commit install
+uv run --locked pre-commit run --all-files
 ```
+
+With the pip setup, run `ruff` and `pre-commit` directly from the activated
+environment after installing `requirements.txt`.
 
 ## Tests and documentation checks
 

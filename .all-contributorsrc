@@ -85,7 +85,10 @@
       "contributions": [
         "code",
         "data",
-        "research"
+        "research",
+        "doc",
+        "test",
+        "userTesting"
       ]
     }
   ]
