@@ -65,7 +65,7 @@ def load_yaml_config(config_path: str) -> dict:
         dict: Configuration dictionary.
     """
 
-    with open(config_path, "r") as file:
+    with open(config_path) as file:
         return yaml.safe_load(file)
 
 
@@ -132,15 +132,12 @@ def make_optuna_params(trial: optuna.Trial, optuna_params: dict) -> dict:
                             suggested[child] = _suggest_param(
                                 trial, child, optuna_params[child]
                             )
-            elif switch == "loss_function":
-                if (
-                    isinstance(val, str)
-                    and val.lower() == "smoothl1"
-                    and "beta" in optuna_params
-                ):
-                    suggested["beta"] = _suggest_param(
-                        trial, "beta", optuna_params["beta"]
-                    )
+            elif switch == "loss_function" and (
+                isinstance(val, str)
+                and val.lower() == "smoothl1"
+                and "beta" in optuna_params
+            ):
+                suggested["beta"] = _suggest_param(trial, "beta", optuna_params["beta"])
 
         else:
             # switch _not_ in config, but user still might want to tune child directly
@@ -159,10 +156,7 @@ def make_optuna_params(trial: optuna.Trial, optuna_params: dict) -> dict:
 
     # Map activation & loss_function strings to actual nn classes/instances
     for name, val in list(suggested.items()):
-        if "activation" in name.lower():
-            cls = MODULE_REGISTRY[val.lower()]
-            suggested[name] = cls()
-        elif name == "loss_function":
+        if "activation" in name.lower() or name == "loss_function":
             cls = MODULE_REGISTRY[val.lower()]
             suggested[name] = cls()
 

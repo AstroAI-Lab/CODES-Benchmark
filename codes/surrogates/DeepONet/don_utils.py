@@ -91,7 +91,7 @@ class FlatBatchIterable(IterableDataset):
 
 def read_yaml_config(model_path):
     config_path = model_path.replace(".pth", ".yaml")
-    with open(config_path, "r") as file:
+    with open(config_path) as file:
         config = yaml.safe_load(file)
     return config
 

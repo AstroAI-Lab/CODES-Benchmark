@@ -323,7 +323,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         remove_keys = ["masses"]
         for key in remove_keys:
             hyperparameters.pop(key, None)
-        for key in hyperparameters.keys():
+        for key in hyperparameters:
             if isinstance(hyperparameters[key], nn.Module):
                 hyperparameters[key] = hyperparameters[key].__class__.__name__
 
@@ -576,19 +576,18 @@ class AbstractSurrogateModel(ABC, nn.Module):
         else:
             threshold = None
 
-        if threshold is not None:
-            if projected_total_time > threshold:
-                if self.optuna_trial is not None:
-                    tqdm.write(
-                        f"[Trial {self.optuna_trial.number}] Projected total time {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s. Pruning trial."
-                    )
-                    self.optuna_trial.set_user_attr(
-                        "prune_reason",
-                        f"Projected runtime {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s",
-                    )
-                raise optuna.TrialPruned(
-                    f"Projected total time {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s"
+        if threshold is not None and projected_total_time > threshold:
+            if self.optuna_trial is not None:
+                tqdm.write(
+                    f"[Trial {self.optuna_trial.number}] Projected total time {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s. Pruning trial."
                 )
+                self.optuna_trial.set_user_attr(
+                    "prune_reason",
+                    f"Projected runtime {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s",
+                )
+            raise optuna.TrialPruned(
+                f"Projected total time {projected_total_time:.1f}s exceeds threshold {threshold:.1f}s"
+            )
 
     def setup_checkpoint(self) -> None:
         """

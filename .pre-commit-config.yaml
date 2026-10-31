@@ -1,9 +1,8 @@
 repos:
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.3.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Keep aligned with the Ruff pin and required-version in pyproject.toml.
+    rev: v0.17.3
     hooks:
-      - id: black
-  - repo: https://github.com/pycqa/isort
-    rev: 8.0.1
-    hooks:
-      - id: isort
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format

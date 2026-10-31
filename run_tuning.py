@@ -243,7 +243,7 @@ def run_all_studies(
                 "dataset": dataset_cfg.copy(),
                 "devices": list(config.get("devices", ["cpu"])),
                 "epochs": surr["epochs"],
-                "n_trials": trials if not n_trials_override else n_trials_override,
+                "n_trials": n_trials_override if n_trials_override else trials,
                 "seed": config.get("seed", 42),
                 "surrogate": {"name": arch_name},
                 "optuna_params": surr.get("optuna_params", {}),

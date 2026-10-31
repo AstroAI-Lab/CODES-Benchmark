@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -1151,8 +1150,8 @@ def plot_losses(
     labels: tuple[str, ...],
     title: str = "Losses",
     save: bool = False,
-    conf: Optional[dict] = None,
-    surr_name: Optional[str] = None,
+    conf: dict | None = None,
+    surr_name: str | None = None,
     mode: str = "main",
     percentage: float = 2.0,
     show_title: bool = True,
@@ -1245,8 +1244,8 @@ def plot_losses_dual_axis(
     labels: tuple[str, str] = ("Train Loss", "Test Loss"),
     title: str = "Losses",
     save: bool = False,
-    conf: Optional[dict] = None,
-    surr_name: Optional[str] = None,
+    conf: dict | None = None,
+    surr_name: str | None = None,
     show_title: bool = True,
 ) -> None:
     """
@@ -2850,16 +2849,12 @@ def plot_all_generalization_errors(
 
     # Helper: given a modality key, get the corresponding data dictionary.
     def get_modality_data(modality):
-        if modality == "interpolation":
-            return interp_data
-        elif modality == "extrapolation":
-            return extrap_data
-        elif modality == "sparse":
-            return sparse_data
-        elif modality == "batch_size":
-            return batch_data
-        else:
-            return {}
+        return {
+            "interpolation": interp_data,
+            "extrapolation": extrap_data,
+            "sparse": sparse_data,
+            "batch_size": batch_data,
+        }.get(modality, {})
 
     # Loop over modalities and plot each in its corresponding axis.
     for ax, modality in zip(axes, available_modalities):
