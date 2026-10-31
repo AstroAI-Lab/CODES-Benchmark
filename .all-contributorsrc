@@ -63,19 +63,30 @@
       ]
     },
     {
-        "login": "Immi000",
-        "name": "Immanuel Sulzer",
-        "avatar_url": "https://avatars.githubusercontent.com/u/100942429?v=4",
-        "profile": "https://github.com/Immi000",
-        "contributions": [
-          "code",
-          "content",
-          "data",
-          "design",
-          "doc",
-          "infra",
-          "userTesting"
-        ]
+      "login": "Immi000",
+      "name": "Immanuel Sulzer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/100942429?v=4",
+      "profile": "https://github.com/Immi000",
+      "contributions": [
+        "code",
+        "content",
+        "data",
+        "design",
+        "doc",
+        "infra",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "Prime-73",
+      "name": "Gianluca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77167261?v=4",
+      "profile": "https://github.com/Prime-73",
+      "contributions": [
+        "code",
+        "data",
+        "research"
+      ]
     }
   ]
 }
