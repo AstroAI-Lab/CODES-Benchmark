@@ -33,6 +33,9 @@ affecting results".
 
 ### Fixed
 
+- Failed local training runs now raise an error instead of reporting successful
+  completion. Successful sibling tasks remain recorded; unfinished tasks are kept
+  for retry after exceptions, worker crashes or interruption.
 - Preserved the 0.2.0 `SmoothL1Loss` default of `beta: 1.0`; finetuning also uses the
   configured loss and beta.
 - Mean rollout loss uses the number of steps actually taken when a rollout stops
@@ -45,6 +48,13 @@ affecting results".
 
 ### Changed
 
+- Local training now runs each task in a fresh spawned process, with the parent
+  coordinating device slots and pending work. Single-device runs use the same
+  isolated execution path. The scheduler-independent executor can also be called
+  directly by a future external worker.
+- Training workers initialize their own seeds and deterministic settings. The new
+  `cpu_threads` setting defaults to one PyTorch CPU thread per worker and respects
+  CPU affinity and Slurm's per-task CPU limit.
 - Standard surrogate training now shares a common loop, with no intended numerical
   changes. Custom `fit` implementations remain supported.
 - `ChemDataset` remains available but is deprecated. MultiONet's `setup_criterion`
@@ -63,6 +73,8 @@ affecting results".
 
 ### Removed
 
+- The old threaded training `worker` and `DummyLock` exports. Use the local
+  training runners or `execute_training_task` for independent task execution.
 - The unused direct-module helpers `DeepONet.don_utils.PreBatchedDataset`,
   `DeepONet.don_utils.custom_collate_fn`, `FCNN.fcnn.FCPrebatchedDataset` and
   `FCNN.fcnn.fc_collate_fn`,
