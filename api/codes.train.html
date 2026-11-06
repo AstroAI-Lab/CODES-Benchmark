@@ -362,30 +362,46 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.progress">codes.train.progress module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress"><code class="docutils literal notranslate"><span class="pre">EventProgress</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.close"><code class="docutils literal notranslate"><span class="pre">EventProgress.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.set_postfix"><code class="docutils literal notranslate"><span class="pre">EventProgress.set_postfix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.update"><code class="docutils literal notranslate"><span class="pre">EventProgress.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.close"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.elapsed"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.elapsed</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.event"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.event()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.finish"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.finish()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.log"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.log()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.start"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.current_reporter"><code class="docutils literal notranslate"><span class="pre">current_reporter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.worker_reporting"><code class="docutils literal notranslate"><span class="pre">worker_reporting()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.tasks">codes.train.tasks module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.validate_execution_settings"><code class="docutils literal notranslate"><span class="pre">validate_execution_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -404,22 +420,135 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
+<section id="module-codes.train.progress">
+<span id="codes-train-progress-module"></span><h2>codes.train.progress module<a class="headerlink" href="#module-codes.train.progress" title="Link to this heading">#</a></h2>
+<p>Progress messages from training workers and their parent-owned display.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.train.progress.EventProgress">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.progress.</span></span><span class="sig-name descname"><span class="pre">EventProgress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.EventProgress" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Small tqdm-compatible iterable that reports completed epochs to the parent.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.EventProgress.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.EventProgress.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.EventProgress.set_postfix">
+<span class="sig-name descname"><span class="pre">set_postfix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ordered_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.EventProgress.set_postfix" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.EventProgress.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.EventProgress.update" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Render worker events centrally, with stable bars or plain log lines.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.elapsed">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">elapsed</span></span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.elapsed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.event">
+<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.event" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.finish">
+<span class="sig-name descname"><span class="pre">finish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.finish" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.log" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.train.progress.ProgressDisplay.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.ProgressDisplay.start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.train.progress.current_reporter">
+<span class="sig-prename descclassname"><span class="pre">codes.train.progress.</span></span><span class="sig-name descname"><span class="pre">current_reporter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.current_reporter" title="Link to this definition">#</a></dt>
+<dd><p>Return the current worker’s message callback, if reporting is enabled.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.train.progress.worker_reporting">
+<span class="sig-prename descclassname"><span class="pre">codes.train.progress.</span></span><span class="sig-name descname"><span class="pre">worker_reporting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">send</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.progress.worker_reporting" title="Link to this definition">#</a></dt>
+<dd><p>Route a worker’s progress and Python output to its parent process.</p>
+</dd></dl>
+
+</section>
+<section id="module-codes.train.tasks">
+<span id="codes-train-tasks-module"></span><h2>codes.train.tasks module<a class="headerlink" href="#module-codes.train.tasks" title="Link to this heading">#</a></h2>
+<p>Run individual training tasks independently of their scheduler.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.train.tasks.execute_training_task">
+<span class="sig-prename descclassname"><span class="pre">codes.train.tasks.</span></span><span class="sig-name descname"><span class="pre">execute_training_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.tasks.execute_training_task" title="Link to this definition">#</a></dt>
+<dd><p>Configure a worker process and train and save exactly one model.</p>
+<p><code class="docutils literal notranslate"><span class="pre">task</span></code> contains <code class="docutils literal notranslate"><span class="pre">(surrogate,</span> <span class="pre">mode,</span> <span class="pre">metric,</span> <span class="pre">training_id,</span> <span class="pre">seed,</span> <span class="pre">epochs)</span></code>,
+as produced by <code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate</span></code>. The saved configuration
+is read from <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/config.yaml</span></code>. <code class="docutils literal notranslate"><span class="pre">device</span></code> is a logical
+device string within the worker’s allocation; <code class="docutils literal notranslate"><span class="pre">cpu_threads</span></code> sets PyTorch’s
+intra-operation thread count.</p>
+<p>Local spawned processes and future external workers can both call this
+function. It propagates errors and does not update pending-task files or
+completion markers; those belong to the scheduler invoking it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.train.tasks.train_and_save_model">
+<span class="sig-prename descclassname"><span class="pre">codes.train.tasks.</span></span><span class="sig-name descname"><span class="pre">train_and_save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.tasks.train_and_save_model" title="Link to this definition">#</a></dt>
+<dd><p>Train and save a model for a specific benchmark mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>surr_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The name of the surrogate model.</p></li>
+<li><p><strong>mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The benchmark mode.</p></li>
+<li><p><strong>metric</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The metric for the benchmark mode.</p></li>
+<li><p><strong>training_id</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The training ID for the current training session.</p></li>
+<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Random seed for training.</p></li>
+<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Number of training epochs.</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device to run training on.</p></li>
+<li><p><strong>position</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Model position in the task list.</p></li>
+<li><p><strong>threadlock</strong> (<em>optional</em>) – Legacy lock used around seeded initialisation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="codes.train.tasks.validate_execution_settings">
+<span class="sig-prename descclassname"><span class="pre">codes.train.tasks.</span></span><span class="sig-name descname"><span class="pre">validate_execution_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.tasks.validate_execution_settings" title="Link to this definition">#</a></dt>
+<dd><p>Validate worker settings without selecting a CUDA context.</p>
+<p>CUDA indices are logical indices within the process’s visible devices. CPU
+threads must fit within both its affinity mask and any Slurm allocation.</p>
+</dd></dl>
+
+</section>
 <section id="module-codes.train.train_fcts">
 <span id="codes-train-train-fcts-module"></span><h2>codes.train.train_fcts module<a class="headerlink" href="#module-codes.train.train_fcts" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="codes.train.train_fcts.DummyLock">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">DummyLock</span></span><a class="headerlink" href="#codes.train.train_fcts.DummyLock" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="codes.train.train_fcts.DummyLock.acquire">
-<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.DummyLock.acquire" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="codes.train.train_fcts.DummyLock.release">
-<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.DummyLock.release" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+<dl class="py exception">
+<dt class="sig sig-object py" id="codes.train.train_fcts.TrainingRunError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">TrainingRunError</span></span><a class="headerlink" href="#codes.train.train_fcts.TrainingRunError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+<p>One or more local training tasks did not complete successfully.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -445,104 +574,24 @@ configuration file.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_fcts.parallel_training">
-<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.parallel_training" title="Link to this definition">#</a></dt>
-<dd><p>Execute the queued training tasks across multiple devices using worker threads.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Output of <a class="reference internal" href="../codes.train.html#codes.train.train_fcts.create_task_list_for_surrogate" title="codes.train.train_fcts.create_task_list_for_surrogate"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a>.</p></li>
-<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Devices allocated to training (e.g. [“cuda:0”, “cuda:1”]).</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the persisted JSON task list that tracks progress.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Elapsed wall-clock time reported by the shared progress bar.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.parallel_training" title="Link to this definition">#</a></dt>
+<dd><p>Run each task in a fresh process, with one process per device slot.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_fcts.sequential_training">
-<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.sequential_training" title="Link to this definition">#</a></dt>
-<dd><p>Run all training tasks sequentially on a single device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Task specification tuples generated from the config.</p></li>
-<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Contains exactly one element (typically “cpu” or a single CUDA id).</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the JSON file used to resume interrupted runs.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total elapsed time once all tasks finish.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.train.train_fcts.train_and_save_model">
-<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">train_and_save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;codes.train.train_fcts.DummyLock</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.train_and_save_model" title="Link to this definition">#</a></dt>
-<dd><p>Train and save a model for a specific benchmark mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>surr_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The name of the surrogate model.</p></li>
-<li><p><strong>mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The benchmark mode.</p></li>
-<li><p><strong>metric</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The metric for the benchmark mode.</p></li>
-<li><p><strong>training_id</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The training ID for the current training session.</p></li>
-<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Random seed for training.</p></li>
-<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Number of training epochs.</p></li>
-<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device to run training on.</p></li>
-<li><p><strong>position</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Model position in the task list.</p></li>
-<li><p><strong>threadlock</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">allocate_lock</span></code></span>) – Lock for deterministic threading.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.train.train_fcts.worker">
-<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_progress_bar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors_encountered</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.worker" title="Link to this definition">#</a></dt>
-<dd><p>Worker function to process tasks from the task queue on the given device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task_queue</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></span>) – The in-memory queue containing the training tasks.</p></li>
-<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The device to use for training.</p></li>
-<li><p><strong>device_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The index of the device in the device list.</p></li>
-<li><p><strong>overall_progress_bar</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm</span></code></span>) – The overall progress bar for the training.</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The filepath to the JSON task list.</p></li>
-<li><p><strong>errors_encountered</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – A shared mutable flag array indicating if an error has occurred
-(True if at least one task failed).</p></li>
-<li><p><strong>threadlock</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">allocate_lock</span></code></span>) – A lock to prevent threading issues with PyTorch.</p></li>
-</ul>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">codes.train.train_fcts.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_fcts.sequential_training" title="Link to this definition">#</a></dt>
+<dd><p>Run each task in a fresh process using the first device slot.</p>
 </dd></dl>
 
 </section>
 <section id="module-codes.train">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-codes.train" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="codes.train.DummyLock">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">DummyLock</span></span><a class="headerlink" href="#codes.train.DummyLock" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="codes.train.DummyLock.acquire">
-<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.DummyLock.acquire" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="codes.train.DummyLock.release">
-<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.DummyLock.release" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+<dl class="py exception">
+<dt class="sig sig-object py" id="codes.train.TrainingRunError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">TrainingRunError</span></span><a class="headerlink" href="#codes.train.TrainingRunError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+<p>One or more local training tasks did not complete successfully.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -567,50 +616,34 @@ configuration file.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="codes.train.execute_training_task">
+<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">execute_training_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.execute_training_task" title="Link to this definition">#</a></dt>
+<dd><p>Configure a worker process and train and save exactly one model.</p>
+<p><code class="docutils literal notranslate"><span class="pre">task</span></code> contains <code class="docutils literal notranslate"><span class="pre">(surrogate,</span> <span class="pre">mode,</span> <span class="pre">metric,</span> <span class="pre">training_id,</span> <span class="pre">seed,</span> <span class="pre">epochs)</span></code>,
+as produced by <code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate</span></code>. The saved configuration
+is read from <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/config.yaml</span></code>. <code class="docutils literal notranslate"><span class="pre">device</span></code> is a logical
+device string within the worker’s allocation; <code class="docutils literal notranslate"><span class="pre">cpu_threads</span></code> sets PyTorch’s
+intra-operation thread count.</p>
+<p>Local spawned processes and future external workers can both call this
+function. It propagates errors and does not update pending-task files or
+completion markers; those belong to the scheduler invoking it.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="codes.train.parallel_training">
-<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.parallel_training" title="Link to this definition">#</a></dt>
-<dd><p>Execute the queued training tasks across multiple devices using worker threads.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Output of <a class="reference internal" href="../codes.train.html#codes.train.create_task_list_for_surrogate" title="codes.train.create_task_list_for_surrogate"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a>.</p></li>
-<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Devices allocated to training (e.g. [“cuda:0”, “cuda:1”]).</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the persisted JSON task list that tracks progress.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Elapsed wall-clock time reported by the shared progress bar.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">parallel_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.parallel_training" title="Link to this definition">#</a></dt>
+<dd><p>Run each task in a fresh process, with one process per device slot.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.sequential_training">
-<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.sequential_training" title="Link to this definition">#</a></dt>
-<dd><p>Run all training tasks sequentially on a single device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – Task specification tuples generated from the config.</p></li>
-<li><p><strong>device_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Contains exactly one element (typically “cpu” or a single CUDA id).</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the JSON file used to resume interrupted runs.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total elapsed time once all tasks finish.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">sequential_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.sequential_training" title="Link to this definition">#</a></dt>
+<dd><p>Run each task in a fresh process using the first device slot.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.train.train_and_save_model">
-<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">train_and_save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;codes.train.train_fcts.DummyLock</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_and_save_model" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">train_and_save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.train_and_save_model" title="Link to this definition">#</a></dt>
 <dd><p>Train and save a model for a specific benchmark mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -623,27 +656,7 @@ configuration file.</p>
 <li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span>) – Number of training epochs.</p></li>
 <li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device to run training on.</p></li>
 <li><p><strong>position</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Model position in the task list.</p></li>
-<li><p><strong>threadlock</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">allocate_lock</span></code></span>) – Lock for deterministic threading.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.train.worker">
-<span class="sig-prename descclassname"><span class="pre">codes.train.</span></span><span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_progress_bar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_list_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors_encountered</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadlock</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.train.worker" title="Link to this definition">#</a></dt>
-<dd><p>Worker function to process tasks from the task queue on the given device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task_queue</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></span>) – The in-memory queue containing the training tasks.</p></li>
-<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The device to use for training.</p></li>
-<li><p><strong>device_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The index of the device in the device list.</p></li>
-<li><p><strong>overall_progress_bar</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm</span></code></span>) – The overall progress bar for the training.</p></li>
-<li><p><strong>task_list_filepath</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The filepath to the JSON task list.</p></li>
-<li><p><strong>errors_encountered</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span>) – A shared mutable flag array indicating if an error has occurred
-(True if at least one task failed).</p></li>
-<li><p><strong>threadlock</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">allocate_lock</span></code></span>) – A lock to prevent threading issues with PyTorch.</p></li>
+<li><p><strong>threadlock</strong> (<em>optional</em>) – Legacy lock used around seeded initialisation.</p></li>
 </ul>
 </dd>
 </dl>
@@ -682,30 +695,46 @@ configuration file.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.progress">codes.train.progress module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress"><code class="docutils literal notranslate"><span class="pre">EventProgress</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.close"><code class="docutils literal notranslate"><span class="pre">EventProgress.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.set_postfix"><code class="docutils literal notranslate"><span class="pre">EventProgress.set_postfix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.EventProgress.update"><code class="docutils literal notranslate"><span class="pre">EventProgress.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.close"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.elapsed"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.elapsed</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.event"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.event()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.finish"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.finish()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.log"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.log()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.ProgressDisplay.start"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.current_reporter"><code class="docutils literal notranslate"><span class="pre">current_reporter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.progress.worker_reporting"><code class="docutils literal notranslate"><span class="pre">worker_reporting()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.tasks">codes.train.tasks module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.tasks.validate_execution_settings"><code class="docutils literal notranslate"><span class="pre">validate_execution_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_fcts.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.train">Module contents</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.train.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 </ul>

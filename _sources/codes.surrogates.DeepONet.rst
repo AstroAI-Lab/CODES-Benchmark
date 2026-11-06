@@ -28,14 +28,6 @@ codes.surrogates.DeepONet.don\_utils module
    :show-inheritance:
    :undoc-members:
 
-codes.surrogates.DeepONet.train\_utils module
----------------------------------------------
-
-.. automodule:: codes.surrogates.DeepONet.train_utils
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 Module contents
 ---------------
 

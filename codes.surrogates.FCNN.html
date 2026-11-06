@@ -366,7 +366,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.FCNN.fcnn">codes.surrogates.FCNN.fcnn module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FCFlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FCFlatBatchIterable</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FCPrebatchedDataset"><code class="docutils literal notranslate"><span class="pre">FCPrebatchedDataset</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected"><code class="docutils literal notranslate"><span class="pre">FullyConnected</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected.create_dataloader"><code class="docutils literal notranslate"><span class="pre">FullyConnected.create_dataloader()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
@@ -384,7 +383,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.fc_collate_fn"><code class="docutils literal notranslate"><span class="pre">fc_collate_fn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.FCNN.fcnn_config">codes.surrogates.FCNN.fcnn_config module</a><ul class="visible nav section-nav flex-column">
@@ -421,21 +419,6 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="codes.surrogates.FCNN.fcnn.FCPrebatchedDataset">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.surrogates.FCNN.fcnn.</span></span><span class="sig-name descname"><span class="pre">FCPrebatchedDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs_batches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets_batches</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FCNN.fcnn.FCPrebatchedDataset" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
-<p>Dataset for pre-batched data specifically for the FullyConnected model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs_batches</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed input batches.</p></li>
-<li><p><strong>targets_batches</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed target batches.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="codes.surrogates.FCNN.fcnn.FullyConnected">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.surrogates.FCNN.fcnn.</span></span><span class="sig-name descname"><span class="pre">FullyConnected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_quantities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">29</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FCNN.fcnn.FullyConnected" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="codes.surrogates.AbstractSurrogate.html#codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel" title="codes.surrogates.AbstractSurrogate.abstract_surrogate.AbstractSurrogateModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a></p>
@@ -453,7 +436,7 @@ targets = state_at_time</p>
 <span class="sig-name descname"><span class="pre">epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FCNN.fcnn.FullyConnected.epoch" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -596,27 +579,6 @@ the deviation from it. Everything downstream still sees absolute states.</p>
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.FCNN.fcnn.fc_collate_fn">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.FCNN.fcnn.</span></span><span class="sig-name descname"><span class="pre">fc_collate_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.FCNN.fcnn.fc_collate_fn" title="Link to this definition">#</a></dt>
-<dd><p>Custom collate function to ensure tensors are returned in the correct shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>torch.Tensor</em><em>, </em><em>torch.Tensor</em><em>]</em><em>]</em>) – List of precomputed
-batches. Each tuple contains an <code class="docutils literal notranslate"><span class="pre">input_batch</span></code> with shape
-<code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">n_quantities</span> <span class="pre">+</span> <span class="pre">1]</span></code> and <code class="docutils literal notranslate"><span class="pre">target_batch</span></code> with shape
-<code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">n_quantities]</span></code>.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Inputs and targets with the same shapes
-as described above.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[torch.Tensor, torch.Tensor]</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-codes.surrogates.FCNN.fcnn_config">
 <span id="codes-surrogates-fcnn-fcnn-config-module"></span><h2>codes.surrogates.FCNN.fcnn_config module<a class="headerlink" href="#module-codes.surrogates.FCNN.fcnn_config" title="Link to this heading">#</a></h2>
@@ -703,7 +665,6 @@ surrogate model with fully connected layers.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.FCNN.fcnn">codes.surrogates.FCNN.fcnn module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FCFlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FCFlatBatchIterable</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FCPrebatchedDataset"><code class="docutils literal notranslate"><span class="pre">FCPrebatchedDataset</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected"><code class="docutils literal notranslate"><span class="pre">FullyConnected</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected.create_dataloader"><code class="docutils literal notranslate"><span class="pre">FullyConnected.create_dataloader()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnected.epoch"><code class="docutils literal notranslate"><span class="pre">FullyConnected.epoch()</span></code></a></li>
@@ -721,7 +682,6 @@ surrogate model with fully connected layers.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.FullyConnectedResidual.forward"><code class="docutils literal notranslate"><span class="pre">FullyConnectedResidual.forward()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.FCNN.fcnn.fc_collate_fn"><code class="docutils literal notranslate"><span class="pre">fc_collate_fn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.FCNN.fcnn_config">codes.surrogates.FCNN.fcnn_config module</a><ul class="visible nav section-nav flex-column">

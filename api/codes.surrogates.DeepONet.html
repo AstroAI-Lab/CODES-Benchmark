@@ -408,19 +408,7 @@
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.don_utils">codes.surrogates.DeepONet.don_utils module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.FlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FlatBatchIterable</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset"><code class="docutils literal notranslate"><span class="pre">PreBatchedDataset</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory"><code class="docutils literal notranslate"><span class="pre">create_date_based_directory()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn"><code class="docutils literal notranslate"><span class="pre">custom_collate_fn()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.get_project_path"><code class="docutils literal notranslate"><span class="pre">get_project_path()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.list_pth_files"><code class="docutils literal notranslate"><span class="pre">list_pth_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config"><code class="docutils literal notranslate"><span class="pre">read_yaml_config()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.set_random_seed"><code class="docutils literal notranslate"><span class="pre">set_random_seed()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.train_utils">codes.surrogates.DeepONet.train_utils module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet">Module contents</a></li>
@@ -524,11 +512,8 @@ if False, to the trunk net.</p></li>
 <li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></span>) – The optimizer.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The total loss for the training step.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -622,7 +607,10 @@ return the DataLoader objects for the training, testing, and validation data.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion">
 <span class="sig-name descname"><span class="pre">setup_criterion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.deeponet.MultiONet.setup_criterion" title="Link to this definition">#</a></dt>
-<dd><p>Utility function to set up the loss function for training.</p>
+<dd><p>Build the legacy summed-MSE loss, optionally with mass conservation.</p>
+<p>Deprecated: <code class="docutils literal notranslate"><span class="pre">fit</span></code> uses <code class="docutils literal notranslate"><span class="pre">self.config.loss</span></code> and does not call this
+method. It remains available for callers constructing the legacy loss
+explicitly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The loss function.</p>
@@ -812,133 +800,9 @@ trunk and multiple branch networks, designed to represent operator-based systems
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IterableDataset</span></code></p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.PreBatchedDataset">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">PreBatchedDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">branch_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trunk_inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
-<p>Dataset for pre-batched data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>branch_inputs</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed branch input batches.</p></li>
-<li><p><strong>trunk_inputs</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed trunk input batches.</p></li>
-<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>Tensor</em><em>]</em>) – List of precomputed target batches.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.create_date_based_directory">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">create_date_based_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subfolder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory" title="Link to this definition">#</a></dt>
-<dd><p>Create a directory based on the current date (dd-mm format) inside a specified subfolder of the base directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>base_dir</strong> – The base directory where the subfolder and date-based directory will be created.</p></li>
-<li><p><strong>subfolder</strong> – The subfolder inside the base directory to include before the date-based directory.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The path of the created date-based directory within the specified subfolder.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.custom_collate_fn">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">custom_collate_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn" title="Link to this definition">#</a></dt>
-<dd><p>Custom collate function to ensure tensors are returned in the correct shape.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> – A list of tuples from the dataset, where each tuple contains
-(branch_input, trunk_input, targets).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>branch_input: [batch_size, feature_size]</p></li>
-<li><p>trunk_input: [batch_size, feature_size]</p></li>
-<li><p>targets: [batch_size, feature_size]</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A tuple of tensors with correct shapes</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.get_project_path">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">get_project_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.get_project_path" title="Link to this definition">#</a></dt>
-<dd><p>Construct the absolute path to a project resource (data or model) based on a relative path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>relative_path</strong> – A relative path to the resource, e.g., “datasets/dataset100” or “models/02-28/model.pth”.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The absolute path to the resource.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.list_pth_files">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">list_pth_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'models'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.list_pth_files" title="Link to this definition">#</a></dt>
-<dd><p>List all .pth files in the specified directory without their extensions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The directory to search for .pth files.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of filenames without the .pth extension.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.mass_conservation_loss">
 <span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">mass_conservation_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss" title="Link to this definition">#</a></dt>
-<dd><p>Replaces the standard MSE loss with a sum of the standard MSE loss and a mass conservation loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>masses</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – A list of masses for the quantities.</p></li>
-<li><p><strong>criterion</strong> – The loss function to use for the standard loss.</p></li>
-<li><p><strong>weights</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></span>) – A 2-tuple of weights for the standard loss and the mass conservation loss.</p></li>
-<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code></span>) – The device to use for the loss function.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new loss function that includes the mass conservation loss.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.read_yaml_config">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">read_yaml_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.save_plot_counter">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">save_plot_counter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plots'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.don_utils.set_random_seed">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.don_utils.</span></span><span class="sig-name descname"><span class="pre">set_random_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gpu_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.don_utils.set_random_seed" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="module-codes.surrogates.DeepONet.train_utils">
-<span id="codes-surrogates-deeponet-train-utils-module"></span><h2>codes.surrogates.DeepONet.train_utils module<a class="headerlink" href="#module-codes.surrogates.DeepONet.train_utils" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="codes.surrogates.DeepONet.train_utils.mass_conservation_loss">
-<span class="sig-prename descclassname"><span class="pre">codes.surrogates.DeepONet.train_utils.</span></span><span class="sig-name descname"><span class="pre">mass_conservation_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MSELoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss" title="Link to this definition">#</a></dt>
 <dd><p>Replaces the standard MSE loss with a sum of the standard MSE loss and a mass conservation loss.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1037,19 +901,7 @@ trunk and multiple branch networks, designed to represent operator-based systems
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.don_utils">codes.surrogates.DeepONet.don_utils module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.FlatBatchIterable"><code class="docutils literal notranslate"><span class="pre">FlatBatchIterable</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.PreBatchedDataset"><code class="docutils literal notranslate"><span class="pre">PreBatchedDataset</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.create_date_based_directory"><code class="docutils literal notranslate"><span class="pre">create_date_based_directory()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.custom_collate_fn"><code class="docutils literal notranslate"><span class="pre">custom_collate_fn()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.get_project_path"><code class="docutils literal notranslate"><span class="pre">get_project_path()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.list_pth_files"><code class="docutils literal notranslate"><span class="pre">list_pth_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.read_yaml_config"><code class="docutils literal notranslate"><span class="pre">read_yaml_config()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.save_plot_counter"><code class="docutils literal notranslate"><span class="pre">save_plot_counter()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.don_utils.set_random_seed"><code class="docutils literal notranslate"><span class="pre">set_random_seed()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet.train_utils">codes.surrogates.DeepONet.train_utils module</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.DeepONet.train_utils.mass_conservation_loss"><code class="docutils literal notranslate"><span class="pre">mass_conservation_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-codes.surrogates.DeepONet">Module contents</a></li>

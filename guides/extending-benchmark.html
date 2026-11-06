@@ -364,7 +364,10 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-dataset">Add a dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-surrogate-model">Add a surrogate model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-surrogate-model">Add a surrogate model</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-and-custom-training-loops">Standard and custom training loops</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#customize-benchmark-modes">Customize benchmark modes</a></li>
 </ul>
             </nav>
@@ -419,28 +422,28 @@
 <li><p><strong>Implement the class</strong> under <code class="docutils literal notranslate"><span class="pre">codes/surrogates/&lt;YourModel&gt;/&lt;file&gt;.py</span></code>.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">inputs)</span> <span class="pre">-&gt;</span> <span class="pre">tuple[Tensor,</span> <span class="pre">Tensor]</span></code>: receives exactly what <code class="docutils literal notranslate"><span class="pre">prepare_data</span></code> emits (for example <code class="docutils literal notranslate"><span class="pre">(branch_input,</span> <span class="pre">trunk_input,</span> <span class="pre">targets)</span></code> in MultiONet). Return <code class="docutils literal notranslate"><span class="pre">(predictions,</span> <span class="pre">targets)</span></code> in that order so the shared training/validation utilities can compute metrics without model-specific branching.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">prepare_data(self,</span> <span class="pre">datasets,</span> <span class="pre">metadata,</span> <span class="pre">…)</span> <span class="pre">-&gt;</span> <span class="pre">tuple[DataLoader,</span> <span class="pre">DataLoader]</span></code>: build the train/validation dataloaders from the benchmark datasets. This is where you slice parameter sets, apply custom transforms, or pack tuples that your <code class="docutils literal notranslate"><span class="pre">forward</span></code> expects.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fit(self,</span> <span class="pre">train_loader,</span> <span class="pre">val_loader,</span> <span class="pre">…)</span></code>: implements the training loop. <code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.train_and_save_model</span></code> sets up everything (optimizers, schedulers, loggers) before calling <code class="docutils literal notranslate"><span class="pre">fit</span></code>, so you can focus on iterating over the loaders and calling <code class="docutils literal notranslate"><span class="pre">self.validate</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prepare_data(...)</span></code>: build train, test, and optional validation dataloaders from the benchmark datasets. Pack batches in the form your <code class="docutils literal notranslate"><span class="pre">forward</span></code> expects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fit(self,</span> <span class="pre">train_loader,</span> <span class="pre">test_loader,</span> <span class="pre">epochs,</span> <span class="pre">position,</span> <span class="pre">description,</span> <span class="pre">multi_objective=False)</span></code>: train the model. This entry point remains required, including for models using the shared loop below.</p></li>
 </ul>
 </li>
 <li><p><strong>Reuse shared helpers</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">self.setup_progress_bar(...)</span></code> draws status updates without clashing with the multi-process trainer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self.setup_progress_bar(...)</span></code> draws status updates without clashing with the concurrent trainer.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">self.predict(loader,</span> <span class="pre">...)</span></code> is the canonical way to produce predictions/targets during validation and evaluation—this ensures consistent batching, buffer pre-allocation, and shape handling for every surrogate. Test your model with it to guarantee compatibility.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">self.validate(...)</span></code> bundles metric computation, Optuna pruning hooks, checkpointing, and logging. Call it from <code class="docutils literal notranslate"><span class="pre">fit</span></code> (typically once per epoch) after computing validation losses via <code class="docutils literal notranslate"><span class="pre">self.predict</span></code>.</p></li>
-<li><p>Other protected helpers (<code class="docutils literal notranslate"><span class="pre">save</span></code>, <code class="docutils literal notranslate"><span class="pre">load</span></code>, <code class="docutils literal notranslate"><span class="pre">denormalise</span></code>, optimizer/scheduler factories) already encode CODES conventions; override only when a model’s requirements truly differ.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self.validate(...)</span></code> computes metrics and handles Optuna pruning and checkpointing. A custom loop should call it once per epoch; it runs metrics at <code class="docutils literal notranslate"><span class="pre">self.update_epochs</span></code> intervals.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save</span></code>, <code class="docutils literal notranslate"><span class="pre">load</span></code>, <code class="docutils literal notranslate"><span class="pre">denormalize</span></code>, and <code class="docutils literal notranslate"><span class="pre">predict</span></code> are protected methods. Use the optimizer/scheduler factory for the configured training settings.</p></li>
 </ul>
 </li>
-<li><p><strong>Register the surrogate</strong> by appending <code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.register(&quot;MySurrogateName&quot;)</span></code> at the end of the file that defines the class. Use the string you want users to reference in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>. Without this hook the CLI cannot instantiate your model.</p></li>
+<li><p><strong>Register the surrogate</strong> by appending <code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.register(MySurrogate)</span></code> at the end of the file that defines the class. The class name is used to identify the surrogate. Without this hook the CLI cannot instantiate your model.</p></li>
 <li><p><strong>Expose configuration</strong></p>
 <ul class="simple">
 <li><p>Create a companion config dataclass (e.g., <code class="docutils literal notranslate"><span class="pre">deeponet_config.py</span></code>’s <code class="docutils literal notranslate"><span class="pre">MultiONetBaseConfig</span></code>). Inherit from <code class="docutils literal notranslate"><span class="pre">AbstractSurrogateBaseConfig</span></code> whenever possible so shared hyperparameters (learning rate, optimizer, scheduler, loss, activation) remain documented and gain sensible defaults.</p></li>
-<li><p>Keep model-specific knobs inside that dataclass rather than the global config; users set them via the <code class="docutils literal notranslate"><span class="pre">surrogate_configs</span></code> section without touching other surrogates. The main benchmark config should stay model-agnostic unless you intentionally expose a cross-surrogate toggle.</p></li>
+<li><p>Keep model-specific knobs inside that dataclass. Dataset-specific defaults can be supplied in <code class="docutils literal notranslate"><span class="pre">datasets/&lt;name&gt;/surrogates_config.py</span></code> as a dataclass named after the surrogate plus <code class="docutils literal notranslate"><span class="pre">Config</span></code>; they are loaded when <code class="docutils literal notranslate"><span class="pre">dataset.use_optimal_params</span></code> is enabled.</p></li>
 </ul>
 </li>
 <li><p><strong>Checkpointing + evaluation</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code> already serializes weights, optimizer state, and scheduler state, and <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> expects that layout. If you modify the format, verify that evaluation still loads checkpoints without custom flags.</p></li>
+<li><p>Checkpoint selection uses the test loader during training. Keep the separate validation split independent for final evaluation. Verify saved models load in <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">predict</span></code> and the evaluation pipeline assume consistent output shapes, so avoid ad-hoc reshaping in downstream scripts—handle it in <code class="docutils literal notranslate"><span class="pre">forward</span></code> or <code class="docutils literal notranslate"><span class="pre">prepare_data</span></code>. This uniform path is what keeps the benchmark fair across models.</p></li>
 </ul>
 </li>
@@ -450,7 +453,55 @@
 </ul>
 </li>
 </ol>
+<section id="standard-and-custom-training-loops">
+<h3>Standard and custom training loops<a class="headerlink" href="#standard-and-custom-training-loops" title="Link to this heading">#</a></h3>
+<p>For models whose <code class="docutils literal notranslate"><span class="pre">forward</span></code> returns predictions and targets, <code class="docutils literal notranslate"><span class="pre">fit</span></code> can delegate to the optional shared loop. Decorate <code class="docutils literal notranslate"><span class="pre">fit</span></code> so saved models include the training duration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">codes.surrogates.training</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_standard</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">codes.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_execution</span>
+
+
+<span class="nd">@time_execution</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">train_loader</span><span class="p">,</span>
+    <span class="n">test_loader</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">,</span>
+    <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Training MySurrogate"</span><span class="p">,</span>
+    <span class="n">multi_objective</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">fit_standard</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">train_loader</span><span class="p">,</span>
+        <span class="n">test_loader</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+        <span class="n">multi_objective</span><span class="o">=</span><span class="n">multi_objective</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The helper uses the configured prediction loss, optimizer and scheduler, reports metrics, and handles checkpoints. For a different batch loss, pass a bound <code class="docutils literal notranslate"><span class="pre">loss_fn</span></code> accepting <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">criterion)</span></code> and returning a differentiable scalar tensor. For example, inside a model class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">training_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
+    <span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">predictions</span><span class="o">.</span><span class="n">square</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+
+<span class="c1"># In fit, pass loss_fn=self.training_loss to fit_standard.</span>
+</pre></div>
+</div>
+<p>The helper applies configured gradient clipping by default. FullyConnected, MultiONet and LatentNeuralODE use it; LatentPoly preserves its existing behavior without clipping. A model may instead implement its own complete <code class="docutils literal notranslate"><span class="pre">fit</span></code>. It should record <code class="docutils literal notranslate"><span class="pre">train_loss</span></code>, <code class="docutils literal notranslate"><span class="pre">test_loss</span></code> and <code class="docutils literal notranslate"><span class="pre">MAE</span></code> histories at the validation interval, set <code class="docutils literal notranslate"><span class="pre">n_epochs</span></code>, handle checkpoint restoration, and retain timing metadata via <code class="docutils literal notranslate"><span class="pre">&#64;time_execution</span></code>.</p>
+<p>To profile training, wrap a normal <code class="docutils literal notranslate"><span class="pre">fit</span></code> call rather than maintaining a separate loop:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="n">activities</span><span class="o">=</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">ProfilerActivity</span><span class="o">.</span><span class="n">CPU</span><span class="p">])</span> <span class="k">as</span> <span class="n">prof</span><span class="p">:</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Profile"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">key_averages</span><span class="p">()</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">sort_by</span><span class="o">=</span><span class="s2">"cpu_time_total"</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ChemDataset</span></code> remains available for existing callers but is deprecated. New sequence loaders can use <code class="docutils literal notranslate"><span class="pre">FlatSeqBatchIterable</span></code>; it emits batches rather than individual samples, so adapt loader and batch handling accordingly.</p>
 <p>Before submitting a PR or relying on the surrogate in large runs, train it with the minimal config and confirm that <code class="docutils literal notranslate"><span class="pre">run_eval.py</span></code> + <code class="docutils literal notranslate"><span class="pre">predict</span></code> behave as expected.</p>
+</section>
 </section>
 <section id="customize-benchmark-modes">
 <h2>Customize benchmark modes<a class="headerlink" href="#customize-benchmark-modes" title="Link to this heading">#</a></h2>
@@ -506,7 +557,10 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-dataset">Add a dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-surrogate-model">Add a surrogate model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-surrogate-model">Add a surrogate model</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-and-custom-training-loops">Standard and custom training loops</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#customize-benchmark-modes">Customize benchmark modes</a></li>
 </ul>
   </nav></div>

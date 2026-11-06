@@ -364,7 +364,11 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-config-to-task-list">From config to task list</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execution-model">Execution model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-execution">Local execution</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#progress-and-task-logs">Progress and task logs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-inside-a-slurm-allocation">Running inside a Slurm allocation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modalities-vs-evaluation-switches">Modalities vs. evaluation switches</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-tips">Practical tips</a></li>
 </ul>
@@ -386,22 +390,61 @@
 <ol class="arabic simple">
 <li><p><strong>Ordered surrogates</strong> — the entries under <code class="docutils literal notranslate"><span class="pre">surrogates</span></code>, <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, and <code class="docutils literal notranslate"><span class="pre">epochs</span></code> must align. The <code class="docutils literal notranslate"><span class="pre">i</span></code>‑th surrogate uses <code class="docutils literal notranslate"><span class="pre">batch_size[i]</span></code> and <code class="docutils literal notranslate"><span class="pre">epochs[i]</span></code>.</p></li>
 <li><p><strong>Main run + modalities</strong> — for each surrogate, CODES always schedules a <code class="docutils literal notranslate"><span class="pre">&quot;main&quot;</span></code> task. Modalities (<code class="docutils literal notranslate"><span class="pre">interpolation</span></code>, <code class="docutils literal notranslate"><span class="pre">extrapolation</span></code>, <code class="docutils literal notranslate"><span class="pre">sparse</span></code>, <code class="docutils literal notranslate"><span class="pre">batch_scaling</span></code>, <code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>) add additional tasks: one per value you list, per surrogate. For example, enabling interpolation with 4 intervals on 2 surrogates yields <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">(surrogates)</span> <span class="pre">×</span> <span class="pre">4</span> <span class="pre">(intervals)</span></code> extra trainings. Modalities act as stress tests (scaling curves) rather than new architectures.</p></li>
-<li><p><strong>Task persistence</strong> — tasks are written to <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/task_list.json</span></code>. Completed tasks are removed from this file. If you interrupt and re-run <code class="docutils literal notranslate"><span class="pre">run_training.py</span></code>, remaining tasks resume automatically.</p></li>
+<li><p><strong>Task persistence</strong> — tasks are written to <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/train_tasks.json</span></code>. The parent removes a task only after its worker reports success and exits successfully. If you interrupt and re-run <code class="docutils literal notranslate"><span class="pre">run_training.py</span></code>, remaining tasks restart from their beginning; this does not resume a partially trained model.</p></li>
 <li><p><strong>Config snapshot</strong> — the script copies your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> into <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/config.yaml</span></code>. Evaluation uses this snapshot to verify compatibility.</p></li>
 </ol>
 </section>
-<section id="execution-model">
-<h2>Execution model<a class="headerlink" href="#execution-model" title="Link to this heading">#</a></h2>
+<section id="local-execution">
+<h2>Local execution<a class="headerlink" href="#local-execution" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run_training.py<span class="w"> </span>--config<span class="w"> </span>config.yaml
 </pre></div>
 </div>
 <ul class="simple">
-<li><p><strong>Devices</strong> — <code class="docutils literal notranslate"><span class="pre">run_training.py</span></code> reads <code class="docutils literal notranslate"><span class="pre">config.devices</span></code>. If you pass a single entry (e.g., <code class="docutils literal notranslate"><span class="pre">[&quot;cuda:0&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>), tasks run sequentially. Multiple entries trigger a thread per device; each worker pops tasks from a queue and calls <code class="docutils literal notranslate"><span class="pre">train_and_save_model</span></code>.</p></li>
-<li><p><strong>Determinism</strong> — seeds are derived from the base <code class="docutils literal notranslate"><span class="pre">seed</span></code> plus the modality value so ensemble members differ but remain reproducible.</p></li>
-<li><p><strong>Data loading</strong> — the script downloads/preprocesses the requested dataset once per run and reuses logarithmic/normalization settings from the config.</p></li>
+<li><p><strong>Devices</strong> — <code class="docutils literal notranslate"><span class="pre">config.devices</span></code> defines concurrent worker slots. A single entry (e.g., <code class="docutils literal notranslate"><span class="pre">[&quot;cuda:0&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>) runs one task at a time. Multiple entries allow that many concurrent tasks. Each task gets a fresh spawned process, including in sequential runs. Repeated entries deliberately share a device, for example <code class="docutils literal notranslate"><span class="pre">[&quot;cpu&quot;,</span> <span class="pre">&quot;cpu&quot;]</span></code>; allow enough CPU or GPU memory for every concurrent task.</p></li>
+<li><p><strong>CPU threads</strong> — <code class="docutils literal notranslate"><span class="pre">cpu_threads</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code> per worker, independently of the number of slots. It controls PyTorch CPU threads and is checked against CPU affinity and <code class="docutils literal notranslate"><span class="pre">SLURM_CPUS_PER_TASK</span></code> when available. Allocate enough CPUs for the combined worker slots. Using the same setting in sequential and parallel runs avoids changing this numerical execution setting between comparisons.</p></li>
+<li><p><strong>Determinism</strong> — each worker configures deterministic PyTorch execution and applies the existing task seed before model and loader initialization. Ensemble members retain their distinct seeds. Random draws in one worker do not affect another; custom training loops can therefore use stochastic operations such as dropout. Reproducibility still depends on the software, hardware and execution settings.</p></li>
+<li><p><strong>Data loading</strong> — the parent ensures the dataset is downloaded before launching workers. Each worker loads and preprocesses its own task data using the saved configuration. Large datasets therefore consume memory per concurrent worker.</p></li>
 <li><p><strong>Checkpointing</strong> — setting <code class="docutils literal notranslate"><span class="pre">checkpoint:</span> <span class="pre">true</span></code> stores intermediate checkpoints via the shared <code class="docutils literal notranslate"><span class="pre">validate</span></code> logic. Otherwise only the final model (per task) is saved as <code class="docutils literal notranslate"><span class="pre">&lt;surrogate&gt;_&lt;mode&gt;_&lt;metric&gt;.pth</span></code> under <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/</span></code>.</p></li>
-<li><p><strong>Failure handling</strong> — failed tasks stay in <code class="docutils literal notranslate"><span class="pre">task_list.json</span></code>. Fix the root cause and rerun to continue. When all tasks finish successfully, the task list is deleted and <code class="docutils literal notranslate"><span class="pre">completed.txt</span></code> is written.</p></li>
+<li><p><strong>Failure handling</strong> — successful tasks are recorded even when another task fails. Failed tasks stay in <code class="docutils literal notranslate"><span class="pre">train_tasks.json</span></code>, and the command exits with an error. On interruption, the parent stops and joins its workers and retains unfinished work. When all pending tasks finish successfully, <code class="docutils literal notranslate"><span class="pre">completed.txt</span></code> is written and the task list is removed. An existing empty task list can be finalized without repeating completed work.</p></li>
 </ul>
+<p>Run only one local coordinator for a given <code class="docutils literal notranslate"><span class="pre">training_id</span></code>. Atomic task-list replacement protects against interrupted writes; it does not coordinate several independent launchers sharing the same run.</p>
+<section id="progress-and-task-logs">
+<h3>Progress and task logs<a class="headerlink" href="#progress-and-task-logs" title="Link to this heading">#</a></h3>
+<p>The parent process owns the display. Workers send epoch counts and validation
+metrics instead of drawing their own bars. With <code class="docutils literal notranslate"><span class="pre">progress:</span> <span class="pre">auto</span></code>, an interactive
+terminal shows an overall bar and one row per worker slot. Piped output (including
+<code class="docutils literal notranslate"><span class="pre">tee</span></code> and the GPU smoke runner) and Slurm batch logs use timestamped text, with
+periodic updates and task start/completion messages. Set <code class="docutils literal notranslate"><span class="pre">progress</span></code> to <code class="docutils literal notranslate"><span class="pre">bars</span></code>,
+<code class="docutils literal notranslate"><span class="pre">plain</span></code> or <code class="docutils literal notranslate"><span class="pre">off</span></code> to override detection. Warnings and failures remain visible even
+with ordinary progress disabled.</p>
+<p>Task output and progress are saved under <code class="docutils literal notranslate"><span class="pre">trained/&lt;training_id&gt;/task_logs/</span></code>.
+Retries append to the corresponding task log. A custom <code class="docutils literal notranslate"><span class="pre">fit</span></code> that uses
+<code class="docutils literal notranslate"><span class="pre">setup_progress_bar</span></code> gets centralized epoch reporting automatically; other Python
+output is forwarded to the parent and saved in the task log. Direct model fitting
+and tuning retain their existing progress behavior.</p>
+</section>
+</section>
+<section id="running-inside-a-slurm-allocation">
+<h2>Running inside a Slurm allocation<a class="headerlink" href="#running-inside-a-slurm-allocation" title="Link to this heading">#</a></h2>
+<p>The local runner can execute inside one Slurm job. It does not submit jobs or distribute tasks across nodes. Use the logical CUDA indices visible within the allocation, without replacing Slurm’s <code class="docutils literal notranslate"><span class="pre">CUDA_VISIBLE_DEVICES</span></code>. For a single allocated GPU:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">devices</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"cuda:0"</span><span class="p p-Indicator">]</span>
+<span class="nt">cpu_threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+<p>An illustrative submission script, after installing and activating the environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=1</span>
+<span class="c1">#SBATCH --gres=gpu:1</span>
+<span class="c1">#SBATCH --cpus-per-task=4</span>
+<span class="c1">#SBATCH --time=02:00:00</span>
+
+<span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+<span class="nb">cd</span><span class="w"> </span>/path/to/CODES-Benchmark
+srun<span class="w"> </span>python<span class="w"> </span>run_training.py<span class="w"> </span>--config<span class="w"> </span>configs/train_eval/my_run.yaml
+</pre></div>
+</div>
+<p>Adjust the resource requests, account, partition, time limit, paths and environment for your cluster. A multi-GPU allocation can use multiple visible indices in <code class="docutils literal notranslate"><span class="pre">devices</span></code>, with corresponding CPU and memory resources.</p>
+<p>The single-task executor, <code class="docutils literal notranslate"><span class="pre">codes.train.tasks.execute_training_task</span></code>, is separate from local scheduling. It trains and saves one task without changing the parent’s pending-task list or completion marker. This provides the execution boundary for future Slurm array workers; immutable manifests and independent-job coordination are not implemented yet. Tuning still uses its existing execution and storage mechanisms.</p>
 </section>
 <section id="modalities-vs-evaluation-switches">
 <h2>Modalities vs. evaluation switches<a class="headerlink" href="#modalities-vs-evaluation-switches" title="Link to this heading">#</a></h2>
@@ -465,7 +508,11 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-config-to-task-list">From config to task list</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execution-model">Execution model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-execution">Local execution</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#progress-and-task-logs">Progress and task logs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-inside-a-slurm-allocation">Running inside a Slurm allocation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modalities-vs-evaluation-switches">Modalities vs. evaluation switches</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-tips">Practical tips</a></li>
 </ul>

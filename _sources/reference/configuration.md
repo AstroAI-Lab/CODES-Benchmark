@@ -17,7 +17,9 @@ All orchestration happens through YAML configuration files. This page documents 
 | `surrogates` | Yes | None | Training, Eval | Ordered list of surrogate class names. |
 | `batch_size` | Yes | None | Training, Eval | Int or list aligned with `surrogates`. |
 | `epochs` | Yes | None | Training, Eval | Int or list aligned with `surrogates`. |
-| `devices` | Yes | None | Training, Eval | List of device strings (`cpu`, `cuda:0`, `mps`, ...). |
+| `devices` | Yes | None | Training, Eval | Device string or list (`cpu`, `cuda:0`, `mps`). Local training uses one concurrent worker slot per entry. |
+| `cpu_threads` | No | `1` | Training | PyTorch CPU threads per model worker. Must fit the available CPU affinity and, when set, `SLURM_CPUS_PER_TASK`. Budget CPUs for all concurrent slots. |
+| `progress` | No | `"auto"` | Training | `auto`: stacked parent-owned bars in a terminal, plain timestamped output when redirected. Overrides: `bars`, `plain`, `off`. Failures remain visible in every mode. |
 | `seed` | No | `42` | Training | Random seed for training. |
 | `verbose` | No | `false` | Training, Eval | Extra data-loading logs. |
 | `checkpoint` | No | `false` | Training | Enables best-checkpoint saving per model. |

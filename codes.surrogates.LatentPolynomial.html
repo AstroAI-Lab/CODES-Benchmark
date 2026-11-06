@@ -370,6 +370,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.fit"><code class="docutils literal notranslate"><span class="pre">LatentPoly.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.forward"><code class="docutils literal notranslate"><span class="pre">LatentPoly.forward()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.prepare_data"><code class="docutils literal notranslate"><span class="pre">LatentPoly.prepare_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.training_loss"><code class="docutils literal notranslate"><span class="pre">LatentPoly.training_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.OldDecoder"><code class="docutils literal notranslate"><span class="pre">OldDecoder</span></code></a><ul class="nav section-nav flex-column">
@@ -459,7 +460,7 @@ The architecture is chosen based on the version flag in the configuration.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_loader</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code></span>) – The data loader for the training data.</p></li>
 <li><p><strong>test_loader</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code></span>) – The data loader for the test data.</p></li>
-<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The number of epochs to train the model. If None, uses the value from the config.</p></li>
+<li><p><strong>epochs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The positive number of epochs to train the model.</p></li>
 <li><p><strong>position</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The position of the progress bar.</p></li>
 <li><p><strong>description</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The description for the progress bar.</p></li>
 <li><p><strong>multi_objective</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Whether multi-objective optimization is used.
@@ -518,6 +519,12 @@ return the DataLoader objects for the training, testing, and validation data.</p
 <dd class="field-odd"><p>tuple[DataLoader, DataLoader, DataLoader]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.training_loss">
+<span class="sig-name descname"><span class="pre">training_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.training_loss" title="Link to this definition">#</a></dt>
+<dd><p>Compute the trajectory and auxiliary losses for one sequence batch.</p>
 </dd></dl>
 
 </dd></dl>
@@ -829,6 +836,7 @@ and second derivative losses. All terms remain in the computation graph.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.fit"><code class="docutils literal notranslate"><span class="pre">LatentPoly.fit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.forward"><code class="docutils literal notranslate"><span class="pre">LatentPoly.forward()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.prepare_data"><code class="docutils literal notranslate"><span class="pre">LatentPoly.prepare_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.LatentPoly.training_loss"><code class="docutils literal notranslate"><span class="pre">LatentPoly.training_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codes.surrogates.LatentPolynomial.latent_poly.OldDecoder"><code class="docutils literal notranslate"><span class="pre">OldDecoder</span></code></a><ul class="nav section-nav flex-column">

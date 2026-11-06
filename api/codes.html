@@ -587,7 +587,6 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.deeponet">codes.surrogates.DeepONet.deeponet module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.deeponet_config">codes.surrogates.DeepONet.deeponet_config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.don_utils">codes.surrogates.DeepONet.don_utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet.train_utils">codes.surrogates.DeepONet.train_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.DeepONet.html#module-codes.surrogates.DeepONet">Module contents</a></li>
 </ul>
 </li>
@@ -617,11 +616,15 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.html#module-codes.surrogates.surrogate_classes">codes.surrogates.surrogate_classes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.surrogates.html#module-codes.surrogates.training">codes.surrogates.training module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.training.fit_standard"><code class="docutils literal notranslate"><span class="pre">fit_standard()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.training.train_epoch"><code class="docutils literal notranslate"><span class="pre">train_epoch()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="codes.surrogates.html#module-codes.surrogates">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.checkpoint"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.denormalize"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.denormalize_old"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.denormalize_old()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.fit"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.AbstractSurrogateModel.forward_from_state"><code class="docutils literal notranslate"><span class="pre">AbstractSurrogateModel.forward_from_state()</span></code></a></li>
@@ -673,9 +676,9 @@
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.create_dataloader"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.create_dataloader()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.fit"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.fit()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.fit_profile"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.fit_profile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.forward"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.forward()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.prepare_data"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.prepare_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentNeuralODE.training_loss"><code class="docutils literal notranslate"><span class="pre">LatentNeuralODE.training_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentPoly"><code class="docutils literal notranslate"><span class="pre">LatentPoly</span></code></a><ul>
@@ -683,6 +686,7 @@
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentPoly.fit"><code class="docutils literal notranslate"><span class="pre">LatentPoly.fit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentPoly.forward"><code class="docutils literal notranslate"><span class="pre">LatentPoly.forward()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentPoly.prepare_data"><code class="docutils literal notranslate"><span class="pre">LatentPoly.prepare_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.LatentPoly.training_loss"><code class="docutils literal notranslate"><span class="pre">LatentPoly.training_loss()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="codes.surrogates.html#codes.surrogates.ModelWrapper"><code class="docutils literal notranslate"><span class="pre">ModelWrapper</span></code></a><ul>
@@ -725,30 +729,46 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="codes.train.html">codes.train package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="codes.train.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="codes.train.html#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="codes.train.html#module-codes.train.progress">codes.train.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.progress.EventProgress"><code class="docutils literal notranslate"><span class="pre">EventProgress</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.EventProgress.close"><code class="docutils literal notranslate"><span class="pre">EventProgress.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.EventProgress.set_postfix"><code class="docutils literal notranslate"><span class="pre">EventProgress.set_postfix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.EventProgress.update"><code class="docutils literal notranslate"><span class="pre">EventProgress.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.close"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.elapsed"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.elapsed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.event"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.finish"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.finish()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.log"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.progress.ProgressDisplay.start"><code class="docutils literal notranslate"><span class="pre">ProgressDisplay.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.progress.current_reporter"><code class="docutils literal notranslate"><span class="pre">current_reporter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.progress.worker_reporting"><code class="docutils literal notranslate"><span class="pre">worker_reporting()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codes.train.html#module-codes.train.tasks">codes.train.tasks module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.tasks.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.tasks.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.tasks.validate_execution_settings"><code class="docutils literal notranslate"><span class="pre">validate_execution_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codes.train.html#module-codes.train.train_fcts">codes.train.train_fcts module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_fcts.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="codes.train.html#module-codes.train">Module contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.DummyLock"><code class="docutils literal notranslate"><span class="pre">DummyLock</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.DummyLock.acquire"><code class="docutils literal notranslate"><span class="pre">DummyLock.acquire()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="codes.train.html#codes.train.DummyLock.release"><code class="docutils literal notranslate"><span class="pre">DummyLock.release()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.TrainingRunError"><code class="docutils literal notranslate"><span class="pre">TrainingRunError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.create_task_list_for_surrogate"><code class="docutils literal notranslate"><span class="pre">create_task_list_for_surrogate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.execute_training_task"><code class="docutils literal notranslate"><span class="pre">execute_training_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.parallel_training"><code class="docutils literal notranslate"><span class="pre">parallel_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.sequential_training"><code class="docutils literal notranslate"><span class="pre">sequential_training()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.train_and_save_model"><code class="docutils literal notranslate"><span class="pre">train_and_save_model()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="codes.train.html#codes.train.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 </ul>
