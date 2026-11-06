@@ -6,13 +6,11 @@ import threading
 import traceback
 from multiprocessing.connection import wait
 
-from tqdm import tqdm
-
+from codes.train.progress import ProgressDisplay, worker_reporting
 from codes.train.tasks import execute_training_task, validate_execution_settings
 from codes.train.tasks import train_and_save_model as train_and_save_model
 from codes.utils import (
     batch_factor_to_float,
-    get_progress_bar,
     load_task_list,
     save_task_list,
 )
@@ -84,14 +82,15 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
 def _run_task_child(task, device, position, cpu_threads, connection):
     """Run exactly one task and send only a small status message to the parent."""
     try:
-        execute_training_task(
-            task, device=device, position=position, cpu_threads=cpu_threads
-        )
+        with worker_reporting(connection.send):
+            execute_training_task(
+                task, device=device, position=position, cpu_threads=cpu_threads
+            )
         connection.send((True, ""))
     except BaseException:
         with contextlib.suppress(BrokenPipeError, EOFError, OSError):
             connection.send((False, traceback.format_exc()[-4000:]))
-        raise
+        raise SystemExit(1) from None
     finally:
         connection.close()
 
@@ -115,7 +114,9 @@ def _stop_children(active):
             process.close()
 
 
-def _run_training(tasks, devices, task_list_filepath, cpu_threads):
+def _run_training(
+    tasks, devices, task_list_filepath, cpu_threads, progress_mode="auto"
+):
     tasks = [list(task) for task in tasks]
     devices = list(devices)
     if not devices:
@@ -139,7 +140,12 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
         validate_execution_settings(device, cpu_threads)
 
     context = mp.get_context("spawn")
-    progress = get_progress_bar(tasks)
+    progress = ProgressDisplay(
+        tasks,
+        len(devices),
+        mode=progress_mode,
+        log_dir=os.path.join(os.path.dirname(task_list_filepath), "task_logs"),
+    )
     active = {}
     available = list(range(len(devices)))
     next_task = 0
@@ -177,6 +183,7 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
                 slot = available.pop(0)
                 task = tasks[next_task]
                 next_task += 1
+                progress.start(slot, task, devices[slot])
                 signal_state["defer"] = True
                 try:
                     receiver, sender = context.Pipe(duplex=False)
@@ -209,7 +216,7 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
                         sender.close()
                         process.close()
                         failures.append((task, f"Could not start process: {exc}"))
-                        progress.update(1)
+                        progress.finish(slot, False, str(exc))
                         available.append(slot)
                     else:
                         sender.close()
@@ -232,8 +239,15 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
                 process = state["process"]
                 if state["pipe_open"] and (conn in ready or process.sentinel in ready):
                     try:
-                        if conn.poll():
-                            state["message"] = conn.recv()
+                        while conn.poll():
+                            message = conn.recv()
+                            if message[0] == "progress":
+                                progress.event(slot, message[1])
+                            elif message[0] == "log":
+                                progress.log(slot, message[1])
+                            else:
+                                state["message"] = message
+                                break
                     except (EOFError, OSError):
                         state["pipe_open"] = False
                     if process.sentinel in ready or state["message"] is not None:
@@ -256,15 +270,21 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
                     failures.append(
                         (state["task"], f"{detail} (exit code {process.exitcode})")
                     )
-                progress.update(1)
+                progress.finish(
+                    slot,
+                    process.exitcode == 0
+                    and message is not None
+                    and message[0] is True,
+                    failures[-1][1]
+                    if failures and failures[-1][0] == state["task"]
+                    else "",
+                )
                 del active[slot]
                 conn.close()
                 process.close()
                 available.append(slot)
-        elapsed = progress.format_dict["elapsed"]
+        elapsed = progress.elapsed
         if failures:
-            for task, detail in failures:
-                tqdm.write(f"Exception for task {tuple(task[:3])}:\n{detail}")
             raise TrainingRunError(
                 f"{len(failures)} training task(s) failed; remaining tasks were saved to {task_list_filepath}"
             )
@@ -289,11 +309,17 @@ def _run_training(tasks, devices, task_list_filepath, cpu_threads):
                     signal.signal(signum, handler)
 
 
-def parallel_training(tasks, device_list, task_list_filepath: str, *, cpu_threads=1):
+def parallel_training(
+    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
+):
     """Run each task in a fresh process, with one process per device slot."""
-    return _run_training(tasks, device_list, task_list_filepath, cpu_threads)
+    return _run_training(tasks, device_list, task_list_filepath, cpu_threads, progress)
 
 
-def sequential_training(tasks, device_list, task_list_filepath: str, *, cpu_threads=1):
+def sequential_training(
+    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
+):
     """Run each task in a fresh process using the first device slot."""
-    return _run_training(tasks, device_list[:1], task_list_filepath, cpu_threads)
+    return _run_training(
+        tasks, device_list[:1], task_list_filepath, cpu_threads, progress
+    )

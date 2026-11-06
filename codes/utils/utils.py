@@ -360,9 +360,9 @@ def check_training_status(config: dict) -> tuple[str, bool]:
                                 f"Value of '{sub_key}' in '{key}' is different from saved configuration:\n"
                                 f"    Previous: {saved_config[key][sub_key]}, current: {sub_value}"
                             )
-                elif key == "devices":
+                elif key in ("devices", "progress"):
                     print(
-                        "Note: Devices differ from saved configuration: \n",
+                        f"Note: {key} differs from saved configuration: \n",
                         f"    Previous: {saved_config[key]}, current: {value}",
                     )
                 else:

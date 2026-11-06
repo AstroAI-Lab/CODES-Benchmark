@@ -64,12 +64,20 @@ def main(args):
     if len(device_list) > 1:
         tqdm.write(f"Training models in parallel on devices  : {device_list} \n")
         elapsed_time = parallel_training(
-            tasks, device_list, task_list_filepath, cpu_threads=cpu_threads
+            tasks,
+            device_list,
+            task_list_filepath,
+            cpu_threads=cpu_threads,
+            progress=config.get("progress", "auto"),
         )
     else:
         tqdm.write(f"Training models sequentially on device {device_list[0]}")
         elapsed_time = sequential_training(
-            tasks, device_list, task_list_filepath, cpu_threads=cpu_threads
+            tasks,
+            device_list,
+            task_list_filepath,
+            cpu_threads=cpu_threads,
+            progress=config.get("progress", "auto"),
         )
 
     print("\n")

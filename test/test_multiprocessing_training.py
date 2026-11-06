@@ -144,7 +144,8 @@ def test_executor_error_is_reported_and_task_is_retained(tmp_path, capsys):
     taskfile = tmp_path / "tasks.json"
     with pytest.raises(train_fcts.TrainingRunError):
         train_fcts.sequential_training([failed_task], ["cpu"], str(taskfile))
-    assert "Unknown surrogate model" in capsys.readouterr().out
+    captured = capsys.readouterr()
+    assert "Unknown surrogate model" in captured.out + captured.err
     assert load_task_list(str(taskfile)) == [list(failed_task)]
     assert not (tmp_path / "completed.txt").exists()
 

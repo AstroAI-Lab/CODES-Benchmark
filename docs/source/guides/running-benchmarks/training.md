@@ -24,6 +24,22 @@ python run_training.py --config config.yaml
 
 Run only one local coordinator for a given `training_id`. Atomic task-list replacement protects against interrupted writes; it does not coordinate several independent launchers sharing the same run.
 
+### Progress and task logs
+
+The parent process owns the display. Workers send epoch counts and validation
+metrics instead of drawing their own bars. With `progress: auto`, an interactive
+terminal shows an overall bar and one row per worker slot. Piped output (including
+`tee` and the GPU smoke runner) and Slurm batch logs use timestamped text, with
+periodic updates and task start/completion messages. Set `progress` to `bars`,
+`plain` or `off` to override detection. Warnings and failures remain visible even
+with ordinary progress disabled.
+
+Task output and progress are saved under `trained/<training_id>/task_logs/`.
+Retries append to the corresponding task log. A custom `fit` that uses
+`setup_progress_bar` gets centralized epoch reporting automatically; other Python
+output is forwarded to the parent and saved in the task log. Direct model fitting
+and tuning retain their existing progress behavior.
+
 ## Running inside a Slurm allocation
 
 The local runner can execute inside one Slurm job. It does not submit jobs or distribute tasks across nodes. Use the logical CUDA indices visible within the allocation, without replacing Slurm's `CUDA_VISIBLE_DEVICES`. For a single allocated GPU:

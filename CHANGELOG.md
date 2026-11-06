@@ -48,6 +48,10 @@ affecting results".
 
 ### Changed
 
+- Local training progress is rendered by the parent, using stacked bars for
+  interactive terminals and timestamped text for redirected or batch output.
+  The `progress` setting supports `auto`, `bars`, `plain` and `off`; per-task
+  logs retain progress, worker output and failure details.
 - Local training now runs each task in a fresh spawned process, with the parent
   coordinating device slots and pending work. Single-device runs use the same
   isolated execution path. The scheduler-independent executor can also be called
