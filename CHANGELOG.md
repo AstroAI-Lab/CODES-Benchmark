@@ -42,6 +42,8 @@ affecting results".
 
 ### Changed
 
+- `ChemDataset` remains available but is deprecated. MultiONet's `setup_criterion`
+  is also deprecated; training uses the configured loss.
 - Updated the checkout, uv setup, Codecov and Pages Actions to current releases
   compatible with Node 24. CI also checks the pinned requirements against `uv.lock`.
 - Development builds now identify themselves as `0.3.0.dev0`; the documentation
@@ -53,6 +55,17 @@ affecting results".
   `I`, `SIM` and `UP` on Python files and the tutorial notebook.
 - Citation guidance now prioritises the software release, with the A&A paper
   requested when using its astrochemical datasets or analysis.
+
+### Removed
+
+- The unused direct-module helpers `DeepONet.don_utils.PreBatchedDataset`,
+  `DeepONet.don_utils.custom_collate_fn`, `FCNN.fcnn.FCPrebatchedDataset` and
+  `FCNN.fcnn.fc_collate_fn`,
+  the legacy `denormalize_old` method, duplicate `DeepONet.train_utils` module,
+  and LatentNeuralODE `fit_profile`. Use
+  `DeepONet.don_utils.mass_conservation_loss` for the loss helper and wrap a
+  normal `fit` call with `torch.profiler` for profiling.
+- Unused file/path and wall-clock seeding utilities in `DeepONet.don_utils`.
 
 ## [0.2.0] - 2026-10-23
 

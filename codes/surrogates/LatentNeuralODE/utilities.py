@@ -1,3 +1,5 @@
+import warnings
+
 import torch
 
 from codes.utils import make_shuffle_generator
@@ -7,9 +9,17 @@ class ChemDataset(torch.utils.data.Dataset):
     """
     Dataset class for the latent neural ODE model.
     Returns each sample along with its timesteps and (optionally) fixed parameters.
+
+    Deprecated: use FlatSeqBatchIterable for pre-batched sequence data.
     """
 
     def __init__(self, raw_data, timesteps, device, parameters):
+        warnings.warn(
+            "ChemDataset is deprecated and will be removed in a future release; "
+            "use FlatSeqBatchIterable for pre-batched sequence data.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if not isinstance(raw_data, torch.Tensor):
             raw_data = torch.tensor(raw_data, dtype=torch.float32)
         self.data = raw_data.to(device)

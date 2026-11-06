@@ -514,33 +514,6 @@ class AbstractSurrogateModel(ABC, nn.Module):
 
         return data
 
-    def denormalize_old(self, data: Tensor) -> Tensor:
-        """
-        Denormalize the data.
-
-        Args:
-            data (np.ndarray): The data to denormalize.
-
-        Returns:
-            np.ndarray: The denormalized data.
-        """
-        if self.normalisation is not None:
-            if self.normalisation["mode"] == "disabled":
-                ...
-            elif self.normalisation["mode"] == "minmax":
-                dmax = self.normalisation["max"]
-                dmin = self.normalisation["min"]
-                data = (data + 1) * (dmax - dmin) / 2 + dmin
-            elif self.normalisation["mode"] == "standardize":
-                mean = self.normalisation["mean"]
-                std = self.normalisation["std"]
-                data = data * std + mean
-
-            if self.normalisation["log10_transform"]:
-                data = 10**data
-
-        return data
-
     def time_pruning(self, current_epoch: int, total_epochs: int) -> None:
         """
         Determine whether a trial should be pruned based on projected runtime,

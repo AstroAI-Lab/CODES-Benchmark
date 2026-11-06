@@ -1,3 +1,4 @@
+import warnings
 from typing import TypeVar
 
 import numpy as np
@@ -317,11 +318,20 @@ class MultiONet(OperatorNetwork):
 
     def setup_criterion(self) -> callable:
         """
-        Utility function to set up the loss function for training.
+        Build the legacy summed-MSE loss, optionally with mass conservation.
+
+        Deprecated: ``fit`` uses ``self.config.loss`` and does not call this
+        method. It remains available for callers constructing the legacy loss
+        explicitly.
 
         Returns:
             callable: The loss function.
         """
+        warnings.warn(
+            "setup_criterion is deprecated; training uses config.loss.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         crit = nn.MSELoss(reduction="sum")
         if hasattr(self.config, "masses") and self.config.masses is not None:
             weights = (1.0, self.config.massloss_factor)

@@ -3,7 +3,7 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, Dataset, IterableDataset
+from torch.utils.data import DataLoader, IterableDataset
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.utils import make_shuffle_generator, time_execution
@@ -38,51 +38,6 @@ class FCFlatBatchIterable(IterableDataset):
 
     def __len__(self):
         return math.ceil(self.N / self.bs)  # number of batches
-
-
-def fc_collate_fn(batch):
-    """
-    Custom collate function to ensure tensors are returned in the correct shape.
-
-    Args:
-        batch (list[tuple[torch.Tensor, torch.Tensor]]): List of precomputed
-            batches. Each tuple contains an ``input_batch`` with shape
-            ``[batch_size, n_quantities + 1]`` and ``target_batch`` with shape
-            ``[batch_size, n_quantities]``.
-
-    Returns:
-        tuple[torch.Tensor, torch.Tensor]: Inputs and targets with the same shapes
-        as described above.
-    """
-    # 'batch' is a list of length=1 if DataLoader has batch_size=1,
-    # and each element is (input_tensor, target_tensor).
-    # We remove the extra [1,...,...] dimension via squeeze(0).
-    inputs = torch.stack([item[0] for item in batch]).squeeze(0)
-    targets = torch.stack([item[1] for item in batch]).squeeze(0)
-    return inputs, targets
-
-
-class FCPrebatchedDataset(Dataset):
-    """
-    Dataset for pre-batched data specifically for the FullyConnected model.
-
-    Args:
-        inputs_batches (list[Tensor]): List of precomputed input batches.
-        targets_batches (list[Tensor]): List of precomputed target batches.
-    """
-
-    def __init__(self, inputs_batches, targets_batches):
-        self.inputs_batches = inputs_batches
-        self.targets_batches = targets_batches
-
-    def __getitem__(self, index):
-        # Return one precomputed batch:
-        # shape -> ( [batch_size, n_quantities+1], [batch_size, n_quantities] )
-        return self.inputs_batches[index], self.targets_batches[index]
-
-    def __len__(self):
-        # Number of precomputed batches
-        return len(self.inputs_batches)
 
 
 class FullyConnectedNet(nn.Module):
