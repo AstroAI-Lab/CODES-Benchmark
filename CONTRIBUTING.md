@@ -14,6 +14,9 @@ For extension-specific implementation details, follow the dedicated guide:
 
 - https://astroai-lab.de/CODES-Benchmark/guides/extending-benchmark.html
 
+The surrogate guide covers the required `fit` entry point, the optional shared
+training loop, custom loops, and profiling.
+
 ## Development setup
 
 Use either `uv` (recommended) or a standard `venv` + `pip` setup.
@@ -106,7 +109,20 @@ sphinx-build -b html docs/source docs/_build/html
 
 If your change affects user-facing behavior, update the relevant docs in `docs/source/`.
 
-The end-to-end test (`test/test_end_to_end.py`) trains every surrogate on a tiny synthetic dataset, evaluates them, and compares the results with the golden values in `test/data/golden_metrics.yaml`. If it fails, your change alters benchmark results. If that is intended, regenerate the values, explain the change in the pull request, and add it under "Changes affecting results" in `CHANGELOG.md`:
+The focused training tests (`test/test_standard_training.py`) check update mechanics,
+validation and checkpoint timing, and cleanup on failed or pruned runs. Their small
+training smoke test runs for every registered surrogate, including future additions,
+without requiring convergence to a particular error. Common interface tests use the
+`registered_surrogate_class` fixture in `test/conftest.py`; unexpected failures must
+fail rather than be converted into skips. Small-model configuration overrides only
+reduce runtime and do not control which models are included. Tests of a particular
+solver, optimizer, or training helper can remain specific to that feature.
+
+For training refactors, also compare short runs
+against the previous implementation in the same environment, starting from the
+same weights and batches; keep the existing golden values unchanged.
+
+The end-to-end test (`test/test_end_to_end.py`) trains every registered surrogate on a tiny synthetic dataset, checks sequential/parallel reproducibility, and evaluates them. Models with reference values in `test/data/golden_metrics.yaml` also get numerical regression checks; adding references for a new model is a deliberate step, independent of its automatic inclusion in the pipeline tests. If an existing golden comparison fails and the change is intended, regenerate the values, explain the change in the pull request, and add it under "Changes affecting results" in `CHANGELOG.md`:
 
 ```bash
 CODES_UPDATE_GOLDEN=1 pytest test/test_end_to_end.py
