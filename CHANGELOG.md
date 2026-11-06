@@ -10,6 +10,9 @@ affecting results".
 
 ### Added
 
+- Registry-driven training smoke and end-to-end tests automatically include new
+  surrogates. Common interface tests report unexpected failures instead of skipping
+  them; numerical golden references remain explicitly maintained.
 - Contributor credit for Gianluca Möschter's code, data, research, documentation,
   tests and user testing, and inclusion in the software citation author list.
 - Autoregressive rollout finetuning of trained surrogates, with an optional Optuna
@@ -30,6 +33,9 @@ affecting results".
 
 ### Fixed
 
+- Failed local training runs now raise an error instead of reporting successful
+  completion. Successful sibling tasks remain recorded; unfinished tasks are kept
+  for retry after exceptions, worker crashes or interruption.
 - Preserved the 0.2.0 `SmoothL1Loss` default of `beta: 1.0`; finetuning also uses the
   configured loss and beta.
 - Mean rollout loss uses the number of steps actually taken when a rollout stops
@@ -42,6 +48,21 @@ affecting results".
 
 ### Changed
 
+- Local training progress is rendered by the parent, using stacked bars for
+  interactive terminals and timestamped text for redirected or batch output.
+  The `progress` setting supports `auto`, `bars`, `plain` and `off`; per-task
+  logs retain progress, worker output and failure details.
+- Local training now runs each task in a fresh spawned process, with the parent
+  coordinating device slots and pending work. Single-device runs use the same
+  isolated execution path. The scheduler-independent executor can also be called
+  directly by a future external worker.
+- Training workers initialize their own seeds and deterministic settings. The new
+  `cpu_threads` setting defaults to one PyTorch CPU thread per worker and respects
+  CPU affinity and Slurm's per-task CPU limit.
+- Standard surrogate training now shares a common loop, with no intended numerical
+  changes. Custom `fit` implementations remain supported.
+- `ChemDataset` remains available but is deprecated. MultiONet's `setup_criterion`
+  is also deprecated; training uses the configured loss.
 - Updated the checkout, uv setup, Codecov and Pages Actions to current releases
   compatible with Node 24. CI also checks the pinned requirements against `uv.lock`.
 - Development builds now identify themselves as `0.3.0.dev0`; the documentation
@@ -53,6 +74,19 @@ affecting results".
   `I`, `SIM` and `UP` on Python files and the tutorial notebook.
 - Citation guidance now prioritises the software release, with the A&A paper
   requested when using its astrochemical datasets or analysis.
+
+### Removed
+
+- The old threaded training `worker` and `DummyLock` exports. Use the local
+  training runners or `execute_training_task` for independent task execution.
+- The unused direct-module helpers `DeepONet.don_utils.PreBatchedDataset`,
+  `DeepONet.don_utils.custom_collate_fn`, `FCNN.fcnn.FCPrebatchedDataset` and
+  `FCNN.fcnn.fc_collate_fn`,
+  the legacy `denormalize_old` method, duplicate `DeepONet.train_utils` module,
+  and LatentNeuralODE `fit_profile`. Use
+  `DeepONet.don_utils.mass_conservation_loss` for the loss helper and wrap a
+  normal `fit` call with `torch.profiler` for profiling.
+- Unused file/path and wall-clock seeding utilities in `DeepONet.don_utils`.
 
 ## [0.2.0] - 2026-10-23
 

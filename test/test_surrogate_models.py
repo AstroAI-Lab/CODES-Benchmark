@@ -10,13 +10,12 @@ from codes.surrogates import AbstractSurrogateModel, surrogate_classes
 from codes.utils.data_utils import normalize_data
 
 
-@pytest.fixture(params=surrogate_classes)
-def surrogate_model(request, device, test_constants):
+@pytest.fixture
+def surrogate_model(registered_surrogate_class, device, test_constants):
     """Fixture providing each registered surrogate model class."""
-    model_class = request.param
     constants = test_constants
 
-    return model_class(
+    return registered_surrogate_class(
         device=device,
         n_quantities=constants["n_chemicals"],
         n_timesteps=constants["n_timesteps"],
@@ -152,18 +151,15 @@ class TestDataPreparation:
         """Test that dataloaders produce correctly shaped data."""
         train_loader, _, _ = sample_dataloaders
 
-        try:
-            batch = next(iter(train_loader))
-            # Different models may have different input structures
-            assert len(batch) >= 2, "Batch should contain at least inputs and targets"
+        batch = next(iter(train_loader))
+        # Different models may have different input structures
+        assert len(batch) >= 2, "Batch should contain at least inputs and targets"
 
-            # Test that tensors have reasonable shapes
-            for tensor in batch:
-                if isinstance(tensor, torch.Tensor):
-                    assert tensor.ndim >= 1, "Tensors should be at least 1D"
-                    assert tensor.numel() > 0, "Tensors should not be empty"
-        except Exception as e:
-            pytest.skip(f"Model-specific data preparation failed: {e}")
+        # Test that tensors have reasonable shapes
+        for tensor in batch:
+            if isinstance(tensor, torch.Tensor):
+                assert tensor.ndim >= 1, "Tensors should be at least 1D"
+                assert tensor.numel() > 0, "Tensors should not be empty"
 
     def test_prepare_data_with_none_values(
         self, surrogate_model, sample_data, test_constants
@@ -191,44 +187,37 @@ class TestForwardPass:
 
     def test_forward_pass_shape(self, surrogate_model, sample_dataloaders, device):
         """Test that forward pass produces correct output shapes."""
-        try:
-            train_loader, _, _ = sample_dataloaders
-            batch = next(iter(train_loader))
+        train_loader, _, _ = sample_dataloaders
+        batch = next(iter(train_loader))
 
-            with torch.no_grad():
-                predictions, targets = surrogate_model(batch)
+        with torch.no_grad():
+            predictions, targets = surrogate_model(batch)
 
-                assert isinstance(predictions, torch.Tensor)
-                assert isinstance(targets, torch.Tensor)
-                assert predictions.shape == targets.shape
-                assert predictions.device.type == device.split(":")[0]
-        except Exception as e:
-            pytest.skip(f"Model-specific forward pass failed: {e}")
+            assert isinstance(predictions, torch.Tensor)
+            assert isinstance(targets, torch.Tensor)
+            assert predictions.shape == targets.shape
+            assert predictions.device.type == device.split(":")[0]
 
     def test_forward_pass_gradient_computation(
         self, surrogate_model, sample_dataloaders
     ):
         """Test that forward pass allows gradient computation."""
-        try:
-            train_loader, _, _ = sample_dataloaders
-            batch = next(iter(train_loader))
+        train_loader, _, _ = sample_dataloaders
+        batch = next(iter(train_loader))
 
-            surrogate_model.train()
-            predictions, targets = surrogate_model(batch)
+        surrogate_model.train()
+        predictions, targets = surrogate_model(batch)
 
-            loss = surrogate_model.L1(predictions, targets)
-            loss.backward()
+        loss = surrogate_model.L1(predictions, targets)
+        loss.backward()
 
-            # Check that some parameters have gradients
-            has_gradients = False
-            for param in surrogate_model.parameters():
-                if param.grad is not None:
-                    has_gradients = True
-                    break
-
-            assert has_gradients, "No gradients computed during backward pass"
-        except Exception as e:
-            pytest.skip(f"Model-specific gradient computation failed: {e}")
+        gradients = [
+            param.grad
+            for param in surrogate_model.parameters()
+            if param.grad is not None
+        ]
+        assert gradients, "No gradients computed during backward pass"
+        assert all(torch.isfinite(gradient).all() for gradient in gradients)
 
 
 class TestTraining:
@@ -241,49 +230,43 @@ class TestTraining:
 
     def test_fit_updates_loss_attributes(self, surrogate_model, sample_dataloaders):
         """Test that fit method updates loss tracking attributes."""
-        try:
-            train_loader, test_loader, _ = sample_dataloaders
+        train_loader, test_loader, _ = sample_dataloaders
 
-            # Train for minimal epochs
-            surrogate_model.fit(
-                train_loader,
-                test_loader,
-                epochs=1,  # Reduce to 1 epoch to minimize test time
-                position=0,
-                description="test",
-                multi_objective=False,
-            )
+        # Train for minimal epochs
+        surrogate_model.fit(
+            train_loader,
+            test_loader,
+            epochs=1,  # Reduce to 1 epoch to minimize test time
+            position=0,
+            description="test",
+            multi_objective=False,
+        )
 
-            # Check that loss attributes are updated
-            assert surrogate_model.train_loss is not None
-            assert surrogate_model.test_loss is not None
-            assert surrogate_model.MAE is not None
+        # Check that loss attributes are updated
+        assert surrogate_model.train_loss is not None
+        assert surrogate_model.test_loss is not None
+        assert surrogate_model.MAE is not None
 
-            # Check shapes (should be arrays/tensors)
-            assert hasattr(surrogate_model.train_loss, "shape")
-            assert hasattr(surrogate_model.test_loss, "shape")
-            assert hasattr(surrogate_model.MAE, "shape")
-        except Exception as e:
-            pytest.skip(f"Model-specific training failed: {e}")
+        # Check shapes (should be arrays/tensors)
+        assert hasattr(surrogate_model.train_loss, "shape")
+        assert hasattr(surrogate_model.test_loss, "shape")
+        assert hasattr(surrogate_model.MAE, "shape")
 
     def test_fit_with_different_epochs(self, surrogate_model, sample_dataloaders):
         """Test fit method with different epoch counts."""
-        try:
-            train_loader, test_loader, _ = sample_dataloaders
+        train_loader, test_loader, _ = sample_dataloaders
 
-            # Test with single epoch
-            surrogate_model.fit(
-                train_loader,
-                test_loader,
-                epochs=1,
-                position=0,
-                description="test",
-                multi_objective=False,
-            )
+        # Test with single epoch
+        surrogate_model.fit(
+            train_loader,
+            test_loader,
+            epochs=1,
+            position=0,
+            description="test",
+            multi_objective=False,
+        )
 
-            assert surrogate_model.n_epochs >= 1
-        except Exception as e:
-            pytest.skip(f"Model-specific training failed: {e}")
+        assert surrogate_model.n_epochs >= 1
 
     def test_train_duration_is_per_model(
         self, surrogate_model, sample_dataloaders, test_constants, tmp_path
@@ -419,7 +402,7 @@ class TestShuffling:
         train_loader, _, _ = surrogate_model.prepare_data(
             data_train, data_test, data_val, timesteps, batch_size, shuffle=True
         )
-        # Other threads training in parallel draw from the global RNG in between.
+        # Unrelated random draws must not change this loader's private shuffle order.
         torch.rand(spin)
         return torch.cat([batch[0].flatten() for batch in train_loader])
 
@@ -430,15 +413,6 @@ class TestShuffling:
         first = self._first_epoch_targets(surrogate_model, sample_data, bs, spin=0)
         second = self._first_epoch_targets(surrogate_model, sample_data, bs, spin=17)
         assert torch.equal(first, second)
-
-    def test_fit_does_not_touch_global_rng(self, surrogate_model, sample_dataloaders):
-        """Training threads must not advance the global RNG, which other threads
-        rely on while they initialise models under the thread lock."""
-        train_loader, test_loader, _ = sample_dataloaders
-        before = torch.get_rng_state()
-        surrogate_model.fit(train_loader, test_loader, epochs=2, description="t")
-        surrogate_model.predict(test_loader)
-        assert torch.equal(before, torch.get_rng_state())
 
 
 class TestPrediction:
@@ -453,43 +427,37 @@ class TestPrediction:
         self, surrogate_model, sample_dataloaders, test_constants
     ):
         """Test that predict returns correctly shaped outputs."""
-        try:
-            train_loader, _, _ = sample_dataloaders
-            constants = test_constants
+        train_loader, _, _ = sample_dataloaders
+        constants = test_constants
 
-            predictions, targets = surrogate_model.predict(train_loader)
+        predictions, targets = surrogate_model.predict(train_loader)
 
-            assert isinstance(predictions, torch.Tensor)
-            assert isinstance(targets, torch.Tensor)
-            assert predictions.shape == targets.shape
+        assert isinstance(predictions, torch.Tensor)
+        assert isinstance(targets, torch.Tensor)
+        assert predictions.shape == targets.shape
 
-            # Check final reshape to expected dimensions
-            expected_samples = len(train_loader.dataset)
-            expected_shape = (
-                expected_samples,
-                constants["n_timesteps"],
-                constants["n_chemicals"],
-            )
-            assert predictions.shape[1:] == expected_shape[1:]
-            assert targets.shape[1:] == expected_shape[1:]
-        except Exception as e:
-            pytest.skip(f"Model-specific prediction failed: {e}")
+        # Check final reshape to expected dimensions
+        expected_samples = len(train_loader.dataset)
+        expected_shape = (
+            expected_samples,
+            constants["n_timesteps"],
+            constants["n_chemicals"],
+        )
+        assert predictions.shape[1:] == expected_shape[1:]
+        assert targets.shape[1:] == expected_shape[1:]
 
     def test_predict_inference_mode(self, surrogate_model, sample_dataloaders):
         """Test that predict runs in inference mode."""
-        try:
-            train_loader, _, _ = sample_dataloaders
+        train_loader, _, _ = sample_dataloaders
 
-            # Set to training mode
-            surrogate_model.train()
+        # Set to training mode
+        surrogate_model.train()
 
-            # Predict should work regardless of training mode
-            predictions, targets = surrogate_model.predict(train_loader)
+        # Predict should work regardless of training mode
+        predictions, targets = surrogate_model.predict(train_loader)
 
-            assert predictions is not None
-            assert targets is not None
-        except Exception as e:
-            pytest.skip(f"Model-specific prediction failed: {e}")
+        assert predictions is not None
+        assert targets is not None
 
 
 class TestSaveLoad:
@@ -653,15 +621,9 @@ class TestOptimizer:
         surrogate_model.config.regularization_factor = 0.01
         surrogate_model.config.eta_min = 1e-6
 
-        try:
-            optimizer, scheduler = surrogate_model.setup_optimizer_and_scheduler(
-                epochs=10
-            )
-            assert optimizer is not None
-            assert scheduler is not None
-        except (AttributeError, ValueError):
-            # Some models might not support all configurations
-            pytest.skip("Model doesn't support this optimizer configuration")
+        optimizer, scheduler = surrogate_model.setup_optimizer_and_scheduler(epochs=10)
+        assert optimizer is not None
+        assert scheduler is not None
 
     @pytest.mark.parametrize("eta_min, expected", [(None, 1e-4), (0.01, 1e-5)])
     def test_cosine_eta_min(self, surrogate_model, eta_min, expected):

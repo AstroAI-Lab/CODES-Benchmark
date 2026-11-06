@@ -73,6 +73,8 @@ ignore = ["E501"]  # Ruff format handles line length where practical.
 
 [tool.coverage.run]
 source = ["codes"]
+# Include spawned model workers and the process-level failure/recovery tests.
+patch = ["subprocess"]
 omit = ["*/tests/*", "*/test_*", "*/bench_plots.py", "*/__init__.py", "*/evaluate_study.py", "*/evaluate_tuning.py"]
 
 [tool.coverage.report]

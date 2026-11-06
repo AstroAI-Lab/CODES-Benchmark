@@ -9,6 +9,60 @@ import numpy as np
 import pytest
 import torch
 
+from codes.surrogates import surrogate_classes
+
+
+@pytest.fixture(params=surrogate_classes, ids=lambda cls: cls.__name__)
+def registered_surrogate_class(request):
+    """Include every registered surrogate in tests of the common interface."""
+    return request.param
+
+
+# These overrides only reduce test cost; unlisted models still run with defaults.
+# Walk the MRO so variants also inherit their parent's small test configuration.
+_SMALL_SURROGATE_CONFIGS = {
+    "FullyConnected": {"hidden_size": 8, "num_hidden_layers": 2},
+    "MultiONet": {
+        "hidden_size": 8,
+        "branch_hidden_layers": 2,
+        "trunk_hidden_layers": 2,
+        "output_factor": 2,
+    },
+    "LatentNeuralODE": {
+        "latent_features": 2,
+        "coder_layers": 2,
+        "coder_width": 8,
+        "ode_layers": 2,
+        "ode_width": 8,
+    },
+    "LatentPoly": {"latent_features": 2, "coder_layers": 2, "coder_width": 8},
+}
+
+
+@pytest.fixture
+def small_surrogate_factory(registered_surrogate_class):
+    """Build a small CPU model; optional overrides do not select which models run."""
+
+    def make(*, config=None, n_parameters=0):
+        model_config = next(
+            (
+                dict(_SMALL_SURROGATE_CONFIGS[base.__name__])
+                for base in registered_surrogate_class.__mro__
+                if base.__name__ in _SMALL_SURROGATE_CONFIGS
+            ),
+            {},
+        )
+        model_config.update(config or {})
+        return registered_surrogate_class(
+            device="cpu",
+            n_quantities=2,
+            n_timesteps=8,
+            n_parameters=n_parameters,
+            config=model_config,
+        )
+
+    return make
+
 
 def pytest_configure(config):
     """Configure pytest with custom markers and settings."""

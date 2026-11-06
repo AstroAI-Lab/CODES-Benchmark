@@ -1,5 +1,3 @@
-import contextlib
-
 import numpy as np
 import torch
 import torchode as to
@@ -7,6 +5,7 @@ from torch import Tensor, nn
 from torch.utils.data import DataLoader
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
+from codes.surrogates.training import fit_standard
 from codes.utils import time_execution
 
 from .latent_neural_ode_config import LatentNeuralODEBaseConfig
@@ -178,186 +177,32 @@ class LatentNeuralODE(AbstractSurrogateModel):
         Args:
             train_loader (DataLoader): The data loader for the training data.
             test_loader (DataLoader): The data loader for the test data.
-            epochs (int | None): The number of epochs to train the model. If None, uses the value from the config.
+            epochs (int): The positive number of epochs to train the model.
             position (int): The position of the progress bar.
             description (str): The description for the progress bar.
             multi_objective (bool): Whether multi-objective optimization is used.
                                     If True, trial.report is not used (not supported by Optuna).
         """
-        optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-        criterion = self.config.loss
+        fit_standard(
+            self,
+            train_loader,
+            test_loader,
+            epochs,
+            position,
+            description,
+            multi_objective,
+            loss_fn=self.training_loss,
+        )
 
-        loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
-        self.train_loss, self.test_loss, self.MAE = [
-            np.zeros(loss_length) for _ in range(3)
-        ]
-
-        progress_bar = self.setup_progress_bar(epochs, position, description)
-
-        self.model.train()
-        optimizer.train()
-
-        self.setup_checkpoint()
-
-        for epoch in progress_bar:
-            for i, batch in enumerate(train_loader):
-                batch = tuple(
-                    (
-                        x.to(device=self.device, non_blocking=True)
-                        if isinstance(x, Tensor)
-                        else x
-                    )
-                    for x in batch
-                )
-                x_true, t_range, params = batch
-                optimizer.zero_grad()
-
-                # forward pass
-                x_pred, x_true = self((x_true, t_range, params))
-
-                # total loss now takes params into account for identity term
-                loss = self.model.total_loss(x_true, x_pred, params, criterion)
-                loss.backward()
-                if self.config.gradient_clip > 0:
-                    nn.utils.clip_grad_norm_(
-                        self.parameters(), self.config.gradient_clip
-                    )
-                optimizer.step()
-
-            scheduler.step()
-
-            self.validate(
-                epoch=epoch,
-                train_loader=train_loader,
-                test_loader=test_loader,
-                optimizer=optimizer,
-                progress_bar=progress_bar,
-                total_epochs=epochs,
-                multi_objective=multi_objective,
-            )
-
-        progress_bar.close()
-        self.n_epochs = epoch + 1
-        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
-        optimizer.eval()
-        self.get_checkpoint(test_loader, criterion)
-
-    @time_execution
-    def fit_profile(
-        self,
-        train_loader: DataLoader,
-        test_loader: DataLoader,
-        epochs: int,
-        position: int = 0,
-        description: str = "Training LatentNeuralODE",
-        multi_objective: bool = False,
-    ) -> None:
-        from torch.profiler import ProfilerActivity, profile, record_function
-
-        optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-        criterion = self.config.loss
-
-        loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
-        self.train_loss, self.test_loss, self.MAE = [
-            np.zeros(loss_length) for _ in range(3)
-        ]
-
-        progress_bar = self.setup_progress_bar(epochs, position, description)
-
-        self.model.train()
-        # If optimizer.train() is a no-op or not needed, consider removing it;
-        # leave it only if it's a custom wrapper that actually requires it.
-        # Standard PyTorch optimizers do not have a .train() method.
-        with contextlib.suppress(AttributeError):
-            optimizer.train()
-
-        self.setup_checkpoint()
-
-        profiled = False  # flag to do profiling only once
-        for epoch in progress_bar:
-            for i, batch in enumerate(train_loader):
-                batch = tuple(
-                    (
-                        x.to(device=self.device, non_blocking=True)
-                        if isinstance(x, Tensor)
-                        else x
-                    )
-                    for x in batch
-                )
-                x_true, t_range, params = batch
-
-                # Profile only the first batch of the first epoch
-                if not profiled and epoch == 2 and i == 1:
-                    with profile(
-                        activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
-                        record_shapes=True,
-                        with_stack=True,  # optional: deeper stack traces
-                        profile_memory=True,  # track memory allocs
-                    ) as prof:
-                        with record_function("zero_grad"):
-                            optimizer.zero_grad()
-
-                        with record_function("model_forward"):
-                            x_pred, x_true = self((x_true, t_range, params))
-
-                        with record_function("loss_compute"):
-                            loss = self.model.total_loss(
-                                x_true, x_pred, params, criterion
-                            )
-
-                        with record_function("backward"):
-                            loss.backward()
-
-                        with record_function("optimizer_step"):
-                            optimizer.step()
-
-                    # Advance scheduler if your original logic expects it here
-                    scheduler.step()
-
-                    # Output profiling summary
-                    print("=== Profiler summary for epoch 0 batch 0 ===")
-                    print(
-                        prof.key_averages().table(
-                            sort_by="self_cuda_time_total", row_limit=60
-                        )
-                    )
-
-                    # Export trace for timeline inspection (e.g., chrome://tracing or TensorBoard)
-                    prof.export_chrome_trace(f"prof_trace_epoch{epoch}_batch{i}.json")
-
-                    profiled = True  # don't profile again
-
-                else:
-                    # Normal training step
-                    optimizer.zero_grad()
-                    x_pred, x_true = self((x_true, t_range, params))
-                    loss = self.model.total_loss(x_true, x_pred, params, criterion)
-                    loss.backward()
-                    if self.config.gradient_clip > 0:
-                        nn.utils.clip_grad_norm_(
-                            self.parameters(), self.config.gradient_clip
-                        )
-                    optimizer.step()
-
-            if not (profiled and epoch == 0):
-                # Only step here if you didn't already step inside profiled block
-                scheduler.step()
-
-            self.validate(
-                epoch=epoch,
-                train_loader=train_loader,
-                test_loader=test_loader,
-                optimizer=optimizer,
-                progress_bar=progress_bar,
-                total_epochs=epochs,
-                multi_objective=multi_objective,
-            )
-
-        progress_bar.close()
-        self.n_epochs = epoch + 1
-        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
-        optimizer.eval()
-        self.get_checkpoint(test_loader, criterion)
+    def training_loss(self, batch, criterion):
+        """Compute the trajectory and auxiliary losses for one sequence batch."""
+        batch = tuple(
+            x.to(device=self.device, non_blocking=True) if isinstance(x, Tensor) else x
+            for x in batch
+        )
+        x_true, t_range, params = batch
+        x_pred, x_true = self((x_true, t_range, params))
+        return self.model.total_loss(x_true, x_pred, params, criterion)
 
 
 class ModelWrapper(nn.Module):

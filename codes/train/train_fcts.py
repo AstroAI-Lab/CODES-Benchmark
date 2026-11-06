@@ -1,153 +1,23 @@
 import contextlib
+import multiprocessing as mp
 import os
+import signal
 import threading
 import traceback
-from queue import Empty, Queue
-from threading import Thread
+from multiprocessing.connection import wait
 
-from tqdm import tqdm
-
-from codes.benchmark.bench_utils import get_model_config, get_surrogate
+from codes.train.progress import ProgressDisplay, worker_reporting
+from codes.train.tasks import execute_training_task, validate_execution_settings
+from codes.train.tasks import train_and_save_model as train_and_save_model
 from codes.utils import (
     batch_factor_to_float,
-    check_and_load_data,
-    determine_batch_size,
-    get_data_subset,
-    get_progress_bar,
-    load_and_save_config,
     load_task_list,
-    make_description,
     save_task_list,
-    set_random_seeds,
 )
 
 
-class DummyLock:
-    def acquire(self):
-        pass
-
-    def release(self):
-        pass
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-
-def train_and_save_model(
-    surr_name: str,
-    mode: str,
-    metric: int,
-    training_id: str,
-    seed: int | None = None,
-    epochs: int | None = None,
-    device: str = "cpu",
-    position: int = 1,
-    threadlock: threading.Lock = DummyLock(),
-):
-    """
-    Train and save a model for a specific benchmark mode.
-
-    Args:
-        surr_name (str): The name of the surrogate model.
-        mode (str): The benchmark mode.
-        metric (int): The metric for the benchmark mode.
-        training_id (str): The training ID for the current training session.
-        seed (int, optional): Random seed for training.
-        epochs (int, optional): Number of training epochs.
-        device (str, optional): Device to run training on.
-        position (int, optional): Model position in the task list.
-        threadlock (threading.Lock, optional): Lock for deterministic threading.
-    """
-    config_path = f"trained/{training_id}/config.yaml"
-    config = load_and_save_config(config_path, save=False)
-
-    # Load full data and parameters
-    (
-        (train_data, test_data, _),
-        (train_params, test_params, _),
-        timesteps,
-        _,
-        data_info,
-        _,
-    ) = check_and_load_data(
-        config["dataset"]["name"],
-        verbose=config.get("verbose", False),
-        log=config["dataset"].get("log10_transform", True),
-        log_params=config["dataset"].get("log10_transform_params", True),
-        normalisation_mode=config["dataset"].get("normalise", "minmax"),
-        tolerance=config["dataset"].get("tolerance", None),
-        per_species=config["dataset"].get("normalise_per_species", False),
-    )
-
-    # Get the appropriate data subset
-    (train_data, test_data), (train_params, test_params), timesteps = get_data_subset(
-        (train_data, test_data),
-        timesteps,
-        mode,
-        metric,
-        (train_params, test_params),
-        config["dataset"].get("subset_factor", 1),
-    )
-
-    _, n_timesteps, n_quantities = train_data.shape
-    n_params = train_params.shape[1] if train_params is not None else 0
-
-    surrogate_class = get_surrogate(surr_name)
-    model_config = get_model_config(surr_name, config)
-
-    with threadlock:
-        set_random_seeds(seed, device)
-        model = surrogate_class(
-            device=device,
-            n_quantities=n_quantities,
-            n_timesteps=n_timesteps,
-            n_parameters=n_params,
-            config=model_config,
-            training_id=config["training_id"],
-        )
-    model.normalisation = data_info
-    model.checkpointing = config.get("checkpoint", False)
-    surr_idx = config["surrogates"].index(surr_name)
-
-    batch_size = determine_batch_size(config, surr_idx, mode, metric)
-
-    with threadlock:
-        set_random_seeds(seed, device)
-        # Pass the parameter subsets (if any) to prepare_data.
-        train_loader, test_loader, _ = model.prepare_data(
-            dataset_train=train_data,
-            dataset_test=test_data,
-            dataset_val=None,
-            timesteps=timesteps,
-            batch_size=batch_size,
-            shuffle=True,
-            dataset_train_params=train_params,
-            dataset_test_params=test_params,
-            dummy_timesteps=True,
-        )
-
-    description = make_description(mode, device, str(metric), surr_name)
-
-    model.fit(
-        train_loader=train_loader,
-        test_loader=test_loader,
-        epochs=epochs,
-        position=position,
-        description=description,
-    )
-
-    metric = batch_size if mode == "batchsize" else metric
-    model_name = f"{surr_name.lower()}_{mode}_{str(metric)}".strip("_")
-    model_name = model_name.replace("__", "_")
-    base_dir = os.path.join(os.getcwd(), "trained")
-    model.save(
-        model_name=model_name,
-        training_id=config["training_id"],
-        base_dir=base_dir,
-    )
+class TrainingRunError(RuntimeError):
+    """One or more local training tasks did not complete successfully."""
 
 
 def create_task_list_for_surrogate(config, surr_name: str) -> list:
@@ -209,165 +79,247 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
     return tasks
 
 
-def worker(
-    task_queue: Queue,
-    device: str,
-    device_idx: int,
-    overall_progress_bar: tqdm,
-    task_list_filepath: str,
-    errors_encountered: list[bool],
-    threadlock: threading.Lock,
+def _run_task_child(task, device, position, cpu_threads, connection):
+    """Run exactly one task and send only a small status message to the parent."""
+    try:
+        with worker_reporting(connection.send):
+            execute_training_task(
+                task, device=device, position=position, cpu_threads=cpu_threads
+            )
+        connection.send((True, ""))
+    except BaseException:
+        with contextlib.suppress(BrokenPipeError, EOFError, OSError):
+            connection.send((False, traceback.format_exc()[-4000:]))
+        raise SystemExit(1) from None
+    finally:
+        connection.close()
+
+
+def _stop_children(active):
+    for state in active.values():
+        process = state["process"]
+        if process.pid is not None and process.is_alive():
+            process.terminate()
+    for state in active.values():
+        process = state["process"]
+        if process.pid is not None:
+            process.join(timeout=2)
+            if process.is_alive():
+                process.kill()
+                process.join(timeout=2)
+        state["connection"].close()
+        state["sender"].close()
+        # A process that could not be killed must not make cleanup block forever.
+        with contextlib.suppress(ValueError):
+            process.close()
+
+
+def _run_training(
+    tasks, devices, task_list_filepath, cpu_threads, progress_mode="auto"
 ):
-    """
-    Worker function to process tasks from the task queue on the given device.
-
-    Args:
-        task_queue (Queue): The in-memory queue containing the training tasks.
-        device (str): The device to use for training.
-        device_idx (int): The index of the device in the device list.
-        overall_progress_bar (tqdm): The overall progress bar for the training.
-        task_list_filepath (str): The filepath to the JSON task list.
-        errors_encountered (list[bool]): A shared mutable flag array indicating if an error has occurred
-                                         (True if at least one task failed).
-        threadlock (threading.Lock): A lock to prevent threading issues with PyTorch.
-    """
-    while True:
-        try:
-            task = task_queue.get_nowait()  # Remove the task from the in-memory queue
-        except Empty:
-            return
-
-        try:
-            train_and_save_model(
-                *task, device=device, position=device_idx + 1, threadlock=threadlock
+    tasks = [list(task) for task in tasks]
+    devices = list(devices)
+    if not devices:
+        raise ValueError("At least one training device is required")
+    # Preserve entries outside this invocation, including repeated identical tasks.
+    pending = load_task_list(task_list_filepath)
+    unmatched = list(pending)
+    for task in tasks:
+        if task in unmatched:
+            unmatched.remove(task)
+        else:
+            pending.append(task)
+    save_task_list(pending, task_list_filepath)
+    if pending:
+        with contextlib.suppress(FileNotFoundError):
+            os.remove(
+                os.path.join(os.path.dirname(task_list_filepath), "completed.txt")
             )
 
-            # Workers share the JSON task list, so serialise the read-modify-write.
-            with threadlock:
-                current_list = load_task_list(task_list_filepath)
-                with contextlib.suppress(ValueError):
-                    current_list.remove(list(task))
-                save_task_list(current_list, task_list_filepath)
+    for device in devices:
+        validate_execution_settings(device, cpu_threads)
 
-        except Exception:
-            tqdm.write(f"Exception for task {task[:3]}:\n{traceback.format_exc()}")
-            # Flag that at least one task has failed
-            errors_encountered[0] = True
+    context = mp.get_context("spawn")
+    progress = ProgressDisplay(
+        tasks,
+        len(devices),
+        mode=progress_mode,
+        log_dir=os.path.join(os.path.dirname(task_list_filepath), "task_logs"),
+    )
+    active = {}
+    available = list(range(len(devices)))
+    next_task = 0
+    failures = []
+    original_handlers = {}
+    signal_state = {"defer": False, "pending": None, "cleanup": False}
 
-        finally:
-            task_queue.task_done()
-            overall_progress_bar.update(1)
+    def handle_signal(signum, frame):
+        if signal_state["cleanup"]:
+            return
+        if signal_state["defer"]:
+            signal_state["pending"] = signal_state["pending"] or (signum, frame)
+            return
+        signal_state["cleanup"] = True
+        if signum == signal.SIGTERM:
+            raise SystemExit(128 + signum)
+        previous = original_handlers[signal.SIGINT]
+        if previous == signal.SIG_IGN:
+            signal_state["cleanup"] = False
+        elif previous == signal.SIG_DFL:
+            signal.default_int_handler(signum, frame)
+        else:
+            previous(signum, frame)
+            signal_state["cleanup"] = False
 
+    # Deferring signals while starting a process ensures it is registered before
+    # cleanup can run, even if an interruption arrives inside Process.start().
+    if threading.current_thread() is threading.main_thread():
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            original_handlers[signum] = signal.getsignal(signum)
+            signal.signal(signum, handle_signal)
+    try:
+        while next_task < len(tasks) or active:
+            while available and next_task < len(tasks):
+                slot = available.pop(0)
+                task = tasks[next_task]
+                next_task += 1
+                progress.start(slot, task, devices[slot])
+                signal_state["defer"] = True
+                try:
+                    receiver, sender = context.Pipe(duplex=False)
+                    process = context.Process(
+                        target=_run_task_child,
+                        args=(
+                            tuple(task),
+                            devices[slot],
+                            slot + 1,
+                            cpu_threads,
+                            sender,
+                        ),
+                    )
+                    active[slot] = {
+                        "process": process,
+                        "connection": receiver,
+                        "sender": sender,
+                        "task": task,
+                        "message": None,
+                        "pipe_open": True,
+                    }
+                    try:
+                        process.start()
+                    except Exception as exc:
+                        # If start partially succeeded, leave it registered for cleanup.
+                        if process.pid is not None:
+                            raise
+                        del active[slot]
+                        receiver.close()
+                        sender.close()
+                        process.close()
+                        failures.append((task, f"Could not start process: {exc}"))
+                        progress.finish(slot, False, str(exc))
+                        available.append(slot)
+                    else:
+                        sender.close()
+                finally:
+                    signal_state["defer"] = False
+                    if signal_state["pending"] is not None:
+                        signum, frame = signal_state["pending"]
+                        signal_state["pending"] = None
+                        handle_signal(signum, frame)
 
-def parallel_training(tasks, device_list, task_list_filepath: str):
-    """
-    Execute the queued training tasks across multiple devices using worker threads.
-
-    Args:
-        tasks (list[tuple]): Output of :func:`create_task_list_for_surrogate`.
-        device_list (list[str]): Devices allocated to training (e.g. ["cuda:0", "cuda:1"]).
-        task_list_filepath (str): Path to the persisted JSON task list that tracks progress.
-
-    Returns:
-        float: Elapsed wall-clock time reported by the shared progress bar.
-    """
-    task_queue = Queue()
-    for task in tasks:
-        task_queue.put(task)
-
-    errors_encountered = [False]
-    overall_progress_bar = get_progress_bar(tasks)
-
-    threads = []
-    threadlock = threading.Lock()
-    for i, device in enumerate(device_list):
-        thread = Thread(
-            target=worker,
-            args=(
-                task_queue,
-                device,
-                i,
-                overall_progress_bar,
-                task_list_filepath,
-                errors_encountered,
-                threadlock,
-            ),
-        )
-        thread.start()
-        threads.append(thread)
-
-    for thread in threads:
-        thread.join()
-
-    overall_progress_bar.close()
-    elapsed_time = overall_progress_bar.format_dict["elapsed"]
-
-    # If no errors, mark training done & remove tasks file
-    if not errors_encountered[0]:
-        with open(
-            os.path.join(os.path.dirname(task_list_filepath), "completed.txt"),
-            "w",
-            encoding="utf-8",
-        ) as f:
-            f.write("Training completed")
-        os.remove(task_list_filepath)
-    else:
-        tqdm.write(
-            "Some tasks failed. The task list file was NOT removed.\n"
-            "Please fix the error(s) and re-run to complete the remaining tasks."
-        )
-
-    return elapsed_time
-
-
-def sequential_training(tasks, device_list, task_list_filepath: str):
-    """
-    Run all training tasks sequentially on a single device.
-
-    Args:
-        tasks (list[tuple]): Task specification tuples generated from the config.
-        device_list (list[str]): Contains exactly one element (typically \"cpu\" or a single CUDA id).
-        task_list_filepath (str): Path to the JSON file used to resume interrupted runs.
-
-    Returns:
-        float: Total elapsed time once all tasks finish.
-    """
-    overall_progress_bar = get_progress_bar(tasks)
-    errors_encountered = False
-    device = device_list[0]
-
-    for task in tasks:
+            if not active:
+                continue
+            handles = [state["process"].sentinel for state in active.values()]
+            handles += [
+                state["connection"] for state in active.values() if state["pipe_open"]
+            ]
+            ready = wait(handles)
+            for slot, state in list(active.items()):
+                conn = state["connection"]
+                process = state["process"]
+                if state["pipe_open"] and (conn in ready or process.sentinel in ready):
+                    try:
+                        while conn.poll():
+                            message = conn.recv()
+                            if message[0] == "progress":
+                                progress.event(slot, message[1])
+                            elif message[0] == "log":
+                                progress.log(slot, message[1])
+                            else:
+                                state["message"] = message
+                                break
+                    except (EOFError, OSError):
+                        state["pipe_open"] = False
+                    if process.sentinel in ready or state["message"] is not None:
+                        state["pipe_open"] = False
+                if process.sentinel not in ready:
+                    continue
+                process.join()
+                message = state["message"]
+                if process.exitcode == 0 and message is not None and message[0] is True:
+                    new_pending = list(pending)
+                    new_pending.remove(state["task"])
+                    save_task_list(new_pending, task_list_filepath)
+                    pending = new_pending
+                else:
+                    detail = (
+                        message[1]
+                        if message and not message[0]
+                        else "No success acknowledgement"
+                    )
+                    failures.append(
+                        (state["task"], f"{detail} (exit code {process.exitcode})")
+                    )
+                progress.finish(
+                    slot,
+                    process.exitcode == 0
+                    and message is not None
+                    and message[0] is True,
+                    failures[-1][1]
+                    if failures and failures[-1][0] == state["task"]
+                    else "",
+                )
+                del active[slot]
+                conn.close()
+                process.close()
+                available.append(slot)
+        elapsed = progress.elapsed
+        if failures:
+            raise TrainingRunError(
+                f"{len(failures)} training task(s) failed; remaining tasks were saved to {task_list_filepath}"
+            )
+        if not pending:
+            with open(
+                os.path.join(os.path.dirname(task_list_filepath), "completed.txt"),
+                "w",
+                encoding="utf-8",
+            ) as f:
+                f.write("Training completed")
+            os.remove(task_list_filepath)
+        return elapsed
+    finally:
+        signal_state["cleanup"] = True
         try:
-            train_and_save_model(*task, device=device)
-            overall_progress_bar.update(1)
+            _stop_children(active)
+        finally:
+            try:
+                progress.close()
+            finally:
+                for signum, handler in original_handlers.items():
+                    signal.signal(signum, handler)
 
-            # Only remove *this* task from JSON if success
-            current_list = load_task_list(task_list_filepath)
-            task_as_list = list(task)
-            with contextlib.suppress(ValueError):
-                current_list.remove(task_as_list)
-            save_task_list(current_list, task_list_filepath)
 
-        except Exception:
-            tqdm.write(f"Exception for task {task[:3]}:\n{traceback.format_exc()}")
-            overall_progress_bar.update(1)
-            errors_encountered = True
+def parallel_training(
+    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
+):
+    """Run each task in a fresh process, with one process per device slot."""
+    return _run_training(tasks, device_list, task_list_filepath, cpu_threads, progress)
 
-    elapsed_time = overall_progress_bar.format_dict["elapsed"]
-    overall_progress_bar.close()
 
-    if not errors_encountered:
-        with open(
-            os.path.join(os.path.dirname(task_list_filepath), "completed.txt"),
-            "w",
-            encoding="utf-8",
-        ) as f:
-            f.write("Training completed")
-        os.remove(task_list_filepath)
-    else:
-        tqdm.write(
-            "Some tasks failed. The task list file was NOT removed.\n"
-            "Please fix the error(s) and re-run to complete the remaining tasks."
-        )
-
-    return elapsed_time
+def sequential_training(
+    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
+):
+    """Run each task in a fresh process using the first device slot."""
+    return _run_training(
+        tasks, device_list[:1], task_list_filepath, cpu_threads, progress
+    )

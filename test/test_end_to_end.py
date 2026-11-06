@@ -1,10 +1,12 @@
 """
-End-to-end tests: train every surrogate on a tiny synthetic dataset with
+End-to-end tests: train every registered surrogate on a tiny synthetic dataset with
 run_training.py, then evaluate the models with run_eval.py.
 
-The golden values in test/data/golden_metrics.yaml pin the evaluation results of this
-toy run, so a change that alters benchmark results makes them fail. If the change is
-intended, regenerate the values and record the change in CHANGELOG.md:
+The golden values in test/data/golden_metrics.yaml pin selected reference results.
+Newly registered models automatically get the pipeline and reproducibility checks;
+adding their numerical references is a separate, deliberate step. If a change to
+existing reference results is intended, regenerate the values and record the change
+in CHANGELOG.md:
 
     CODES_UPDATE_GOLDEN=1 pytest test/test_end_to_end.py
 """
@@ -20,6 +22,7 @@ import yaml
 
 import run_eval
 import run_training
+from codes.surrogates import surrogate_classes
 from codes.utils.data_utils import create_dataset
 
 GOLDEN_FILE = Path(__file__).parent / "data" / "golden_metrics.yaml"
@@ -31,7 +34,7 @@ UPDATE_GOLDEN = os.environ.get("CODES_UPDATE_GOLDEN") == "1"
 GOLDEN_RTOL = 1e-2
 GOLDEN_RTOL_PER_SURROGATE = {"LatentNeuralODE": 0.25}
 
-SURROGATES = ["MultiONet", "FullyConnected", "LatentNeuralODE", "LatentPoly"]
+SURROGATES = [cls.__name__ for cls in surrogate_classes]
 
 
 # Small networks with high learning rates, so a few epochs learn the time dependence.
@@ -216,7 +219,7 @@ def load_metrics(surrogate: str) -> dict:
 
 
 def golden_candidates() -> dict[str, dict[str, float]]:
-    """The metrics pinned by the golden-value test, per surrogate."""
+    """Reference-worthy metrics for every registered surrogate."""
     values = {}
     for surrogate in SURROGATES:
         metrics = load_metrics(surrogate)
@@ -253,7 +256,7 @@ def test_golden_values(workspace):
 
     with open(GOLDEN_FILE, encoding="utf-8") as f:
         expected = yaml.safe_load(f)
-    assert expected.keys() == actual.keys()
+    assert expected.keys() <= actual.keys(), "A surrogate with golden values is missing"
     mismatches = [
         f"{surrogate} {name}: {actual[surrogate][name]:.6g} instead of {value:.6g}"
         for surrogate, values in expected.items()

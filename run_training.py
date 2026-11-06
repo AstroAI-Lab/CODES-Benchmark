@@ -2,7 +2,7 @@ import os
 from argparse import ArgumentParser
 from datetime import timedelta
 
-os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import torch
 from tqdm import tqdm
@@ -32,13 +32,10 @@ def main(args):
     Args:
         args (Namespace): The command line arguments.
     """
-    torch.use_deterministic_algorithms(True)
     config = load_and_save_config(config_path=args.config, save=False)
 
     if torch.cuda.is_available() and config.get("verbose", False):
-        nice_print(
-            f"CUDA devices detected: count={torch.cuda.device_count()}, current={torch.cuda.current_device()}"
-        )
+        nice_print(f"Visible CUDA devices: count={torch.cuda.device_count()}")
 
     download_data(config["dataset"]["name"], verbose=config.get("verbose", False))
     task_list_filepath, copy_config = check_training_status(config)
@@ -49,7 +46,7 @@ def main(args):
         config = load_and_save_config(config_path=previous_config_path, save=False)
     tasks = load_task_list(task_list_filepath)
 
-    if not tasks:
+    if not os.path.exists(task_list_filepath):
         tasks = []
 
         nice_print("Starting training")
@@ -61,12 +58,27 @@ def main(args):
 
     device_list = config["devices"]
     device_list = [device_list] if isinstance(device_list, str) else device_list
+    if not device_list:
+        raise ValueError("At least one training device is required")
+    cpu_threads = config.get("cpu_threads", 1)
     if len(device_list) > 1:
         tqdm.write(f"Training models in parallel on devices  : {device_list} \n")
-        elapsed_time = parallel_training(tasks, device_list, task_list_filepath)
+        elapsed_time = parallel_training(
+            tasks,
+            device_list,
+            task_list_filepath,
+            cpu_threads=cpu_threads,
+            progress=config.get("progress", "auto"),
+        )
     else:
         tqdm.write(f"Training models sequentially on device {device_list[0]}")
-        elapsed_time = sequential_training(tasks, device_list, task_list_filepath)
+        elapsed_time = sequential_training(
+            tasks,
+            device_list,
+            task_list_filepath,
+            cpu_threads=cpu_threads,
+            progress=config.get("progress", "auto"),
+        )
 
     print("\n")
     nice_print("Training completed")

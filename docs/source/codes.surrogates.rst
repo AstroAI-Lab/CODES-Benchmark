@@ -22,6 +22,14 @@ codes.surrogates.surrogate\_classes module
    :show-inheritance:
    :undoc-members:
 
+codes.surrogates.training module
+--------------------------------
+
+.. automodule:: codes.surrogates.training
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 

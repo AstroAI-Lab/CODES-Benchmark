@@ -3,9 +3,10 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, Dataset, IterableDataset
+from torch.utils.data import DataLoader, IterableDataset
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
+from codes.surrogates.training import fit_standard, train_epoch
 from codes.utils import make_shuffle_generator, time_execution
 
 from .fcnn_config import FCNNBaseConfig
@@ -38,51 +39,6 @@ class FCFlatBatchIterable(IterableDataset):
 
     def __len__(self):
         return math.ceil(self.N / self.bs)  # number of batches
-
-
-def fc_collate_fn(batch):
-    """
-    Custom collate function to ensure tensors are returned in the correct shape.
-
-    Args:
-        batch (list[tuple[torch.Tensor, torch.Tensor]]): List of precomputed
-            batches. Each tuple contains an ``input_batch`` with shape
-            ``[batch_size, n_quantities + 1]`` and ``target_batch`` with shape
-            ``[batch_size, n_quantities]``.
-
-    Returns:
-        tuple[torch.Tensor, torch.Tensor]: Inputs and targets with the same shapes
-        as described above.
-    """
-    # 'batch' is a list of length=1 if DataLoader has batch_size=1,
-    # and each element is (input_tensor, target_tensor).
-    # We remove the extra [1,...,...] dimension via squeeze(0).
-    inputs = torch.stack([item[0] for item in batch]).squeeze(0)
-    targets = torch.stack([item[1] for item in batch]).squeeze(0)
-    return inputs, targets
-
-
-class FCPrebatchedDataset(Dataset):
-    """
-    Dataset for pre-batched data specifically for the FullyConnected model.
-
-    Args:
-        inputs_batches (list[Tensor]): List of precomputed input batches.
-        targets_batches (list[Tensor]): List of precomputed target batches.
-    """
-
-    def __init__(self, inputs_batches, targets_batches):
-        self.inputs_batches = inputs_batches
-        self.targets_batches = targets_batches
-
-    def __getitem__(self, index):
-        # Return one precomputed batch:
-        # shape -> ( [batch_size, n_quantities+1], [batch_size, n_quantities] )
-        return self.inputs_batches[index], self.targets_batches[index]
-
-    def __len__(self):
-        # Number of precomputed batches
-        return len(self.inputs_batches)
 
 
 class FullyConnectedNet(nn.Module):
@@ -273,60 +229,24 @@ class FullyConnected(AbstractSurrogateModel):
         # Flat datasets hold one row per (sample, timestep); their length counts batches.
         n_rows = getattr(train_loader.dataset, "N", None)
         self.n_train_samples = None if n_rows is None else n_rows // self.n_timesteps
-        # criterion = nn.MSELoss(reduction="sum")
-        criterion = self.config.loss
-        optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-
-        loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
-        self.train_loss, self.test_loss, self.MAE = [
-            np.zeros(loss_length) for _ in range(3)
-        ]
-        progress_bar = self.setup_progress_bar(epochs, position, description)
-
-        self.train()
-        optimizer.train()
-
-        self.setup_checkpoint()
-
-        for epoch in progress_bar:
-            self.epoch(train_loader, criterion, optimizer)
-
-            scheduler.step()
-
-            self.validate(
-                epoch=epoch,
-                train_loader=train_loader,
-                test_loader=test_loader,
-                optimizer=optimizer,
-                progress_bar=progress_bar,
-                total_epochs=epochs,
-                multi_objective=multi_objective,
-            )
-
-        progress_bar.close()
-        self.n_epochs = epoch + 1
-        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
-        optimizer.eval()
-        self.get_checkpoint(test_loader, criterion)
+        fit_standard(
+            self,
+            train_loader,
+            test_loader,
+            epochs,
+            position,
+            description,
+            multi_objective,
+            epoch_fn=self.epoch,
+        )
 
     def epoch(
         self,
         data_loader: DataLoader,
         criterion: nn.Module,
         optimizer: torch.optim.Optimizer,
-    ) -> float:
-        # dataset_size = len(data_loader.dataset)
-
-        for batch in data_loader:
-            inputs, targets = batch
-
-            optimizer.zero_grad()
-            outputs, targets = self((inputs, targets))
-            loss = criterion(outputs, targets)
-            loss.backward()
-            if self.config.gradient_clip > 0:
-                nn.utils.clip_grad_norm_(self.parameters(), self.config.gradient_clip)
-            optimizer.step()
+    ) -> None:
+        train_epoch(self, data_loader, criterion, optimizer)
 
     def create_dataloader(
         self,
