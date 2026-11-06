@@ -9,6 +9,7 @@ from codes.surrogates import Decoder as NewDecoder
 from codes.surrogates import Encoder as NewEncoder
 from codes.surrogates import FlatSeqBatchIterable
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
+from codes.surrogates.training import fit_standard
 from codes.utils import time_execution
 
 from .latent_poly_config import LatentPolynomialBaseConfig
@@ -189,53 +190,29 @@ class LatentPoly(AbstractSurrogateModel):
         Args:
             train_loader (DataLoader): The data loader for the training data.
             test_loader (DataLoader): The data loader for the test data.
-            epochs (int | None): The number of epochs to train the model. If None, uses the value from the config.
+            epochs (int): The positive number of epochs to train the model.
             position (int): The position of the progress bar.
             description (str): The description for the progress bar.
             multi_objective (bool): Whether multi-objective optimization is used.
                                     If True, trial.report is not used (not supported by Optuna).
         """
-        optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
+        fit_standard(
+            self,
+            train_loader,
+            test_loader,
+            epochs,
+            position,
+            description,
+            multi_objective,
+            loss_fn=self.training_loss,
+            gradient_clip=0.0,  # Preserve this model's existing training behavior.
+        )
 
-        loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
-        self.train_loss, self.test_loss, self.MAE = [
-            np.zeros(loss_length) for _ in range(3)
-        ]
-        criterion = self.config.loss
-
-        progress_bar = self.setup_progress_bar(epochs, position, description)
-
-        self.model.train()
-        optimizer.train()
-
-        self.setup_checkpoint()
-
-        for epoch in progress_bar:
-            for i, batch in enumerate(train_loader):
-                x_true, _, params = batch
-                optimizer.zero_grad()
-                x_pred, x_true = self(batch)
-                loss = self.model.total_loss(x_true, x_pred, params, criterion)
-                loss.backward()
-                optimizer.step()
-
-            scheduler.step()
-
-            self.validate(
-                epoch=epoch,
-                train_loader=train_loader,
-                test_loader=test_loader,
-                optimizer=optimizer,
-                progress_bar=progress_bar,
-                total_epochs=epochs,
-                multi_objective=multi_objective,
-            )
-
-        progress_bar.close()
-        self.n_epochs = epoch + 1
-        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
-        optimizer.eval()
-        self.get_checkpoint(test_loader, criterion)
+    def training_loss(self, batch, criterion):
+        """Compute the trajectory and auxiliary losses for one sequence batch."""
+        x_true, _, params = batch
+        x_pred, x_true = self(batch)
+        return self.model.total_loss(x_true, x_pred, params, criterion)
 
 
 class PolynomialModelWrapper(nn.Module):

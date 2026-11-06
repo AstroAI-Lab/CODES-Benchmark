@@ -7,6 +7,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
+from codes.surrogates.training import fit_standard, train_epoch
 from codes.utils import time_execution
 
 from .deeponet_config import MultiONetBaseConfig
@@ -282,39 +283,16 @@ class MultiONet(OperatorNetwork):
         n_rows = getattr(train_loader.dataset, "N", None)
         self.n_train_samples = None if n_rows is None else n_rows // self.n_timesteps
 
-        criterion = self.config.loss
-        optimizer, scheduler = self.setup_optimizer_and_scheduler(epochs)
-
-        loss_length = (epochs + self.update_epochs - 1) // self.update_epochs
-        self.train_loss, self.test_loss, self.MAE = [
-            np.zeros(loss_length) for _ in range(3)
-        ]
-        progress_bar = self.setup_progress_bar(epochs, position, description)
-        self.train()
-        optimizer.train()
-
-        self.setup_checkpoint()
-
-        for epoch in progress_bar:
-            self.epoch(train_loader, criterion, optimizer)
-
-            scheduler.step()
-
-            self.validate(
-                epoch=epoch,
-                train_loader=train_loader,
-                test_loader=test_loader,
-                optimizer=optimizer,
-                progress_bar=progress_bar,
-                total_epochs=epochs,
-                multi_objective=multi_objective,
-            )
-
-        progress_bar.close()
-        self.n_epochs = epoch + 1
-        # Schedule-free optimizers hold the weights to evaluate and save in eval mode.
-        optimizer.eval()
-        self.get_checkpoint(test_loader, criterion)
+        fit_standard(
+            self,
+            train_loader,
+            test_loader,
+            epochs,
+            position,
+            description,
+            multi_objective,
+            epoch_fn=self.epoch,
+        )
 
     def setup_criterion(self) -> callable:
         """
@@ -345,7 +323,7 @@ class MultiONet(OperatorNetwork):
         data_loader: DataLoader,
         criterion: nn.Module,
         optimizer: torch.optim.Optimizer,
-    ) -> float:
+    ) -> None:
         """
         Perform one training epoch.
 
@@ -354,18 +332,8 @@ class MultiONet(OperatorNetwork):
             criterion (nn.Module): The loss function.
             optimizer (torch.optim.Optimizer): The optimizer.
 
-        Returns:
-            float: The total loss for the training step.
         """
-        for batch in data_loader:
-            branch_input, trunk_input, targets = batch
-            optimizer.zero_grad()
-            outputs, targets = self((branch_input, trunk_input, targets))
-            loss = criterion(outputs, targets)
-            loss.backward()
-            if self.config.gradient_clip > 0:
-                nn.utils.clip_grad_norm_(self.parameters(), self.config.gradient_clip)
-            optimizer.step()
+        train_epoch(self, data_loader, criterion, optimizer)
 
     def create_dataloader(
         self,

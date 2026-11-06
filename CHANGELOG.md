@@ -10,6 +10,9 @@ affecting results".
 
 ### Added
 
+- Registry-driven training smoke and end-to-end tests automatically include new
+  surrogates. Common interface tests report unexpected failures instead of skipping
+  them; numerical golden references remain explicitly maintained.
 - Contributor credit for Gianluca Möschter's code, data, research, documentation,
   tests and user testing, and inclusion in the software citation author list.
 - Autoregressive rollout finetuning of trained surrogates, with an optional Optuna
@@ -42,6 +45,8 @@ affecting results".
 
 ### Changed
 
+- Standard surrogate training now shares a common loop, with no intended numerical
+  changes. Custom `fit` implementations remain supported.
 - `ChemDataset` remains available but is deprecated. MultiONet's `setup_criterion`
   is also deprecated; training uses the configured loss.
 - Updated the checkout, uv setup, Codecov and Pages Actions to current releases
