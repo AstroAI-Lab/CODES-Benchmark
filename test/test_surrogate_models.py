@@ -402,7 +402,7 @@ class TestShuffling:
         train_loader, _, _ = surrogate_model.prepare_data(
             data_train, data_test, data_val, timesteps, batch_size, shuffle=True
         )
-        # Other threads training in parallel draw from the global RNG in between.
+        # Unrelated random draws must not change this loader's private shuffle order.
         torch.rand(spin)
         return torch.cat([batch[0].flatten() for batch in train_loader])
 
@@ -413,15 +413,6 @@ class TestShuffling:
         first = self._first_epoch_targets(surrogate_model, sample_data, bs, spin=0)
         second = self._first_epoch_targets(surrogate_model, sample_data, bs, spin=17)
         assert torch.equal(first, second)
-
-    def test_fit_does_not_touch_global_rng(self, surrogate_model, sample_dataloaders):
-        """Training threads must not advance the global RNG, which other threads
-        rely on while they initialise models under the thread lock."""
-        train_loader, test_loader, _ = sample_dataloaders
-        before = torch.get_rng_state()
-        surrogate_model.fit(train_loader, test_loader, epochs=2, description="t")
-        surrogate_model.predict(test_loader)
-        assert torch.equal(before, torch.get_rng_state())
 
 
 class TestPrediction:

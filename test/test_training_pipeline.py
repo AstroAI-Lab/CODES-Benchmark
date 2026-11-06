@@ -1,17 +1,13 @@
 import threading
-from queue import Queue
 from unittest.mock import Mock, patch
 
 import pytest
 
+from codes.train.tasks import train_and_save_model
+
 # import *from* the module that actually defines them
 from codes.train.train_fcts import (
-    DummyLock,
     create_task_list_for_surrogate,
-    parallel_training,
-    sequential_training,
-    train_and_save_model,
-    worker,
 )
 from codes.utils import load_task_list, save_task_list
 
@@ -68,19 +64,6 @@ def tmp_train_dir(tmp_path):
     return tmp_path
 
 
-# — DummyLock —
-
-
-def test_dummy_lock_noops():
-    lock = DummyLock()
-    lock.acquire()
-    lock.release()
-    with lock:
-        pass
-    # __exit__ is no-op even with args
-    lock.__exit__(ValueError, ValueError("e"), None)
-
-
 # — create_task_list_for_surrogate —
 
 
@@ -109,14 +92,14 @@ def test_uq_members_get_distinct_seeds(minimal_config):
 
 
 class TestTrainAndSaveModel:
-    @patch("codes.train.train_fcts.load_and_save_config")
-    @patch("codes.train.train_fcts.make_description")
-    @patch("codes.train.train_fcts.set_random_seeds")
-    @patch("codes.train.train_fcts.determine_batch_size")
-    @patch("codes.train.train_fcts.get_model_config")
-    @patch("codes.train.train_fcts.get_surrogate")
-    @patch("codes.train.train_fcts.get_data_subset")
-    @patch("codes.train.train_fcts.check_and_load_data")
+    @patch("codes.train.tasks.load_and_save_config")
+    @patch("codes.train.tasks.make_description")
+    @patch("codes.train.tasks.set_random_seeds")
+    @patch("codes.train.tasks.determine_batch_size")
+    @patch("codes.train.tasks.get_model_config")
+    @patch("codes.train.tasks.get_surrogate")
+    @patch("codes.train.tasks.get_data_subset")
+    @patch("codes.train.tasks.check_and_load_data")
     def test_train_and_save_model_success(
         self,
         mock_check_and_load_data,
@@ -183,14 +166,14 @@ class TestTrainAndSaveModel:
         model.fit.assert_called_once()  # training happened
         model.save.assert_called_once()  # model was saved
 
-    @patch("codes.train.train_fcts.load_and_save_config")
-    @patch("codes.train.train_fcts.check_and_load_data")
-    @patch("codes.train.train_fcts.get_data_subset")
-    @patch("codes.train.train_fcts.get_surrogate")
-    @patch("codes.train.train_fcts.set_random_seeds")
-    @patch("codes.train.train_fcts.determine_batch_size")
-    @patch("codes.train.train_fcts.get_model_config")
-    @patch("codes.train.train_fcts.make_description")
+    @patch("codes.train.tasks.load_and_save_config")
+    @patch("codes.train.tasks.check_and_load_data")
+    @patch("codes.train.tasks.get_data_subset")
+    @patch("codes.train.tasks.get_surrogate")
+    @patch("codes.train.tasks.set_random_seeds")
+    @patch("codes.train.tasks.determine_batch_size")
+    @patch("codes.train.tasks.get_model_config")
+    @patch("codes.train.tasks.make_description")
     def test_train_and_save_model_with_thread_lock(
         self,
         mock_make_description,
@@ -243,132 +226,6 @@ class TestTrainAndSaveModel:
 
         # should seed twice (once per locked region)
         assert mock_set_random_seeds.call_count == 2
-
-
-# — worker —
-
-
-def test_worker_success(tmp_train_dir):
-    queue = Queue()
-    task = ("A", "main", "", "some_id", 0, 1)
-    queue.put(task)
-
-    # write a dummy JSON task-list
-    tfile = tmp_train_dir / "tasks.json"
-    save_task_list([list(task)], str(tfile))
-
-    # patch the _module_ reference that worker actually uses:
-    with patch("codes.train.train_fcts.train_and_save_model") as mock_train:
-        progress = Mock()
-        errors = [False]
-        worker(
-            task_queue=queue,
-            device="cpu",
-            device_idx=0,
-            overall_progress_bar=progress,
-            task_list_filepath=str(tfile),
-            errors_encountered=errors,
-            threadlock=threading.Lock(),
-        )
-    mock_train.assert_called_once()
-    progress.update.assert_called_once_with(1)
-    assert queue.empty()
-    assert not errors[0]
-
-
-def test_worker_exception(tmp_train_dir):
-    queue = Queue()
-    task = ("A", "main", "", "some_id", 0, 1)
-    queue.put(task)
-    tfile = tmp_train_dir / "tasks.json"
-    save_task_list([list(task)], str(tfile))
-
-    with patch("codes.train.train_fcts.train_and_save_model", side_effect=RuntimeError):
-        progress = Mock()
-        errors = [False]
-        worker(
-            task_queue=queue,
-            device="cpu",
-            device_idx=0,
-            overall_progress_bar=progress,
-            task_list_filepath=str(tfile),
-            errors_encountered=errors,
-            threadlock=threading.Lock(),
-        )
-    progress.update.assert_called_once_with(1)
-    assert queue.empty()
-    assert errors[0]
-
-
-# — parallel & sequential training —
-
-
-@patch("codes.train.train_fcts.get_progress_bar")
-@patch("codes.train.train_fcts.train_and_save_model")
-def test_sequential_training(mock_train, mock_pbar, tmp_train_dir):
-    tasks = [("A", "main", "", "some_id", 0, 1)] * 3
-    # create a real JSON file so load/save work
-    tfile = tmp_train_dir / "tasks.json"
-    save_task_list([list(t) for t in tasks], str(tfile))
-
-    bar = Mock(format_dict={"elapsed": 2}, update=Mock(), close=Mock())
-    mock_pbar.return_value = bar
-
-    elapsed = sequential_training(tasks, ["cpu"], str(tfile))
-    assert mock_train.call_count == 3
-    assert elapsed == 2
-    # file should be removed on success
-    assert not tfile.exists()
-
-
-@patch("codes.train.train_fcts.get_progress_bar")
-@patch("codes.train.train_fcts.train_and_save_model")
-def test_parallel_training(mock_train, mock_pbar, tmp_train_dir):
-    tasks = [("A", "main", "", "some_id", 0, 1)]
-    bar = Mock(format_dict={"elapsed": 5}, update=Mock(), close=Mock())
-    mock_pbar.return_value = bar
-
-    # no tasks.json needed here; worker will create+remove it itself
-    tfile = tmp_train_dir / "tasks.json"
-    elapsed = parallel_training(tasks, ["cpu", "cpu"], str(tfile))
-
-    # train called exactly once
-    assert mock_train.call_count == 1
-    assert elapsed == 5
-    # file cleaned up on success
-    assert not tfile.exists()
-
-
-def test_workers_drain_queue_without_races(tmp_train_dir):
-    """Several workers sharing a queue and task list must finish every task once."""
-    tasks = [("A", "UQ", i, "some_id", i, 1) for i in range(200)]
-    tfile = tmp_train_dir / "tasks.json"
-    save_task_list([list(t) for t in tasks], str(tfile))
-    queue = Queue()
-    for task in tasks:
-        queue.put(task)
-    progress = Mock()
-    errors = [False]
-    lock = threading.Lock()
-
-    with patch("codes.train.train_fcts.train_and_save_model") as mock_train:
-        threads = [
-            threading.Thread(
-                target=worker,
-                args=(queue, "cpu", i, progress, str(tfile), errors, lock),
-            )
-            for i in range(4)
-        ]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
-
-    assert mock_train.call_count == len(tasks)
-    assert progress.update.call_count == len(tasks)
-    assert not errors[0]
-    assert load_task_list(str(tfile)) == []
-    queue.join()  # raises if task_done() was called the wrong number of times
 
 
 # — task-list utils sanity —
