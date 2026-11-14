@@ -23,6 +23,7 @@ Looking for a bird’s-eye view first? Start with the **User Guide**. Already co
    Extending The Benchmark <guides/extending-benchmark>
    Configuration Reference <reference/configuration>
    Dataset Catalog <reference/datasets>
+   Reference Benchmark Results <benchmarks/index>
    Tutorials <tutorials/index>
 
 .. toctree::

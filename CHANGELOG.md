@@ -12,6 +12,8 @@ affecting results".
 
 - Versioned reference benchmark protocols, timing pilots and resumable per-dataset
   runs for the four A&A datasets and architectures, independent of the compute host.
+- Validated static benchmark result exports and documentation, with an explicit
+  separation between public scientific provenance and local execution metadata.
 - Opt-in synchronized accelerator inference timing (`synchronize_timing`) with
   an unmeasured warm-up and explicit measurement metadata for reference runs.
 
