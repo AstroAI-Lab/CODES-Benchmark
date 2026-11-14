@@ -147,6 +147,28 @@ def test_time_inference(monkeypatch):
     assert result["mean_inference_time_per_prediction"] == pytest.approx(3.0 / 2)
 
 
+def test_reference_timing_enables_synchronization(monkeypatch):
+    calls = []
+
+    def measure(model, loader, n_runs, *, synchronize):
+        calls.append((n_runs, synchronize))
+        return [2.0, 4.0]
+
+    monkeypatch.setattr(bf, "measure_inference_time", measure)
+    result = bf.time_inference(
+        FakeModel(),
+        "SurrA",
+        "L",
+        {"training_id": "TID", "synchronize_timing": True},
+        10,
+        n_runs=2,
+    )
+    assert calls == [(2, True)]
+    assert result["timing_method"] == "synchronized_forward_wall_time"
+    assert result["warmup_runs"] == 1
+    assert result["mean_inference_time_per_prediction"] == pytest.approx(0.3)
+
+
 def test_evaluate_compute_cpu_path(monkeypatch):
     # Force non-CUDA execution
     monkeypatch.setattr(torch.cuda, "is_available", lambda: False)

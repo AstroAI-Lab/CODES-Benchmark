@@ -188,6 +188,33 @@ def test_measure_inference_time():
     assert all(t >= 0.0 for t in times)
 
 
+def test_synchronized_inference_waits_for_gpu_and_excludes_warmup(monkeypatch):
+    events = []
+
+    class Dummy:
+        device = "cuda:0"
+
+        def forward(self, inputs):
+            events.append("forward")
+            return inputs, inputs
+
+    def synchronize(device):
+        assert device == torch.device("cuda:0")
+        events.append("wait")
+
+    def clock():
+        events.append("clock")
+        return float(events.count("clock"))
+
+    monkeypatch.setattr(torch.cuda, "synchronize", synchronize)
+    monkeypatch.setattr(bu.time, "perf_counter", clock)
+    assert bu.measure_inference_time(Dummy(), [1], 2, synchronize=True) == [1, 1]
+    assert (
+        events
+        == ["forward", "wait"] + ["wait", "clock", "forward", "wait", "clock"] * 2
+    )
+
+
 @pytest.mark.parametrize(
     "train_bs, eval_bs", [(8, 8), ([8, 16], [8, 16]), (8, [8, 8]), ([8, 8], 8)]
 )

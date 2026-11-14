@@ -747,6 +747,8 @@ def measure_inference_time(
     model,
     test_loader: DataLoader,
     n_runs: int = 5,
+    *,
+    synchronize: bool = False,
 ) -> list[float]:
     """
     Measure total inference time over a DataLoader across multiple runs.
@@ -755,17 +757,38 @@ def measure_inference_time(
         model: Model instance with a `.forward()` method.
         test_loader (DataLoader): Loader with test data.
         n_runs (int): Number of repeated runs for averaging.
+        synchronize (bool): Warm up once and wait for accelerator completion around
+            each measured forward pass. The legacy default is retained for existing
+            tuning studies; reference benchmarks should enable this option.
 
     Returns:
         list[float]: List of total inference times per run (in seconds).
     """
+
+    def wait_for_device():
+        device = torch.device(getattr(model, "device", "cpu"))
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        elif device.type == "mps":
+            torch.mps.synchronize()
+
+    if synchronize:
+        with torch.inference_mode():
+            for inputs in test_loader:
+                model.forward(inputs)
+        wait_for_device()
+
     inference_times = []
     for _ in range(n_runs):
         total_time = 0
         with torch.inference_mode():
             for inputs in test_loader:
+                if synchronize:
+                    wait_for_device()
                 start_time = time.perf_counter()
                 _, _ = model.forward(inputs)
+                if synchronize:
+                    wait_for_device()
                 end_time = time.perf_counter()
                 total_time += end_time - start_time
         inference_times.append(total_time)

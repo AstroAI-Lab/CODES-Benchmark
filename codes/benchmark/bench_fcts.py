@@ -775,7 +775,13 @@ def time_inference(
     training_id = conf["training_id"]
     model.load(training_id, surr_name, model_identifier=f"{surr_name.lower()}_main")
 
-    inference_times = measure_inference_time(model, test_loader, n_runs=n_runs)
+    synchronized = conf.get("synchronize_timing", False)
+    if synchronized:
+        inference_times = measure_inference_time(
+            model, test_loader, n_runs=n_runs, synchronize=True
+        )
+    else:
+        inference_times = measure_inference_time(model, test_loader, n_runs=n_runs)
 
     mean_inference_time = np.mean(inference_times)
     std_inference_time = np.std(inference_times)
@@ -786,6 +792,12 @@ def time_inference(
         "num_predictions": n_test_samples,
         "mean_inference_time_per_prediction": mean_inference_time / n_test_samples,
         "std_inference_time_per_prediction": std_inference_time / n_test_samples,
+        "timing_method": (
+            "synchronized_forward_wall_time"
+            if synchronized
+            else "legacy_forward_wall_time"
+        ),
+        "warmup_runs": int(bool(synchronized)),
     }
 
 

@@ -10,6 +10,9 @@ affecting results".
 
 ### Added
 
+- Opt-in synchronized accelerator inference timing (`synchronize_timing`) with
+  an unmeasured warm-up and explicit measurement metadata for reference runs.
+
 - Registry-driven training smoke and end-to-end tests automatically include new
   surrogates. Common interface tests report unexpected failures instead of skipping
   them; numerical golden references remain explicitly maintained.

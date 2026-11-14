@@ -52,6 +52,11 @@ All modality blocks are disabled if omitted. If `enabled: true`, the correspondi
 
 ## Evaluation switches
 
+Set `synchronize_timing: true` for accelerator timing in reference runs. This adds
+one unmeasured warm-up pass and waits for CUDA/MPS completion around each forward
+pass. The default remains `false` for compatibility with earlier tuning studies.
+Timing metadata identifies the method; do not compare the two methods directly.
+
 All switches default to `false` if omitted.
 
 | Key | Default | Notes |
