@@ -10,6 +10,8 @@ affecting results".
 
 ### Added
 
+- Versioned reference benchmark protocols, timing pilots and resumable per-dataset
+  runs for the four A&A datasets and architectures, independent of the compute host.
 - Opt-in synchronized accelerator inference timing (`synchronize_timing`) with
   an unmeasured warm-up and explicit measurement metadata for reference runs.
 

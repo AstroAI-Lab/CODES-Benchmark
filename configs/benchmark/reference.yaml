@@ -1,0 +1,116 @@
+# Scientific reference settings supplied by the paper authors on 2026-11-06.
+# These are ordinary trained models using HPO-refined settings, not
+# autoregressive rollout-finetuned models.
+# Only main + UQ training is enabled for this initial reference run.
+# cloud_parametric deliberately retains the original training subset_factor: 2.
+# Dataset initial-condition counts: primordial 2048; primordial_parametric 4096;
+# cloud 4096; cloud_parametric 8192. Subsampling the latter controls runtime.
+# Five members include the main model; seed blocks are 42-46, 142-146, 242-246.
+# Pilot budgets are timing probes using the same effective data as production.
+models:
+- MultiONet
+- FullyConnected
+- LatentNeuralODE
+- LatentPoly
+seeds:
+- 42
+- 142
+- 242
+pilot_epochs:
+- 2
+- 4
+devices:
+- cuda:0
+datasets:
+  primordial:
+    dataset:
+      name: primordial
+      log10_transform: true
+      log10_transform_params: true
+      normalise: minmax
+      normalise_per_species: true
+      tolerance: 1.0e-15
+      log_timesteps: true
+      use_optimal_params: true
+      subset_factor: 1
+    epochs:
+      MultiONet: 12000
+      FullyConnected: 8000
+      LatentNeuralODE: 12000
+      LatentPoly: 12000
+    batch_size:
+      MultiONet: 47767
+      FullyConnected: 47767
+      LatentNeuralODE: 717
+      LatentPoly: 717
+    ensemble_size: 5
+    checkpoint: true
+  primordial_parametric:
+    dataset:
+      name: primordial_parametric
+      log10_transform: true
+      log10_transform_params: true
+      normalise: minmax
+      normalise_per_species: true
+      tolerance: 1.0e-20
+      log_timesteps: true
+      use_optimal_params: true
+      subset_factor: 1
+    epochs:
+      MultiONet: 8000
+      FullyConnected: 8000
+      LatentNeuralODE: 8000
+      LatentPoly: 12000
+    batch_size:
+      MultiONet: 35838
+      FullyConnected: 35838
+      LatentNeuralODE: 717
+      LatentPoly: 717
+    ensemble_size: 5
+    checkpoint: true
+  cloud:
+    dataset:
+      name: cloud
+      log10_transform: true
+      log10_transform_params: true
+      normalise: minmax
+      normalise_per_species: true
+      tolerance: 1.0e-25
+      log_timesteps: true
+      use_optimal_params: true
+      subset_factor: 1
+    epochs:
+      MultiONet: 8000
+      FullyConnected: 8000
+      LatentNeuralODE: 8000
+      LatentPoly: 8000
+    batch_size:
+      MultiONet: 35838
+      FullyConnected: 35838
+      LatentNeuralODE: 717
+      LatentPoly: 717
+    ensemble_size: 5
+    checkpoint: true
+  cloud_parametric:
+    dataset:
+      name: cloud_parametric
+      log10_transform: true
+      log10_transform_params: true
+      normalise: minmax
+      normalise_per_species: true
+      tolerance: 1.0e-25
+      log_timesteps: true
+      use_optimal_params: true
+      subset_factor: 2
+    epochs:
+      MultiONet: 8000
+      FullyConnected: 8000
+      LatentNeuralODE: 8000
+      LatentPoly: 8000
+    batch_size:
+      MultiONet: 35838
+      FullyConnected: 35838
+      LatentNeuralODE: 717
+      LatentPoly: 717
+    ensemble_size: 5
+    checkpoint: true
