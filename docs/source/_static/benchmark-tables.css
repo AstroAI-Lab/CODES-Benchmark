@@ -1,0 +1,4 @@
+table.benchmark-results td:not(:first-child) {
+    text-align: right;
+    white-space: nowrap;
+}
