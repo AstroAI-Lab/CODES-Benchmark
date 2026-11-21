@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import warnings
 from importlib import metadata
 from pathlib import Path
@@ -20,7 +21,10 @@ version = ".".join(release.split(".")[:2])
 
 # -- General configuration ---------------------------------------------------
 
+sys.path.insert(0, str(Path(__file__).resolve().parent / "_ext"))
+
 extensions = [
+    "benchmark_pages",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosummary",

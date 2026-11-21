@@ -9,6 +9,8 @@
 
 Benchmark coupled ODE surrogate models on curated datasets with reproducible training, evaluation, and visualization pipelines. CODES helps you answer: _Which surrogate architecture fits my data, accuracy target, and runtime budget?_
 
+**[View benchmark results](https://astroai-lab.de/CODES-Benchmark/benchmarks/index.html)** · Compare surrogate accuracy, inference time, and uncertainty on the four A&A datasets.
+
 ## What you get
 
 - Baseline surrogates (MultiONet, FullyConnected, LatentNeuralODE, LatentPoly) with configurable hyperparameters
