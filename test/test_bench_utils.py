@@ -188,6 +188,22 @@ def test_measure_inference_time():
     assert all(t >= 0.0 for t in times)
 
 
+def test_registered_surrogate_inference_timing(small_surrogate_factory):
+    model = small_surrogate_factory().eval()
+    data = np.ones((2, 8, 2), dtype=np.float32)
+    loader, _, _ = model.prepare_data(
+        dataset_train=data,
+        dataset_test=None,
+        dataset_val=None,
+        timesteps=np.linspace(0, 1, 8),
+        batch_size=8,
+        shuffle=False,
+    )
+    times = bu.measure_inference_time(model, loader, n_runs=2)
+    assert len(times) == 2
+    assert all(np.isfinite(t) and t > 0 for t in times)
+
+
 @pytest.mark.parametrize("device", ["cuda:0", "cuda:1", "mps", "cpu", None])
 def test_inference_waits_for_device_and_excludes_warmup(monkeypatch, device):
     events = []
