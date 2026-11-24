@@ -673,48 +673,67 @@ def evaluate_tuning(
         return
     config = load_yaml_config(config_path)
 
-    # Ensure Postgres server
-    pg = config.get("postgres_config", {})
-    try:
-        psycopg2.connect(
+    storage_url = os.environ.get("CODES_OPTUNA_STORAGE_URL")
+    if storage_url is None:
+        # Ensure Postgres server
+        pg = config.get("postgres_config", {})
+        try:
+            psycopg2.connect(
+                dbname="postgres",
+                user=pg.get("user"),
+                password=pg.get("password"),
+                host=pg.get("host"),
+                port=pg.get("port"),
+                connect_timeout=5,
+            ).close()
+        except Exception:
+            if str(pg.get("host", "localhost")) not in (
+                "localhost",
+                "127.0.0.1",
+                "::1",
+            ):
+                raise  # don’t try to start a local server if host isn't local
+            pg_data = pg.get("data_dir", os.path.expanduser("~/postgres/data"))
+            pg_ctl = os.path.join(
+                pg.get("database_folder", os.path.expanduser("~/postgres")),
+                "bin",
+                "pg_ctl",
+            )
+            subprocess.run(
+                [
+                    pg_ctl,
+                    "-D",
+                    pg_data,
+                    "-l",
+                    pg.get("log_file", "/tmp/pg.log"),
+                    "start",
+                ],
+                check=True,
+            )
+            time.sleep(2)
+        # Create DB if absent
+        conn = psycopg2.connect(
             dbname="postgres",
             user=pg.get("user"),
             password=pg.get("password"),
             host=pg.get("host"),
             port=pg.get("port"),
-            connect_timeout=5,
-        ).close()
-    except Exception:
-        if str(pg.get("host", "localhost")) not in ("localhost", "127.0.0.1", "::1"):
-            raise  # don’t try to start a local server if host isn't local
-        pg_data = pg.get("data_dir", os.path.expanduser("~/postgres/data"))
-        pg_ctl = os.path.join(
-            pg.get("database_folder", os.path.expanduser("~/postgres")), "bin", "pg_ctl"
         )
-        subprocess.run(
-            [pg_ctl, "-D", pg_data, "-l", pg.get("log_file", "/tmp/pg.log"), "start"],
-            check=True,
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute(
+            sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [study_prefix]
         )
-        time.sleep(2)
-    # Create DB if absent
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user=pg.get("user"),
-        password=pg.get("password"),
-        host=pg.get("host"),
-        port=pg.get("port"),
-    )
-    conn.autocommit = True
-    cur = conn.cursor()
-    cur.execute(sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [study_prefix])
-    if not cur.fetchone():
-        cur.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(study_prefix)))
-    cur.close()
-    conn.close()
+        if not cur.fetchone():
+            cur.execute(
+                sql.SQL("CREATE DATABASE {};").format(sql.Identifier(study_prefix))
+            )
+        cur.close()
+        conn.close()
 
-    # Build storage URL (hard-coded prefix)
-    db_prefix = "postgresql://optuna_user:your_password@localhost:5432/"
-    storage_url = f"{db_prefix}{storage_name}"
+        # Build storage URL (hard-coded prefix)
+        db_prefix = "postgresql://optuna_user:your_password@localhost:5432/"
+        storage_url = f"{db_prefix}{storage_name}"
 
     # Discover all studies with this prefix
     from optuna.study import get_all_study_summaries
@@ -724,7 +743,9 @@ def evaluate_tuning(
         s.study_name for s in summaries if s.study_name.startswith(f"{study_prefix}_")
     ]
     if not study_names_all:
-        print(f"No studies found with prefix '{study_prefix}_' in {storage_url}")
+        print(
+            f"No studies found with prefix '{study_prefix}_' in the configured storage"
+        )
         return
 
         # Output directory: directly in main study folder

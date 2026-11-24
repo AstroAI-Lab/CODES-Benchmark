@@ -40,32 +40,57 @@ Retries append to the corresponding task log. A custom `fit` that uses
 output is forwarded to the parent and saved in the task log. Direct model fitting
 and tuning retain their existing progress behavior.
 
-## Running inside a Slurm allocation
+(slurm-training-array)=
+## Training with a Slurm array
 
-The local runner can execute inside one Slurm job. It does not submit jobs or distribute tasks across nodes. Use the logical CUDA indices visible within the allocation, without replacing Slurm's `CUDA_VISIBLE_DEVICES`. For a single allocated GPU:
+Prepare a manifest from the root of a workspace visible at the same path on
+every node. Use a fresh `training_id` and stage `datasets/<name>/data.hdf5`
+before starting the workers. CODES saves the training config and assigns a fixed,
+zero-based index to each model, modality, and ensemble member in the run.
 
-```yaml
-devices: ["cuda:0"]
-cpu_threads: 4
+```bash
+python run_training.py --slurm prepare --config config.yaml --manifest training.json
+mkdir -p logs
 ```
 
-An illustrative submission script, after installing and activating the environment:
+Save this launcher as `array-worker.sbatch`. Activate the project environment
+before submitting, or set `CODES_PYTHON` to its Python interpreter.
 
 ```bash
 #!/bin/bash
-#SBATCH --ntasks=1
-#SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=4
-#SBATCH --time=02:00:00
-
 set -euo pipefail
-cd /path/to/CODES-Benchmark
-srun python run_training.py --config configs/train_eval/my_run.yaml
+exec "${CODES_PYTHON:-python3}" "$@"
 ```
 
-Adjust the resource requests, account, partition, time limit, paths and environment for your cluster. A multi-GPU allocation can use multiple visible indices in `devices`, with corresponding CPU and memory resources.
+Use the indices printed by `prepare`. This example runs six assignments with
+at most two jobs active and one GPU per worker. Set the account, partition, QoS,
+memory, and wall time for your cluster and workload. [Slurm job arrays](https://slurm.schedmd.com/job_array.html)
 
-The single-task executor, `codes.train.tasks.execute_training_task`, is separate from local scheduling. It trains and saves one task without changing the parent's pending-task list or completion marker. This provides the execution boundary for future Slurm array workers; immutable manifests and independent-job coordination are not implemented yet. Tuning still uses its existing execution and storage mechanisms.
+```bash
+sbatch --chdir="$PWD" --array=0-5%2 --ntasks=1 --gres=gpu:1 \
+    --cpus-per-task=4 --time=02:00:00 --output='logs/train-%A_%a.log' \
+    array-worker.sbatch run_training.py --slurm worker --manifest training.json --device cuda:0
+```
+
+`cuda:0` selects the first GPU visible to the allocation. Use `--device cpu`
+for a CPU job and allocate at least the number of threads set by `cpu_threads`
+in the training config. Each worker takes its assignment from
+`SLURM_ARRAY_TASK_ID` and saves its checkpoint before recording completion.
+The shared filesystem must support POSIX file locking across nodes.
+
+```bash
+python run_training.py --slurm status --manifest training.json
+```
+
+After the running array has stopped, use the reported retry indices in a new
+`sbatch --array` submission with the original manifest. Unfinished assignments
+start from the beginning. A repeated completed assignment exits successfully
+when its checkpoint and metadata still exist. The run ID is owned by the
+manifest and can be evaluated with the usual `run_eval.py` workflow.
+
+To use local multiprocessing inside a single allocation, submit
+`run_training.py --config config.yaml` with a separate run ID and configure
+`devices` for the number of slots in that allocation.
 
 ## Modalities vs. evaluation switches
 

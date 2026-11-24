@@ -293,12 +293,40 @@ def parse_arguments():
         default="configs/tuning/sqlite_quickstart.yaml",
         help="Path to tuning config YAML.",
     )
+    parser.add_argument("--slurm", choices=("prepare", "worker", "status"))
+    parser.add_argument("--manifest", type=Path, help="Frozen Slurm study manifest")
+    parser.add_argument(
+        "--study", help="Surrogate to select from a multi-model tuning config"
+    )
+    parser.add_argument(
+        "--max-attempts", type=int, help="Maximum training attempts for the study"
+    )
+    parser.add_argument("--device", default="cpu", help="Device visible to this worker")
+    parser.add_argument("--cpu-threads", type=int, default=1)
     return parser.parse_args()
 
 
 def main():
     nice_print("Starting Optuna tuning")
     args = parse_arguments()
+
+    if args.slurm:
+        from codes.tune import slurm
+
+        if args.manifest is None:
+            raise ValueError("--manifest is required for Slurm tuning")
+        if args.slurm == "prepare":
+            slurm.prepare(
+                load_yaml_config(args.config),
+                args.manifest,
+                args.study,
+                args.max_attempts,
+            )
+        elif args.slurm == "worker":
+            slurm.worker(args.manifest, args.device, args.cpu_threads)
+        else:
+            slurm.status(args.manifest)
+        return
 
     master_cfg_path = Path(args.config).resolve()
     if not master_cfg_path.exists():

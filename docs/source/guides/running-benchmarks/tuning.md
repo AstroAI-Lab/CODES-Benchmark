@@ -104,6 +104,59 @@ Single-objective accuracy studies can still be resumed.
 Keep the GPU type, batch size, and workload fixed when comparing trial timings.
 Other work on the same GPU can affect measured times even when calls are synchronized.
 
+## Tuning with a Slurm array
+
+Use one array per study and a `tuning_id` dedicated to this campaign. Prepare
+the study once from a workspace visible at the same path on the submit host
+and all workers. Stage `datasets/<name>/data.hdf5` in that workspace before
+submitting. Set `CODES_OPTUNA_STORAGE_URL` in the
+environment used by `prepare`, `worker`, and `status`. It must point to an
+existing PostgreSQL database reachable from those hosts. Use your environment
+or PostgreSQL passfile for credentials. CODES stores the selected study settings
+in the manifest.
+
+```bash
+python run_tuning.py --slurm prepare --config tuning.yaml --study MultiONet --manifest tuning.json
+mkdir -p logs
+```
+
+Select a model with `--study` when the config lists several surrogates. Prepare
+from one process per study. Reuse the original manifest to resume the study.
+The `--max-attempts` option sets the maximum number of trial attempts that can
+train and defaults to twice the target.
+
+Using the launcher from {ref}`the training guide <slurm-training-array>`,
+this example starts four workers with one GPU and four CPU threads each. Set
+the scheduler options for your cluster.
+
+```bash
+sbatch --chdir="$PWD" --array=0-3 --ntasks=1 --gres=gpu:1 \
+    --cpus-per-task=4 --time=02:00:00 --output='logs/tune-%A_%a.log' \
+    array-worker.sbatch run_tuning.py --slurm worker --manifest tuning.json \
+    --device cuda:0 --cpu-threads 4
+```
+
+Workers sample and train independently against the shared study. Only completed
+trials with finite objectives and no recorded exception count toward the target.
+Trials already training can finish after the target is reached. The attempt cap
+also counts failed or pruned work. PostgreSQL heartbeats let a later worker mark
+an interrupted trial failed once its heartbeat has expired. The next worker then
+resumes sampling from the same study within the remaining budget. [Optuna RDBStorage](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.storages.RDBStorage.html)
+
+```bash
+python run_tuning.py --slurm status --manifest tuning.json
+```
+
+Check `valid` against `target` after the array finishes. Use the original
+manifest for another array when the study still has budget. Keep the GPU model,
+software, and inference workload consistent for every worker in a timed study.
+Use the same storage environment when generating Pareto plots. Pass the
+`tuning_id` as the study prefix.
+
+```bash
+python -m codes.tune.evaluate_tuning --study_name my_tuning_id --chosen_indices ''
+```
+
 ## Capturing the best hyperparameters
 
 CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect studies:

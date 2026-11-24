@@ -22,7 +22,7 @@ from codes.utils import (
 from codes.utils.data_utils import download_data
 
 
-def main(args):
+def _run_local(args, config):
     """
     Main function to train the models. If the training is already completed, it will
     print a message and exit. Otherwise, it will create a task list for each surrogate
@@ -32,8 +32,6 @@ def main(args):
     Args:
         args (Namespace): The command line arguments.
     """
-    config = load_and_save_config(config_path=args.config, save=False)
-
     if torch.cuda.is_available() and config.get("verbose", False):
         nice_print(f"Visible CUDA devices: count={torch.cuda.device_count()}")
 
@@ -87,10 +85,44 @@ def main(args):
     print(f"Total training time: {timedelta(seconds=int(elapsed_time))} \n")
 
 
+def main(args):
+    if getattr(args, "slurm", None):
+        from codes.train.slurm import prepare_training, run_worker, training_status
+
+        if not args.manifest:
+            raise ValueError("--manifest is required for Slurm training")
+        if args.slurm == "prepare":
+            prepare_training(args.config, args.manifest)
+        elif args.slurm == "worker":
+            run_worker(args.manifest, args.device)
+        else:
+            training_status(args.manifest)
+        return
+
+    from codes.train.slurm import training_lock
+
+    config = load_and_save_config(config_path=args.config, save=False)
+    with training_lock(config["training_id"]):
+        run_dir = os.path.join("trained", config["training_id"])
+        if any(
+            os.path.exists(os.path.join(run_dir, name))
+            for name in ("slurm_manifest.json", "slurm_initializing.json")
+        ):
+            raise RuntimeError(
+                "This training run belongs to a Slurm manifest; use its workers or a new training_id"
+            )
+        _run_local(args, config)
+
+
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument(
         "--config", default="config.yaml", type=str, help="Path to the config file."
+    )
+    parser.add_argument("--slurm", choices=("prepare", "worker", "status"))
+    parser.add_argument("--manifest", help="Path to the fixed Slurm training manifest")
+    parser.add_argument(
+        "--device", default="cpu", help="Logical device used by a Slurm worker"
     )
     args = parser.parse_args()
     main(args)

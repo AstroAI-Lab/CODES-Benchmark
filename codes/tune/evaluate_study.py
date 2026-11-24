@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -41,9 +42,27 @@ def load_study_config(study_name: str) -> dict:
     Load the YAML config used by the study (optuna_config.yaml).
     """
 
-    config_path = os.path.join("tuned", "studies", study_name, "optuna_config.yaml")
-    with open(config_path) as file:
-        return yaml.safe_load(file)
+    legacy_path = Path("tuned") / "studies" / study_name / "optuna_config.yaml"
+    if legacy_path.exists():
+        with legacy_path.open(encoding="utf-8") as handle:
+            return yaml.safe_load(handle)
+
+    prefix, separator, model = study_name.rpartition("_")
+    config_path = (
+        Path("tuned") / (prefix if separator else study_name) / "optuna_config.yaml"
+    )
+    with config_path.open(encoding="utf-8") as handle:
+        config = yaml.safe_load(handle)
+    if "surrogates" in config:
+        matches = [
+            item
+            for item in config["surrogates"]
+            if item["name"].lower() == model.lower()
+        ]
+        if len(matches) != 1:
+            raise ValueError(f"Cannot identify surrogate for study {study_name!r}")
+        config["surrogate"] = {"name": matches[0]["name"]}
+    return config
 
 
 def load_model_test_losses(model_path: str) -> np.ndarray:

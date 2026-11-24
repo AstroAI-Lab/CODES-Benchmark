@@ -10,6 +10,9 @@ affecting results".
 
 ### Added
 
+- Optional Slurm arrays for fixed training assignments and shared PostgreSQL
+  Optuna studies, with progress inspection and restart support.
+
 - Publish versioned benchmark tables for the four A&A datasets, with absolute
   log-error distributions, catastrophic-error recall curves, per-seed
   downloads, and links to the measured code revision.
