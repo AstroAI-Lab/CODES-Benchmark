@@ -10,6 +10,9 @@ affecting results".
 
 ### Added
 
+- Publish versioned benchmark tables for the four A&A datasets, with absolute
+  log-error distributions, catastrophic-error recall curves, per-seed
+  downloads, and links to the measured code revision.
 - Registry-driven training smoke and end-to-end tests automatically include new
   surrogates. Common interface tests report unexpected failures instead of skipping
   them; numerical golden references remain explicitly maintained.

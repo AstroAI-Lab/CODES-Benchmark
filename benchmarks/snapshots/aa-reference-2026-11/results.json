@@ -1,0 +1,1781 @@
+{
+  "dataset_provenance": {
+    "cloud": {
+      "dataset_sha256": "a7c754684deb064e4a39306056f617d94cb1fa25a3749308feb980af5af28ea7",
+      "hyperparameters_sha256": "bc5de530583507c636727b95f4b483a24b07ca5497ead54db4bf79ca3187c5c7"
+    },
+    "cloud_parametric": {
+      "dataset_sha256": "c98262fcfc71bf73a6723d37a9c021b588e775ee4d18cd8fede7866a2bc2409c",
+      "hyperparameters_sha256": "2494c9bd11ce18a322970da594f86e104e7910657810f14b785ee2fe798ac376"
+    },
+    "primordial": {
+      "dataset_sha256": "e33bd114e21b3336c3be5a1d1d6773d4b7547a44f738004721d703e3eff25b7c",
+      "hyperparameters_sha256": "aaa9cf36916c4e6b847c900124ab7722902a4ec2ea0ee096c71320a1ed0f5194"
+    },
+    "primordial_parametric": {
+      "dataset_sha256": "6f11750e3bd9208743f5f259e513f025e2d3c8da2fe066a2babbf611477700b5",
+      "hyperparameters_sha256": "7a3f55b8b1980ef0636311b9763d4b7bf55a8c7ca0b9eef57ea8e81619fdb327"
+    }
+  },
+  "datasets": {
+    "cloud": {
+      "FullyConnected": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.015399076044559479,
+            "sample_std": 0.000501818481363408
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.020970672989885013,
+            "sample_std": 0.0014716869050182494
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.03799442606240372,
+            "sample_std": 0.004526943263138329
+          },
+          "iterative_mlae_dex": {
+            "mean": 44.35546020666758,
+            "sample_std": 76.23673755996683
+          },
+          "lae99_dex": {
+            "mean": 0.280673215786616,
+            "sample_std": 0.006768605523187614
+          },
+          "mlae_dex": {
+            "mean": 0.021270595490932465,
+            "sample_std": 0.001357685853162835
+          },
+          "mre_percent": {
+            "mean": 1.121402345597744,
+            "sample_std": 0.048652204556475905
+          },
+          "parameters_k": {
+            "mean": 24.219,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.7281732161839803,
+            "sample_std": 0.02522420443672962
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "31239e93870c1051f3286bcc989dca57ca3a42c4ceebf27a76b5829fcaf1fc44",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_FullyConnected_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.01597573049366474,
+              "ensemble_uncertainty_dex": 0.02240176685154438,
+              "inference_us_per_prediction": 0.04060595703173186,
+              "iterative_mlae_dex": 0.26286983489990234,
+              "lae99_dex": 0.27450376749038696,
+              "mlae_dex": 0.022787753492593765,
+              "mre_percent": 1.1770525947213173,
+              "parameters_k": 24.219,
+              "uq_pearson": 0.7507807612419128
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0066553163575008515,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 4.302163012306029e-05
+            },
+            "training_id": "cloud_FullyConnected_42"
+          },
+          {
+            "config_sha256": "ff1516df2e2db04fbc00546701ca55830289f524a4a9d9c10d851e3b4d555076",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_FullyConnected_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.015159983187913895,
+              "ensemble_uncertainty_dex": 0.019461501389741898,
+              "inference_us_per_prediction": 0.04061015835344391,
+              "iterative_mlae_dex": 132.38601684570312,
+              "lae99_dex": 0.28791335225105286,
+              "mlae_dex": 0.020854046568274498,
+              "mre_percent": 1.1002348735928535,
+              "parameters_k": 24.219,
+              "uq_pearson": 0.7009655237197876
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.006656004954129458,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 1.8139551817086312e-05
+            },
+            "training_id": "cloud_FullyConnected_142"
+          },
+          {
+            "config_sha256": "d0c87d094aa1ebb4367d5343e6c50c65f54f679a57a7c8953ba2cf1284f65b4d",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_FullyConnected_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.0150615144520998,
+              "ensemble_uncertainty_dex": 0.02104875072836876,
+              "inference_us_per_prediction": 0.03276716280203538,
+              "iterative_mlae_dex": 0.41749393939971924,
+              "lae99_dex": 0.2796025276184082,
+              "mlae_dex": 0.02016998641192913,
+              "mre_percent": 1.0869195684790611,
+              "parameters_k": 24.219,
+              "uq_pearson": 0.7327733635902405
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.005370537983253598,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 5.3374345441823896e-05
+            },
+            "training_id": "cloud_FullyConnected_242"
+          }
+        ]
+      },
+      "LatentNeuralODE": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 1.9142810901006062,
+            "sample_std": 2.9584645998572692e-05
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.0013728511209289234,
+            "sample_std": 0.0001045719302749161
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.2492151839364277,
+            "sample_std": 0.02991340081486544
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.914266029993693,
+            "sample_std": 4.941456323034608e-05
+          },
+          "lae99_dex": {
+            "mean": 4.537598133087158,
+            "sample_std": 0.0006338425074170166
+          },
+          "mlae_dex": {
+            "mean": 1.914266029993693,
+            "sample_std": 4.941456323034608e-05
+          },
+          "mre_percent": {
+            "mean": 99.96265172958374,
+            "sample_std": 3.318646170395626e-05
+          },
+          "parameters_k": {
+            "mean": 286.161,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.17249028384685516,
+            "sample_std": 0.05720182245480386
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "10fd21b3acb04af9e8aa7f3487f07c8ab7f14ea813588f15228fb6201a13d0f7",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentNeuralODE_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.9142693281173706,
+              "ensemble_uncertainty_dex": 0.0014836336486041546,
+              "inference_us_per_prediction": 0.26599692960358967,
+              "iterative_mlae_dex": 1.9142343997955322,
+              "lae99_dex": 4.537482261657715,
+              "mlae_dex": 1.9142343997955322,
+              "mre_percent": 99.96262192726135,
+              "parameters_k": 286.161,
+              "uq_pearson": 0.23842862248420715
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.04359689676202834,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.00089617385872804
+            },
+            "training_id": "cloud_LatentNeuralODE_42"
+          },
+          {
+            "config_sha256": "8520a1f7d238dada34651eca92f99d0dea97d59727f132a80ca75f1ca7da351f",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentNeuralODE_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.9143147468566895,
+              "ensemble_uncertainty_dex": 0.0012758580269291997,
+              "inference_us_per_prediction": 0.26696989022404444,
+              "iterative_mlae_dex": 1.9143229722976685,
+              "lae99_dex": 4.5382819175720215,
+              "mlae_dex": 1.9143229722976685,
+              "mre_percent": 99.9626874923706,
+              "parameters_k": 286.161,
+              "uq_pearson": 0.1428602933883667
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.043756365007720885,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.0007855578646260714
+            },
+            "training_id": "cloud_LatentNeuralODE_142"
+          },
+          {
+            "config_sha256": "9af024364d5ce474a7dceb3d4c13c9809115436486e3efba07297751c2fbe7c9",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentNeuralODE_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.9142591953277588,
+              "ensemble_uncertainty_dex": 0.0013590616872534156,
+              "inference_us_per_prediction": 0.214678731981649,
+              "iterative_mlae_dex": 1.9142407178878784,
+              "lae99_dex": 4.537030220031738,
+              "mlae_dex": 1.9142407178878784,
+              "mre_percent": 99.96264576911926,
+              "parameters_k": 286.161,
+              "uq_pearson": 0.13618193566799164
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.03518584417179227,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 7.732933065035993e-05
+            },
+            "training_id": "cloud_LatentNeuralODE_242"
+          }
+        ]
+      },
+      "LatentPoly": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 1.605496883392334,
+            "sample_std": 0.003961888800690732
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.44025306900342304,
+            "sample_std": 0.014092696074504064
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.06222789109894202,
+            "sample_std": 0.010442734468260065
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.7457456191380818,
+            "sample_std": 0.032997278957180916
+          },
+          "lae99_dex": {
+            "mean": 4.809834639231364,
+            "sample_std": 0.21362177563736795
+          },
+          "mlae_dex": {
+            "mean": 1.6468701362609863,
+            "sample_std": 0.022010172036121448
+          },
+          "mre_percent": {
+            "mean": 99.86187020937602,
+            "sample_std": 0.009947478316263764
+          },
+          "parameters_k": {
+            "mean": 192.612,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.05916077643632889,
+            "sample_std": 0.023647234495844636
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "061255376c0ce7e32fde2cdda5fc49d46e8d0a977732fe03673a781de46318dd",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentPoly_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.60837984085083,
+              "ensemble_uncertainty_dex": 0.42852139472961426,
+              "inference_us_per_prediction": 0.06814884937290486,
+              "iterative_mlae_dex": 1.7592707872390747,
+              "lae99_dex": 4.7553558349609375,
+              "mlae_dex": 1.6444083452224731,
+              "mre_percent": 99.85981583595276,
+              "parameters_k": 192.612,
+              "uq_pearson": 0.07517348974943161
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.011169596412219106,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 1.953173117651892e-05
+            },
+            "training_id": "cloud_LatentPoly_42"
+          },
+          {
+            "config_sha256": "d8759926786b4229b56f19c640e03e9e2388a345200a56751dcf96e0455388eb",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentPoly_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.6071316003799438,
+              "ensemble_uncertainty_dex": 0.4558851718902588,
+              "inference_us_per_prediction": 0.0683645210089645,
+              "iterative_mlae_dex": 1.708134651184082,
+              "lae99_dex": 5.0454206466674805,
+              "mlae_dex": 1.6700077056884766,
+              "mre_percent": 99.87268447875977,
+              "parameters_k": 192.612,
+              "uq_pearson": 0.032000139355659485
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.01120494499336928,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 4.173300828471864e-05
+            },
+            "training_id": "cloud_LatentPoly_142"
+          },
+          {
+            "config_sha256": "507f29a0ab51a2beaf8e3782c5115309caf9b50137636c2f0d7a1bbfba1d38f9",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_LatentPoly_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.600979208946228,
+              "ensemble_uncertainty_dex": 0.4363526403903961,
+              "inference_us_per_prediction": 0.05017030291495671,
+              "iterative_mlae_dex": 1.7698314189910889,
+              "lae99_dex": 4.628727436065674,
+              "mlae_dex": 1.6261943578720093,
+              "mre_percent": 99.85311031341553,
+              "parameters_k": 192.612,
+              "uq_pearson": 0.07030870020389557
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.008222912647761404,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 3.474868456535911e-05
+            },
+            "training_id": "cloud_LatentPoly_242"
+          }
+        ]
+      },
+      "MultiONet": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.023960051437218983,
+            "sample_std": 0.00021662525898553107
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.030864710609118145,
+            "sample_std": 0.00012016605243300466
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.26292315409048095,
+            "sample_std": 0.004432764387521184
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.16320822636286417,
+            "sample_std": 0.011744029471301792
+          },
+          "lae99_dex": {
+            "mean": 0.32862187425295514,
+            "sample_std": 0.0195694472676491
+          },
+          "mlae_dex": {
+            "mean": 0.034189396227399506,
+            "sample_std": 0.0026444205151014504
+          },
+          "mre_percent": {
+            "mean": 4.025651887059212,
+            "sample_std": 0.3154903964113931
+          },
+          "parameters_k": {
+            "mean": 458.6,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.6449423432350159,
+            "sample_std": 0.010765016373825416
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "7ad8a905b70616a816f34fc2bb92f0c702d70d5e0417fa0668709562f19a8df0",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_MultiONet_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.024015456438064575,
+              "ensemble_uncertainty_dex": 0.03084789216518402,
+              "inference_us_per_prediction": 0.25820158762360684,
+              "iterative_mlae_dex": 0.1681247353553772,
+              "lae99_dex": 0.3430938720703125,
+              "mlae_dex": 0.03568055480718613,
+              "mre_percent": 4.22135517001152,
+              "parameters_k": 458.6,
+              "uq_pearson": 0.6572646498680115
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.042319240211509165,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.006521255151639828
+            },
+            "training_id": "cloud_MultiONet_42"
+          },
+          {
+            "config_sha256": "5568302db10c052b3610aed5a99898a2f8ccb7496d4cc4ed0e7d6f87800346e6",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_MultiONet_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.02414359338581562,
+              "ensemble_uncertainty_dex": 0.030753839761018753,
+              "inference_us_per_prediction": 0.26699551778929015,
+              "iterative_mlae_dex": 0.17169497907161713,
+              "lae99_dex": 0.3364153206348419,
+              "mlae_dex": 0.035751476883888245,
+              "mre_percent": 4.193900525569916,
+              "parameters_k": 458.6,
+              "uq_pearson": 0.6373648047447205
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.04376056536566466,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.0064179581061248785
+            },
+            "training_id": "cloud_MultiONet_142"
+          },
+          {
+            "config_sha256": "1fbfd9003d769d29a52e602af5c04e267aa9e9ef97032ed301e19181884e9b6b",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_MultiONet_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.023721104487776756,
+              "ensemble_uncertainty_dex": 0.030992399901151657,
+              "inference_us_per_prediction": 0.26357235685854585,
+              "iterative_mlae_dex": 0.1498049646615982,
+              "lae99_dex": 0.30635643005371094,
+              "mlae_dex": 0.031136156991124153,
+              "mre_percent": 3.661699965596199,
+              "parameters_k": 458.6,
+              "uq_pearson": 0.6401975750923157
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.043199509289115666,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.006532216631481242
+            },
+            "training_id": "cloud_MultiONet_242"
+          }
+        ]
+      }
+    },
+    "cloud_parametric": {
+      "FullyConnected": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.07244694729646046,
+            "sample_std": 0.002802007984709985
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.11344583829243977,
+            "sample_std": 0.0055132207347691605
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.17642034657143446,
+            "sample_std": 0.009375164866008699
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.747894803682963,
+            "sample_std": 0.03895019220458091
+          },
+          "lae99_dex": {
+            "mean": 0.6636753479639689,
+            "sample_std": 0.01576166080353093
+          },
+          "mlae_dex": {
+            "mean": 0.11140839010477066,
+            "sample_std": 0.003393134101713547
+          },
+          "mre_percent": {
+            "mean": 17.081632713476818,
+            "sample_std": 0.6102892506963932
+          },
+          "parameters_k": {
+            "mean": 360.798,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.48411495486895245,
+            "sample_std": 0.02211170828900758
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "027794da2e87b9b89460c72a75c7acabffa7854fd8e5c06eef1cc8ac0a379efd",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_FullyConnected_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07509588450193405,
+              "ensemble_uncertainty_dex": 0.11783547699451447,
+              "inference_us_per_prediction": 0.18370338253076846,
+              "iterative_mlae_dex": 0.7650234699249268,
+              "lae99_dex": 0.6749038696289062,
+              "mlae_dex": 0.1149786189198494,
+              "mre_percent": 17.734922468662262,
+              "parameters_k": 360.798,
+              "uq_pearson": 0.47509756684303284
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.030108984396792948,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.0001170398432042955
+            },
+            "training_id": "cloud_parametric_FullyConnected_42"
+          },
+          {
+            "config_sha256": "7e4a772cffcc930395472d3f19d0d1c6b74779c088e06510be4278a79a9653e0",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_FullyConnected_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.06951356679201126,
+              "ensemble_uncertainty_dex": 0.10725803673267365,
+              "inference_us_per_prediction": 0.17971509247631873,
+              "iterative_mlae_dex": 0.7033155560493469,
+              "lae99_dex": 0.6456566452980042,
+              "mlae_dex": 0.10822561383247375,
+              "mre_percent": 16.526159644126892,
+              "parameters_k": 360.798,
+              "uq_pearson": 0.4679368734359741
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.029455303656868638,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.00048813963795349164
+            },
+            "training_id": "cloud_parametric_FullyConnected_142"
+          },
+          {
+            "config_sha256": "baeb73d1a84dddeb73f6df17ade5eb76250e034601b9e60f78744d01f31d1874",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_FullyConnected_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.0727313905954361,
+              "ensemble_uncertainty_dex": 0.11524400115013123,
+              "inference_us_per_prediction": 0.16584256470721623,
+              "iterative_mlae_dex": 0.7753453850746155,
+              "lae99_dex": 0.6704655289649963,
+              "mlae_dex": 0.11102093756198883,
+              "mre_percent": 16.983816027641296,
+              "parameters_k": 360.798,
+              "uq_pearson": 0.5093104243278503
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.02718159635551274,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.003549907573469548
+            },
+            "training_id": "cloud_parametric_FullyConnected_242"
+          }
+        ]
+      },
+      "LatentNeuralODE": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 1.5095664660135906,
+            "sample_std": 0.0015570354520252235
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.2575896183649699,
+            "sample_std": 0.002320870240867493
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.299784105414294,
+            "sample_std": 0.005395240552564069
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.8590306838353474,
+            "sample_std": 0.017353837927417983
+          },
+          "lae99_dex": {
+            "mean": 4.837416966756185,
+            "sample_std": 0.050434467119553336
+          },
+          "mlae_dex": {
+            "mean": 1.5216948588689168,
+            "sample_std": 0.007554182263486361
+          },
+          "mre_percent": {
+            "mean": 99.77361957232158,
+            "sample_std": 0.04527170899152938
+          },
+          "parameters_k": {
+            "mean": 233.779,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": -0.061616538713375725,
+            "sample_std": 0.026225539644510305
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "ae73610b6c793df4dc0f9ebb1565107e8bb48cdfafed4e95d4d94df7be43fe8b",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentNeuralODE_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.5113099813461304,
+              "ensemble_uncertainty_dex": 0.2600192129611969,
+              "inference_us_per_prediction": 0.3003855679091009,
+              "iterative_mlae_dex": 1.878148078918457,
+              "lae99_dex": 4.7905778884887695,
+              "mlae_dex": 1.5285167694091797,
+              "mre_percent": 99.78210926055908,
+              "parameters_k": 233.779,
+              "uq_pearson": -0.0665544718503952
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.04923319458030164,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.00040068643520555565
+            },
+            "training_id": "cloud_parametric_LatentNeuralODE_42"
+          },
+          {
+            "config_sha256": "1225370e64bc9bf239d341bc2548dc672e3edd6844368e6db74788192659edae",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentNeuralODE_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.508314609527588,
+              "ensemble_uncertainty_dex": 0.25539541244506836,
+              "inference_us_per_prediction": 0.3048534116686718,
+              "iterative_mlae_dex": 1.854672908782959,
+              "lae99_dex": 4.83086633682251,
+              "mlae_dex": 1.5135762691497803,
+              "mre_percent": 99.81404542922974,
+              "parameters_k": 233.779,
+              "uq_pearson": -0.033273037523031235
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.049965474172495306,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.0006996732698051084
+            },
+            "training_id": "cloud_parametric_LatentNeuralODE_142"
+          },
+          {
+            "config_sha256": "fb62a5e4c6b16bfba7d92053e88e97265fee3588148008e0894e297c62b4e74f",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentNeuralODE_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.5090748071670532,
+              "ensemble_uncertainty_dex": 0.2573542296886444,
+              "inference_us_per_prediction": 0.29411333666510925,
+              "iterative_mlae_dex": 1.8442710638046265,
+              "lae99_dex": 4.890806674957275,
+              "mlae_dex": 1.5229915380477905,
+              "mre_percent": 99.7247040271759,
+              "parameters_k": 233.779,
+              "uq_pearson": -0.08502210676670074
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0482051758794114,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.0009632282107548041
+            },
+            "training_id": "cloud_parametric_LatentNeuralODE_242"
+          }
+        ]
+      },
+      "LatentPoly": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 1.2510523001352947,
+            "sample_std": 0.004577187802878891
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.535529613494873,
+            "sample_std": 0.013896069357836268
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.026039546308252948,
+            "sample_std": 0.0001228706262117333
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.9899245103200276,
+            "sample_std": 0.10392367707995082
+          },
+          "lae99_dex": {
+            "mean": 4.526680946350098,
+            "sample_std": 0.061875761225408554
+          },
+          "mlae_dex": {
+            "mean": 1.3316710789998372,
+            "sample_std": 0.012042791202555221
+          },
+          "mre_percent": {
+            "mean": 99.47005311648051,
+            "sample_std": 0.011381101250400597
+          },
+          "parameters_k": {
+            "mean": 17.138,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.12420572092135747,
+            "sample_std": 0.011538964199389644
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "07f8c3cbce0736705a4589ac39383a6aedc56245eab892192661bcf4996b4e49",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentPoly_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.2467645406723022,
+              "ensemble_uncertainty_dex": 0.5234819054603577,
+              "inference_us_per_prediction": 0.026179400719861343,
+              "iterative_mlae_dex": 2.0875141620635986,
+              "lae99_dex": 4.458831310272217,
+              "mlae_dex": 1.3178014755249023,
+              "mre_percent": 99.45694208145142,
+              "parameters_k": 17.138,
+              "uq_pearson": 0.1355125606060028
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0042908037779852744,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 6.167952671675709e-05
+            },
+            "training_id": "cloud_parametric_LatentPoly_42"
+          },
+          {
+            "config_sha256": "b898b78c1fdeead9bc12774cac209cd6031ec33c1e851ac3a9704a06b02204e8",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentPoly_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.255872368812561,
+              "ensemble_uncertainty_dex": 0.5323752164840698,
+              "inference_us_per_prediction": 0.02594893702201868,
+              "iterative_mlae_dex": 1.8806538581848145,
+              "lae99_dex": 4.5799946784973145,
+              "mlae_dex": 1.3377373218536377,
+              "mre_percent": 99.47738647460938,
+              "parameters_k": 17.138,
+              "uq_pearson": 0.11244785785675049
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.004253030777908862,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 3.905105169448523e-05
+            },
+            "training_id": "cloud_parametric_LatentPoly_142"
+          },
+          {
+            "config_sha256": "de1c687587fe6bf8464a18f144220e972e38da1078d301ba7e721c086b57306c",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_LatentPoly_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 1.2505199909210205,
+              "ensemble_uncertainty_dex": 0.5507317185401917,
+              "inference_us_per_prediction": 0.025990301182878824,
+              "iterative_mlae_dex": 2.00160551071167,
+              "lae99_dex": 4.541216850280762,
+              "mlae_dex": 1.3394744396209717,
+              "mre_percent": 99.47583079338074,
+              "parameters_k": 17.138,
+              "uq_pearson": 0.12465674430131912
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.004259810363873839,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 2.5310280716359612e-05
+            },
+            "training_id": "cloud_parametric_LatentPoly_242"
+          }
+        ]
+      },
+      "MultiONet": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.07827577491601308,
+            "sample_std": 0.00039852654038579233
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.07628630350033443,
+            "sample_std": 0.0007677331240631899
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.23267103022145125,
+            "sample_std": 0.0017978328570003998
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.6714954177538554,
+            "sample_std": 0.09423257489249498
+          },
+          "lae99_dex": {
+            "mean": 0.8442912101745605,
+            "sample_std": 0.02125624588401539
+          },
+          "mlae_dex": {
+            "mean": 0.10075446714957555,
+            "sample_std": 0.0028327132303530493
+          },
+          "mre_percent": {
+            "mean": 10.796045263608297,
+            "sample_std": 0.37772299067290094
+          },
+          "parameters_k": {
+            "mean": 371.94,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.558169444402059,
+            "sample_std": 0.004920546771998899
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "269370b33d0be563f74295156cb23eafe810d496c03a50ffdb15b2b72bbd3fe5",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_MultiONet_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07786113023757935,
+              "ensemble_uncertainty_dex": 0.07606396824121475,
+              "inference_us_per_prediction": 0.2330561892127776,
+              "iterative_mlae_dex": 0.6162769198417664,
+              "lae99_dex": 0.821446418762207,
+              "mlae_dex": 0.0975598692893982,
+              "mre_percent": 10.364101082086563,
+              "parameters_k": 371.94,
+              "uq_pearson": 0.5553430914878845
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.03819790941197425,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.005591808421612222
+            },
+            "training_id": "cloud_parametric_MultiONet_42"
+          },
+          {
+            "config_sha256": "3468b083b7116912c62f478715dcc7a122f73fcadd2dc0376a3ccb46f99c49bb",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_MultiONet_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07865594327449799,
+              "ensemble_uncertainty_dex": 0.07714066654443741,
+              "inference_us_per_prediction": 0.23424506964204042,
+              "iterative_mlae_dex": 0.6179075837135315,
+              "lae99_dex": 0.8479409217834473,
+              "mlae_dex": 0.10174334794282913,
+              "mre_percent": 10.959645360708237,
+              "parameters_k": 371.94,
+              "uq_pearson": 0.5638511776924133
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.038392766914330426,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.005704790953953737
+            },
+            "training_id": "cloud_parametric_MultiONet_142"
+          },
+          {
+            "config_sha256": "5c512411a061447deec82e982286b5542586743668fc7cd7bb8797173bdb5c68",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: cloud_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 2\n  tolerance: 1.0e-25\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: cloud_parametric_MultiONet_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07831025123596191,
+              "ensemble_uncertainty_dex": 0.0756542757153511,
+              "inference_us_per_prediction": 0.23071183180953575,
+              "iterative_mlae_dex": 0.7803017497062683,
+              "lae99_dex": 0.8634862899780273,
+              "mlae_dex": 0.10296018421649933,
+              "mre_percent": 11.06438934803009,
+              "parameters_k": 371.94,
+              "uq_pearson": 0.5553140640258789
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.03781366923358291,
+              "num_predictions": 163900.0,
+              "std_inference_time_per_run": 0.005479598549801693
+            },
+            "training_id": "cloud_parametric_MultiONet_242"
+          }
+        ]
+      }
+    },
+    "primordial": {
+      "FullyConnected": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.07298409690459569,
+            "sample_std": 0.0008627950383264138
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.07803395887215932,
+            "sample_std": 0.0009417380132039076
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.342341774201439,
+            "sample_std": 8.496364461028172e-05
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.24752374490102133,
+            "sample_std": 0.003125615586077092
+          },
+          "lae99_dex": {
+            "mean": 0.7115948994954427,
+            "sample_std": 0.02471004114940035
+          },
+          "mlae_dex": {
+            "mean": 0.09670733412106831,
+            "sample_std": 0.00309405841898231
+          },
+          "mre_percent": {
+            "mean": 11.913708100716272,
+            "sample_std": 0.3417768237666393
+          },
+          "parameters_k": {
+            "mean": 895.83,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.47133376200993854,
+            "sample_std": 0.0024108251083327504
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "ffb91a778c0641ddb375618f2a0b8aa0ad98fc55561d14556321b10a7bb80f96",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_FullyConnected_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07219762355089188,
+              "ensemble_uncertainty_dex": 0.07751142233610153,
+              "inference_us_per_prediction": 0.34243599942221403,
+              "iterative_mlae_dex": 0.24583223462104797,
+              "lae99_dex": 0.6931168437004089,
+              "mlae_dex": 0.09387300163507462,
+              "mre_percent": 11.57439798116684,
+              "parameters_k": 895.83,
+              "uq_pearson": 0.47042444348335266
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.014074119576252996,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 5.250143705047419e-06
+            },
+            "training_id": "primordial_FullyConnected_42"
+          },
+          {
+            "config_sha256": "3167e063bb58141337f55e00c8b08a69184d54e85fad2b609168a37ee23befbf",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_FullyConnected_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07284770160913467,
+              "ensemble_uncertainty_dex": 0.07912111282348633,
+              "inference_us_per_prediction": 0.3422709967070905,
+              "iterative_mlae_dex": 0.2511305809020996,
+              "lae99_dex": 0.7396622896194458,
+              "mlae_dex": 0.10000814497470856,
+              "mre_percent": 12.257899343967438,
+              "parameters_k": 895.83,
+              "uq_pearson": 0.4695098400115967
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.01406733796466142,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 7.937164079952916e-06
+            },
+            "training_id": "primordial_FullyConnected_142"
+          },
+          {
+            "config_sha256": "5b1c2b29594e2b5b17dbc307b3094f1ff1c14fd0acb1459e070111643a65cfca",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_FullyConnected_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.07390696555376053,
+              "ensemble_uncertainty_dex": 0.0774693414568901,
+              "inference_us_per_prediction": 0.3423183264750126,
+              "iterative_mlae_dex": 0.24560841917991638,
+              "lae99_dex": 0.7020055651664734,
+              "mlae_dex": 0.09624085575342178,
+              "mre_percent": 11.908826977014542,
+              "parameters_k": 895.83,
+              "uq_pearson": 0.47406700253486633
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.014069283218123018,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 7.229696657597298e-06
+            },
+            "training_id": "primordial_FullyConnected_242"
+          }
+        ]
+      },
+      "LatentNeuralODE": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.651284376780192,
+            "sample_std": 0.004767737161756578
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.14414979020754495,
+            "sample_std": 0.000722146774737467
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.4413194747812388,
+            "sample_std": 0.0003069983462187867
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.255412220954895,
+            "sample_std": 0.012300167900888838
+          },
+          "lae99_dex": {
+            "mean": 3.018445094426473,
+            "sample_std": 0.011925517415876228
+          },
+          "mlae_dex": {
+            "mean": 0.6678841511408488,
+            "sample_std": 0.0037278823614892327
+          },
+          "mre_percent": {
+            "mean": 80.9397002061208,
+            "sample_std": 0.5227645454769031
+          },
+          "parameters_k": {
+            "mean": 1417.6290000000001,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.289738933245341,
+            "sample_std": 0.01732722399127015
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "98340f8e98dd2022678d40250ff7a2852e0c9eefb01cb1cde7b020a948a66c3a",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentNeuralODE_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.656788170337677,
+              "ensemble_uncertainty_dex": 0.14427945017814636,
+              "inference_us_per_prediction": 0.44096528479960856,
+              "iterative_mlae_dex": 1.2504827976226807,
+              "lae99_dex": 3.011754035949707,
+              "mlae_dex": 0.6691060066223145,
+              "mre_percent": 80.35017251968384,
+              "parameters_k": 1417.6290000000001,
+              "uq_pearson": 0.2955632507801056
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.018123673205263913,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 0.0014959408335201592
+            },
+            "training_id": "primordial_LatentNeuralODE_42"
+          },
+          {
+            "config_sha256": "dd1b5729e74f070e9ed801240d6a4e1df801a678337b510f5d26ecaca70ed433",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentNeuralODE_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.6486443281173706,
+              "ensemble_uncertainty_dex": 0.1433715969324112,
+              "inference_us_per_prediction": 0.44148391760758826,
+              "iterative_mlae_dex": 1.2694125175476074,
+              "lae99_dex": 3.0113675594329834,
+              "mlae_dex": 0.6708477735519409,
+              "mre_percent": 81.12210035324097,
+              "parameters_k": 1417.6290000000001,
+              "uq_pearson": 0.3034035861492157
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.018144989013671876,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 0.0015505831832510605
+            },
+            "training_id": "primordial_LatentNeuralODE_142"
+          },
+          {
+            "config_sha256": "393cadbf957709f782096b2eb96ee3a6b073aee96dac63a7b4fa418e58b72119",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentNeuralODE_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.6484206318855286,
+              "ensemble_uncertainty_dex": 0.14479832351207733,
+              "inference_us_per_prediction": 0.4415092219365195,
+              "iterative_mlae_dex": 1.246341347694397,
+              "lae99_dex": 3.0322136878967285,
+              "mlae_dex": 0.663698673248291,
+              "mre_percent": 81.34682774543762,
+              "parameters_k": 1417.6290000000001,
+              "uq_pearson": 0.27024996280670166
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.01814602902159095,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 0.001529430138319333
+            },
+            "training_id": "primordial_LatentNeuralODE_242"
+          }
+        ]
+      },
+      "LatentPoly": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.8211431304613749,
+            "sample_std": 0.021028617323001958
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.30462169647216797,
+            "sample_std": 0.023655189684329034
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.11047111074111612,
+            "sample_std": 0.00014807307799179578
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.3078042268753052,
+            "sample_std": 0.11163611868611734
+          },
+          "lae99_dex": {
+            "mean": 3.521291971206665,
+            "sample_std": 0.1379821631065004
+          },
+          "mlae_dex": {
+            "mean": 0.8844287792841593,
+            "sample_std": 0.012172750033851407
+          },
+          "mre_percent": {
+            "mean": 91.76645278930664,
+            "sample_std": 1.0946488024306804
+          },
+          "parameters_k": {
+            "mean": 460.65000000000003,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.2777213156223297,
+            "sample_std": 0.01403938706656521
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "d8d983862f62115b6fdbc7c60126f528748a29a2be2c24defaddb11d42ff9ab9",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentPoly_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.8448218703269958,
+              "ensemble_uncertainty_dex": 0.27903711795806885,
+              "inference_us_per_prediction": 0.11060299768753876,
+              "iterative_mlae_dex": 1.1987042427062988,
+              "lae99_dex": 3.6306581497192383,
+              "mlae_dex": 0.8911355137825012,
+              "mre_percent": 92.51457452774048,
+              "parameters_k": 460.65000000000003,
+              "uq_pearson": 0.2621583044528961
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.004545783204957843,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 1.3171494222834747e-05
+            },
+            "training_id": "primordial_LatentPoly_42"
+          },
+          {
+            "config_sha256": "475e497fa8154dc5c834bb728d794471389db932d2465470f7c2601a5fe011dc",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentPoly_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.8046464323997498,
+              "ensemble_uncertainty_dex": 0.3256989121437073,
+              "inference_us_per_prediction": 0.11031093345524476,
+              "iterative_mlae_dex": 1.4218144416809082,
+              "lae99_dex": 3.366267681121826,
+              "mlae_dex": 0.8917731046676636,
+              "mre_percent": 90.51007032394409,
+              "parameters_k": 460.65000000000003,
+              "uq_pearson": 0.2815723121166229
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.00453377936501056,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 6.520281282324795e-06
+            },
+            "training_id": "primordial_LatentPoly_142"
+          },
+          {
+            "config_sha256": "bb961550082fbc62d7f54b56c5481bf3b27f2ff85161e95482b0317e322cdf93",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_LatentPoly_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.8139610886573792,
+              "ensemble_uncertainty_dex": 0.3091290593147278,
+              "inference_us_per_prediction": 0.11049940108056487,
+              "iterative_mlae_dex": 1.3028939962387085,
+              "lae99_dex": 3.5669500827789307,
+              "mlae_dex": 0.8703777194023132,
+              "mre_percent": 92.27471351623535,
+              "parameters_k": 460.65000000000003,
+              "uq_pearson": 0.2894333302974701
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.004541525384411216,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 6.1031490171924835e-06
+            },
+            "training_id": "primordial_LatentPoly_242"
+          }
+        ]
+      },
+      "MultiONet": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.14653575917085013,
+            "sample_std": 0.001083858083989556
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.1563067932923635,
+            "sample_std": 0.00014821849720900713
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.23221916278154986,
+            "sample_std": 0.00016309680768656075
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.4723189075787862,
+            "sample_std": 0.008241693460831598
+          },
+          "lae99_dex": {
+            "mean": 1.2685367663701375,
+            "sample_std": 0.002611860248817511
+          },
+          "mlae_dex": {
+            "mean": 0.19319182137648264,
+            "sample_std": 0.000941514039239206
+          },
+          "mre_percent": {
+            "mean": 24.754769603411358,
+            "sample_std": 0.3543484075136811
+          },
+          "parameters_k": {
+            "mean": 497.96000000000004,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.497913400332133,
+            "sample_std": 0.01234332185850631
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "96f3e75656ce3323088062ef38cd7aca6dd226f0f486d55699b85d52b618cd0b",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_MultiONet_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.14769494533538818,
+              "ensemble_uncertainty_dex": 0.15647053718566895,
+              "inference_us_per_prediction": 0.23208925536767988,
+              "iterative_mlae_dex": 0.4709288775920868,
+              "lae99_dex": 1.2690051794052124,
+              "mlae_dex": 0.1925114095211029,
+              "mre_percent": 24.410495162010193,
+              "parameters_k": 497.96000000000004,
+              "uq_pearson": 0.5121567249298096
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.009538868395611643,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 9.455896833280227e-06
+            },
+            "training_id": "primordial_MultiONet_42"
+          },
+          {
+            "config_sha256": "26d4d594dee8fdffd452df5187e406e6244e1fa714a2f7b3cdeabb4897bfe798",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_MultiONet_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.14636477828025818,
+              "ensemble_uncertainty_dex": 0.15626804530620575,
+              "inference_us_per_prediction": 0.23240219958017777,
+              "iterative_mlae_dex": 0.46486061811447144,
+              "lae99_dex": 1.2708827257156372,
+              "mlae_dex": 0.1927977055311203,
+              "mre_percent": 24.73541498184204,
+              "parameters_k": 497.96000000000004,
+              "uq_pearson": 0.4912427067756653
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.009551730402745307,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 1.267151125416686e-05
+            },
+            "training_id": "primordial_MultiONet_142"
+          },
+          {
+            "config_sha256": "6c4e7e6efab7dd1a7d037f55d52a8e6ccd1ba5bbad17c179cbf107920f26f3e4",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 47767\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-15\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_MultiONet_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.145547553896904,
+              "ensemble_uncertainty_dex": 0.15618179738521576,
+              "inference_us_per_prediction": 0.23216603339679195,
+              "iterative_mlae_dex": 0.4811672270298004,
+              "lae99_dex": 1.265722393989563,
+              "mlae_dex": 0.19426634907722473,
+              "mre_percent": 25.118398666381836,
+              "parameters_k": 497.96000000000004,
+              "uq_pearson": 0.4903407692909241
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.009542023972608149,
+              "num_predictions": 41100.0,
+              "std_inference_time_per_run": 1.0821384300204759e-05
+            },
+            "training_id": "primordial_MultiONet_242"
+          }
+        ]
+      }
+    },
+    "primordial_parametric": {
+      "FullyConnected": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.0902310311794281,
+            "sample_std": 0.001462235725489546
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.08492906391620636,
+            "sample_std": 0.0008250767467025286
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.1890125779086739,
+            "sample_std": 1.7485579718501783e-05
+          },
+          "iterative_mlae_dex": {
+            "mean": 0.3602678378423055,
+            "sample_std": 0.037163178265078686
+          },
+          "lae99_dex": {
+            "mean": 0.9416621128718058,
+            "sample_std": 0.0193128707785797
+          },
+          "mlae_dex": {
+            "mean": 0.11477454006671906,
+            "sample_std": 0.003030203855603745
+          },
+          "mre_percent": {
+            "mean": 12.497655550638834,
+            "sample_std": 0.27341776944374535
+          },
+          "parameters_k": {
+            "mean": 454.03000000000003,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.4927558998266856,
+            "sample_std": 0.0015971914226286194
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "91f78960b0a1a6872f2343949d17fb93226ac56d813a1ff4c3ee8be0418cd9a0",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_FullyConnected_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.0912906602025032,
+              "ensemble_uncertainty_dex": 0.0853579044342041,
+              "inference_us_per_prediction": 0.18903132664357744,
+              "iterative_mlae_dex": 0.3454740345478058,
+              "lae99_dex": 0.9509922862052917,
+              "mlae_dex": 0.11682043969631195,
+              "mre_percent": 12.729698419570923,
+              "parameters_k": 454.03000000000003,
+              "uq_pearson": 0.49179548025131226
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.01550056878477335,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.0497247461114918e-05
+            },
+            "training_id": "primordial_parametric_FullyConnected_42"
+          },
+          {
+            "config_sha256": "97b5160474b5b89d0b0649edcc08da05dfad26eb41cb0a1a6bf706d03d9d7a35",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_FullyConnected_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.08856278657913208,
+              "ensemble_uncertainty_dex": 0.08397787809371948,
+              "inference_us_per_prediction": 0.18900969270162465,
+              "iterative_mlae_dex": 0.402549684047699,
+              "lae99_dex": 0.9194557070732117,
+              "mlae_dex": 0.11129336804151535,
+              "mre_percent": 12.1962308883667,
+              "parameters_k": 454.03000000000003,
+              "uq_pearson": 0.4945996403694153
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.015498794801533222,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 9.57419047458397e-06
+            },
+            "training_id": "primordial_parametric_FullyConnected_142"
+          },
+          {
+            "config_sha256": "03eccb8def9c86a3496afb569cd3bfe8a50be6c1cfdb218a75da3eca18cdc9c8",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- FullyConnected\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_FullyConnected_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.09083964675664902,
+              "ensemble_uncertainty_dex": 0.0854514092206955,
+              "inference_us_per_prediction": 0.1889967143808196,
+              "iterative_mlae_dex": 0.33277979493141174,
+              "lae99_dex": 0.9545383453369141,
+              "mlae_dex": 0.11620981246232986,
+              "mre_percent": 12.567037343978882,
+              "parameters_k": 454.03000000000003,
+              "uq_pearson": 0.4918725788593292
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.015497730579227209,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.3862844881069275e-05
+            },
+            "training_id": "primordial_parametric_FullyConnected_242"
+          }
+        ]
+      },
+      "LatentNeuralODE": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.6784879167874655,
+            "sample_std": 0.011981717540521748
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.22076365848382315,
+            "sample_std": 0.013555500599782454
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.4777972229635267,
+            "sample_std": 0.00457546190344321
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.5333406527837117,
+            "sample_std": 0.015355711262432802
+          },
+          "lae99_dex": {
+            "mean": 3.509843190511068,
+            "sample_std": 0.029570712232641554
+          },
+          "mlae_dex": {
+            "mean": 0.710397740205129,
+            "sample_std": 0.018622999940782873
+          },
+          "mre_percent": {
+            "mean": 82.59797096252441,
+            "sample_std": 1.5182851043443435
+          },
+          "parameters_k": {
+            "mean": 409.171,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.34464309612909955,
+            "sample_std": 0.03482379981914728
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "f3895c31667713ef5311052f2a0dda6d83e1ca54abdf0d07d52838a1ed381e1f",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentNeuralODE_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.6905703544616699,
+              "ensemble_uncertainty_dex": 0.22421754896640778,
+              "inference_us_per_prediction": 0.4754046534710541,
+              "iterative_mlae_dex": 1.5349429845809937,
+              "lae99_dex": 3.537789821624756,
+              "mlae_dex": 0.7318543195724487,
+              "mre_percent": 84.35050249099731,
+              "parameters_k": 409.171,
+              "uq_pearson": 0.3244689106941223
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.038983181584626436,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 8.768482204332457e-05
+            },
+            "training_id": "primordial_parametric_LatentNeuralODE_42"
+          },
+          {
+            "config_sha256": "c236a424f1f8a38a83a1d937302887a834835febe9881b621f33ed81b16d6fc8",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentNeuralODE_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.666609525680542,
+              "ensemble_uncertainty_dex": 0.23225808143615723,
+              "inference_us_per_prediction": 0.47491410088430086,
+              "iterative_mlae_dex": 1.5478323698043823,
+              "lae99_dex": 3.512860059738159,
+              "mlae_dex": 0.7009053826332092,
+              "mre_percent": 81.68090581893921,
+              "parameters_k": 409.171,
+              "uq_pearson": 0.3848540782928467
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.03894295627251267,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 0.00016827541146564656
+            },
+            "training_id": "primordial_parametric_LatentNeuralODE_142"
+          },
+          {
+            "config_sha256": "31b72f436594754a454c4a932c802e4ed3660bcca7b4795fb97000aa1fb833c7",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentNeuralODE\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentNeuralODE_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.6782838702201843,
+              "ensemble_uncertainty_dex": 0.20581534504890442,
+              "inference_us_per_prediction": 0.48307291453522516,
+              "iterative_mlae_dex": 1.5172466039657593,
+              "lae99_dex": 3.478879690170288,
+              "mlae_dex": 0.698433518409729,
+              "mre_percent": 81.76250457763672,
+              "parameters_k": 409.171,
+              "uq_pearson": 0.3246062994003296
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.039611978991888466,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 0.0009826605746653034
+            },
+            "training_id": "primordial_parametric_LatentNeuralODE_242"
+          }
+        ]
+      },
+      "LatentPoly": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.7546735604604086,
+            "sample_std": 0.010674965792123202
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.3910649021466573,
+            "sample_std": 0.008450559345219497
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.040606833422723095,
+            "sample_std": 5.345599651879153e-05
+          },
+          "iterative_mlae_dex": {
+            "mean": 1.756880760192871,
+            "sample_std": 0.2523949875451669
+          },
+          "lae99_dex": {
+            "mean": 3.969276269276937,
+            "sample_std": 0.16617283324927057
+          },
+          "mlae_dex": {
+            "mean": 0.8445876240730286,
+            "sample_std": 0.012280710382596224
+          },
+          "mre_percent": {
+            "mean": 88.27306826909383,
+            "sample_std": 0.6423750872966683
+          },
+          "parameters_k": {
+            "mean": 26.638,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.4011681874593099,
+            "sample_std": 0.012785166581031973
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "f0f79ff561a017210f357add6ba8cfe68055849baf855dee7d59b9cf46900466",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentPoly_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.744768500328064,
+              "ensemble_uncertainty_dex": 0.39673399925231934,
+              "inference_us_per_prediction": 0.0406245076347415,
+              "iterative_mlae_dex": 2.0119454860687256,
+              "lae99_dex": 4.1610894203186035,
+              "mlae_dex": 0.8582342863082886,
+              "mre_percent": 88.38366270065308,
+              "parameters_k": 26.638,
+              "uq_pearson": 0.41575273871421814
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0033312096260488034,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.310670187595506e-05
+            },
+            "training_id": "primordial_parametric_LatentPoly_42"
+          },
+          {
+            "config_sha256": "85263d6888c789e37d6178fc8da32012970312ada706c4a4d8c5493c2382936d",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentPoly_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.7659800052642822,
+              "ensemble_uncertainty_dex": 0.3951084315776825,
+              "inference_us_per_prediction": 0.0405467785440567,
+              "iterative_mlae_dex": 1.507243037223816,
+              "lae99_dex": 3.877751111984253,
+              "mlae_dex": 0.8344262838363647,
+              "mre_percent": 87.58257627487183,
+              "parameters_k": 26.638,
+              "uq_pearson": 0.3958579897880554
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0033248358406126497,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 8.929232429202059e-06
+            },
+            "training_id": "primordial_parametric_LatentPoly_142"
+          },
+          {
+            "config_sha256": "098ca92986030e0814bcf8de397f2b1004d0aee5d3a77f408eeaf6c63ecdd41d",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 717\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 12000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- LatentPoly\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_LatentPoly_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.7532721757888794,
+              "ensemble_uncertainty_dex": 0.3813522756099701,
+              "inference_us_per_prediction": 0.040649214089371076,
+              "iterative_mlae_dex": 1.7514537572860718,
+              "lae99_dex": 3.868988275527954,
+              "mlae_dex": 0.8411023020744324,
+              "mre_percent": 88.85296583175659,
+              "parameters_k": 26.638,
+              "uq_pearson": 0.39189383387565613
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.0033332355553284286,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.087636738625138e-05
+            },
+            "training_id": "primordial_parametric_LatentPoly_242"
+          }
+        ]
+      },
+      "MultiONet": {
+        "aggregate": {
+          "ensemble_mlae_dex": {
+            "mean": 0.125772255162398,
+            "sample_std": 0.0019414665168705596
+          },
+          "ensemble_uncertainty_dex": {
+            "mean": 0.15223731100559235,
+            "sample_std": 0.000917316309966941
+          },
+          "inference_us_per_prediction": {
+            "mean": 0.09925871788395371,
+            "sample_std": 5.507099194893185e-05
+          },
+          "iterative_mlae_dex": {
+            "mean": 2.4650757908821106,
+            "sample_std": 3.548488949264351
+          },
+          "lae99_dex": {
+            "mean": 1.2208092610041301,
+            "sample_std": 0.06276633670682688
+          },
+          "mlae_dex": {
+            "mean": 0.17415363589922586,
+            "sample_std": 0.007045640073462134
+          },
+          "mre_percent": {
+            "mean": 21.6092715660731,
+            "sample_std": 0.9165012893770781
+          },
+          "parameters_k": {
+            "mean": 86.431,
+            "sample_std": 0.0
+          },
+          "uq_pearson": {
+            "mean": 0.5217047135035197,
+            "sample_std": 0.00499222173768015
+          }
+        },
+        "replicas": [
+          {
+            "config_sha256": "2982ef322961b32bbeccd1cb03ae094ba0112bfa6722298d088388e2e5d1081e",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 42\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_MultiONet_42\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.1279553920030594,
+              "ensemble_uncertainty_dex": 0.15278013050556183,
+              "inference_us_per_prediction": 0.09931616808810248,
+              "iterative_mlae_dex": 6.5625152587890625,
+              "lae99_dex": 1.2926809787750244,
+              "mlae_dex": 0.1812414675951004,
+              "mre_percent": 21.797455847263336,
+              "parameters_k": 86.431,
+              "uq_pearson": 0.5274134874343872
+            },
+            "seed": 42,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.008143925783224404,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.9612855752852096e-05
+            },
+            "training_id": "primordial_parametric_MultiONet_42"
+          },
+          {
+            "config_sha256": "435f3be701596a5c6e1f0140faee44537357a0baeeb72145899a250f5874dafd",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 142\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_MultiONet_142\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.12512196600437164,
+              "ensemble_uncertainty_dex": 0.15275360643863678,
+              "inference_us_per_prediction": 0.09925360251899536,
+              "iterative_mlae_dex": 0.42037826776504517,
+              "lae99_dex": 1.1929638385772705,
+              "mlae_dex": 0.16715095937252045,
+              "mre_percent": 20.613284409046173,
+              "parameters_k": 86.431,
+              "uq_pearson": 0.5181577205657959
+            },
+            "seed": 142,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.00813879540655762,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 1.799768243650921e-05
+            },
+            "training_id": "primordial_parametric_MultiONet_142"
+          },
+          {
+            "config_sha256": "f0680d7651382f0443909bacbc8ca154e26cdc50c1935c27ae65c0b421676246",
+            "config_yaml": "batch_scaling:\n  enabled: false\nbatch_size:\n- 35838\ncheckpoint: true\ncompare: false\ncompute: true\ndataset:\n  log10_transform: true\n  log10_transform_params: true\n  log_timesteps: true\n  name: primordial_parametric\n  normalise: minmax\n  normalise_per_species: true\n  subset_factor: 1\n  tolerance: 1.0e-20\n  use_optimal_params: true\ndevices:\n- cuda:0\nepochs:\n- 8000\nerror_percentile: 99\nextrapolation:\n  enabled: false\ngradients: false\ninterpolation:\n  enabled: false\niterative:\n  interval: 10\n  mode: grid\nlosses: true\nrelative_error_threshold: 0.0\nseed: 242\nsparse:\n  enabled: false\nsurrogates:\n- MultiONet\nsynchronize_timing: true\ntiming: true\ntraining_id: primordial_parametric_MultiONet_242\nuncertainty:\n  enabled: true\n  ensemble_size: 5\n",
+            "metrics": {
+              "ensemble_mlae_dex": 0.12423940747976303,
+              "ensemble_uncertainty_dex": 0.15117819607257843,
+              "inference_us_per_prediction": 0.0992063830447633,
+              "iterative_mlae_dex": 0.4123338460922241,
+              "lae99_dex": 1.1767829656600952,
+              "mlae_dex": 0.17406848073005676,
+              "mre_percent": 22.41707444190979,
+              "parameters_k": 86.431,
+              "uq_pearson": 0.519542932510376
+            },
+            "seed": 242,
+            "timing_details": {
+              "mean_inference_time_per_run": 0.008134923409670591,
+              "num_predictions": 82000.0,
+              "std_inference_time_per_run": 7.548030314013611e-06
+            },
+            "training_id": "primordial_parametric_MultiONet_242"
+          }
+        ]
+      }
+    }
+  },
+  "protocol_yaml": "datasets:\n  cloud:\n    batch_size:\n      FullyConnected: 35838\n      LatentNeuralODE: 717\n      LatentPoly: 717\n      MultiONet: 35838\n    checkpoint: true\n    dataset:\n      log10_transform: true\n      log10_transform_params: true\n      log_timesteps: true\n      name: cloud\n      normalise: minmax\n      normalise_per_species: true\n      subset_factor: 1\n      tolerance: 1.0e-25\n      use_optimal_params: true\n    ensemble_size: 5\n    epochs:\n      FullyConnected: 8000\n      LatentNeuralODE: 8000\n      LatentPoly: 8000\n      MultiONet: 8000\n  cloud_parametric:\n    batch_size:\n      FullyConnected: 35838\n      LatentNeuralODE: 717\n      LatentPoly: 717\n      MultiONet: 35838\n    checkpoint: true\n    dataset:\n      log10_transform: true\n      log10_transform_params: true\n      log_timesteps: true\n      name: cloud_parametric\n      normalise: minmax\n      normalise_per_species: true\n      subset_factor: 2\n      tolerance: 1.0e-25\n      use_optimal_params: true\n    ensemble_size: 5\n    epochs:\n      FullyConnected: 8000\n      LatentNeuralODE: 8000\n      LatentPoly: 8000\n      MultiONet: 8000\n  primordial:\n    batch_size:\n      FullyConnected: 47767\n      LatentNeuralODE: 717\n      LatentPoly: 717\n      MultiONet: 47767\n    checkpoint: true\n    dataset:\n      log10_transform: true\n      log10_transform_params: true\n      log_timesteps: true\n      name: primordial\n      normalise: minmax\n      normalise_per_species: true\n      subset_factor: 1\n      tolerance: 1.0e-15\n      use_optimal_params: true\n    ensemble_size: 5\n    epochs:\n      FullyConnected: 8000\n      LatentNeuralODE: 12000\n      LatentPoly: 12000\n      MultiONet: 12000\n  primordial_parametric:\n    batch_size:\n      FullyConnected: 35838\n      LatentNeuralODE: 717\n      LatentPoly: 717\n      MultiONet: 35838\n    checkpoint: true\n    dataset:\n      log10_transform: true\n      log10_transform_params: true\n      log_timesteps: true\n      name: primordial_parametric\n      normalise: minmax\n      normalise_per_species: true\n      subset_factor: 1\n      tolerance: 1.0e-20\n      use_optimal_params: true\n    ensemble_size: 5\n    epochs:\n      FullyConnected: 8000\n      LatentNeuralODE: 8000\n      LatentPoly: 12000\n      MultiONet: 8000\ndevices:\n- cuda:0\nmodels:\n- MultiONet\n- FullyConnected\n- LatentNeuralODE\n- LatentPoly\npilot_epochs:\n- 2\n- 4\nseeds:\n- 42\n- 142\n- 242\n",
+  "provenance": {
+    "code_revision": "e3edee24f25247142bacd314fd4f8434b1aa62a5",
+    "code_sha256": "18722ae83addd76af9652d6bd656981e05bfb29be2ef12b25cc4242c0e25eafd",
+    "data_sources_sha256": "d057a60ad4370c5a8a8b95545caa2a476dbd1d557a468ca5fabf3553e12c5241",
+    "protocol_sha256": "5d547614d39c8748719ede372fe99761d3c374db047d8714bd8677b16f1aa67b",
+    "software": {
+      "cuda_runtime": "13.0",
+      "gpu": "NVIDIA A30, 24576 MiB, 620.70.06",
+      "packages": {
+        "PyYAML": "6.0.3",
+        "codes": "0.3.0.dev0",
+        "h5py": "3.16.0",
+        "numpy": "2.4.3",
+        "schedulefree": "1.4.1",
+        "scipy": "1.17.1",
+        "torch": "2.14.1",
+        "torchode": "1.0.1"
+      },
+      "python": "3.13.5"
+    }
+  },
+  "schema_version": 1
+}
