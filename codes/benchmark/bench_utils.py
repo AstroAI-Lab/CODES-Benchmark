@@ -6,13 +6,14 @@ import os
 import time
 from copy import deepcopy
 from dataclasses import asdict
+from typing import Any
 
 import numpy as np
 import torch
 import yaml
 from torch.utils.data import DataLoader
 
-from codes.surrogates import SurrogateModel, surrogate_classes
+from codes.surrogates import AbstractSurrogateModel, surrogate_classes
 from codes.utils import determine_batch_size, get_version_info, read_yaml_config
 
 INFERENCE_TIMING_RUNS = 5
@@ -246,7 +247,7 @@ def get_required_models_list(surrogate: str, conf: dict) -> list:
 
 
 def load_model(
-    model, training_id: str, surr_name: str, model_identifier: str
+    model: torch.nn.Module, training_id: str, surr_name: str, model_identifier: str
 ) -> torch.nn.Module:
     """
     Load a trained surrogate model.
@@ -360,7 +361,7 @@ def measure_memory_footprint(
     return memory_usage, model
 
 
-def convert_to_standard_types(data):
+def convert_to_standard_types(data: Any) -> Any:
     """
     Recursively convert data to standard types that can be serialized to YAML.
 
@@ -488,7 +489,7 @@ def write_metrics_to_yaml(surr_name: str, conf: dict, metrics: dict) -> None:
         yaml.dump(write_metrics, f, sort_keys=False)
 
 
-def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
+def get_surrogate(surrogate_name: str) -> type[AbstractSurrogateModel] | None:
     """
     Check if the surrogate model exists.
 
@@ -496,7 +497,7 @@ def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
         surrogate_name (str): The name of the surrogate model.
 
     Returns:
-        SurrogateModel | None: The surrogate model class if it exists, otherwise None.
+        type[AbstractSurrogateModel] | None: The surrogate model class, or None.
     """
     for surrogate in surrogate_classes:
         if surrogate_name == surrogate.__name__:
@@ -505,7 +506,7 @@ def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
     return None
 
 
-def format_time(mean_time, std_time):
+def format_time(mean_time: float, std_time: float) -> str:
     """
     Format mean and std time consistently in ns, µs, ms, or s.
 
@@ -765,7 +766,7 @@ def get_model_config(surr_name: str, config: dict) -> dict:
 
 
 def measure_inference_time(
-    model: SurrogateModel,
+    model: AbstractSurrogateModel,
     test_loader: DataLoader,
     n_runs: int = INFERENCE_TIMING_RUNS,
 ) -> list[float]:

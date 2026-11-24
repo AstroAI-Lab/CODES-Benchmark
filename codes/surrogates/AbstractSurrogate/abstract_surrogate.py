@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import os
 import time
@@ -87,7 +89,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
             Denormalizes the data back to the original scale.
     """
 
-    _registry: list[type["AbstractSurrogateModel"]] = []
+    _registry: list[type[AbstractSurrogateModel]] = []
     _protected_methods = [
         "predict",
         "save",
@@ -104,7 +106,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         n_parameters: int = 0,
         training_id: str | None = None,
         config: dict | None = None,
-    ):
+    ) -> None:
         super().__init__()
         self.train_loss = None
         self.test_loss = None
@@ -129,7 +131,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         self._best_state: dict[str, Tensor] | None = None
 
     @classmethod
-    def register(cls, surrogate: type["AbstractSurrogateModel"]):
+    def register(cls, surrogate: type[AbstractSurrogateModel]) -> None:
         """Registers a surrogate model class into the registry."""
         if not issubclass(surrogate, cls):
             raise TypeError(
@@ -144,7 +146,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         cls._registry.append(surrogate)
 
     @classmethod
-    def get_registered_classes(cls) -> list[type["AbstractSurrogateModel"]]:
+    def get_registered_classes(cls) -> list[type[AbstractSurrogateModel]]:
         """Returns the list of registered surrogate model classes."""
         return cls._registry
 
@@ -430,7 +432,7 @@ class AbstractSurrogateModel(ABC, nn.Module):
         self.to(self.device)
         self.eval()
 
-    def setup_progress_bar(self, epochs: int, position: int, description: str):
+    def setup_progress_bar(self, epochs: int, position: int, description: str) -> Any:
         """
         Helper function to set up a progress bar for training.
 
@@ -729,13 +731,13 @@ class AbstractSurrogateModel(ABC, nn.Module):
         optimizer_name = self.config.optimizer.lower()
 
         class DummyScheduler:
-            def step(self, *args, **kwargs):
+            def step(self, *args: Any, **kwargs: Any) -> None:
                 pass
 
-            def state_dict(self):
+            def state_dict(self) -> dict:
                 return {}
 
-            def load_state_dict(self, state_dict):
+            def load_state_dict(self, state_dict: dict) -> None:
                 pass
 
         # create optimizer
@@ -784,13 +786,13 @@ class AbstractSurrogateModel(ABC, nn.Module):
         # Patch optimizer to have no-op train() and eval(), if not present
         if not hasattr(optimizer, "train"):
 
-            def _opt_train():
+            def _opt_train() -> None:
                 pass
 
             optimizer.train = _opt_train
         if not hasattr(optimizer, "eval"):
 
-            def _opt_eval():
+            def _opt_eval() -> None:
                 pass
 
             optimizer.eval = _opt_eval

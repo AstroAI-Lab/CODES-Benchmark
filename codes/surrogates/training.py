@@ -1,20 +1,27 @@
 """Shared training loop for the standard surrogate models."""
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, TypeAlias
 
 import numpy as np
 import torch
 from torch import Tensor
 from torch.utils.data import DataLoader
 
+Batch: TypeAlias = tuple[Tensor | None, ...] | list[Tensor | None]
+Criterion: TypeAlias = Callable[..., Tensor]
+BatchLoss: TypeAlias = Callable[[Batch, Criterion], Tensor]
+EpochCallback: TypeAlias = Callable[
+    [DataLoader, Criterion, torch.optim.Optimizer], None
+]
+
 
 def train_epoch(
-    model,
+    model: Any,
     data_loader: DataLoader,
-    criterion: Callable,
+    criterion: Criterion,
     optimizer: torch.optim.Optimizer,
-    loss_fn: Callable[[Any, Callable], Tensor] | None = None,
+    loss_fn: BatchLoss | None = None,
     *,
     gradient_clip: float | None = None,
 ) -> None:
@@ -39,17 +46,17 @@ def train_epoch(
 
 
 def fit_standard(
-    model,
+    model: Any,
     train_loader: DataLoader,
     test_loader: DataLoader,
     epochs: int,
     position: int = 0,
     description: str = "Training",
     multi_objective: bool = False,
-    loss_fn: Callable[[Any, Callable], Tensor] | None = None,
+    loss_fn: BatchLoss | None = None,
     *,
     gradient_clip: float | None = None,
-    epoch_fn: Callable | None = None,
+    epoch_fn: EpochCallback | None = None,
 ) -> None:
     """Train and restore the best checkpoint for a standard surrogate.
 

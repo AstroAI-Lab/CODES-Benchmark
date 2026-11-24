@@ -70,10 +70,10 @@ MODULE_REGISTRY: dict[str, type[nn.Module]] = {
 
 
 class MaxValidTrialsCallback:
-    def __init__(self, target: int):
+    def __init__(self, target: int) -> None:
         self.target = target
 
-    def __call__(self, study: optuna.Study, trial: optuna.trial.FrozenTrial):
+    def __call__(self, study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
         # count only COMPLETE trials with no exception
         valid = [
             t
@@ -99,7 +99,9 @@ def load_yaml_config(config_path: str) -> dict:
         return yaml.safe_load(file)
 
 
-def _suggest_param(trial: optuna.Trial, name: str, opts: dict):
+def _suggest_param(
+    trial: optuna.Trial, name: str, opts: dict
+) -> int | float | str | bool | None:
     t = opts.get("type", "categorical")
     if t == "int":
         return trial.suggest_int(
@@ -208,7 +210,7 @@ def create_objective(
         function: Objective function for Optuna.
     """
 
-    def objective(trial):
+    def objective(trial: optuna.Trial) -> float | tuple[float, float]:
         device, slot_id = device_queue.get()
         try:
             try:
@@ -396,7 +398,7 @@ def maybe_set_runtime_threshold(
         wanted_states.add(TrialState.PRUNED)
 
     # skip any trial with an exception (e.g. OOM)
-    def is_bad(tr):
+    def is_bad(tr: optuna.trial.FrozenTrial) -> bool:
         return "exception" in tr.user_attrs
 
     trials_sorted = sorted(study.get_trials(deepcopy=False), key=lambda t: t.number)

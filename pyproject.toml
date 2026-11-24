@@ -60,10 +60,13 @@ line-length = 88
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "SIM", "UP"]
-ignore = ["E501"]  # Ruff format handles line length where practical.
+select = ["ANN", "E", "F", "I", "SIM", "UP"]
+# Dynamic configuration/results and third-party callback APIs may require Any.
+ignore = ["ANN401", "E501"]  # Ruff format handles line length where practical.
 
 [tool.ruff.lint.per-file-ignores]
+# Require annotations in the library while leaving tests and scripts unchanged.
+"!codes/**" = ["ANN"]
 # Keep the established package-level public re-exports.
 "codes/__init__.py" = ["F403"]
 # These standalone scripts set up sys.path before importing project modules.

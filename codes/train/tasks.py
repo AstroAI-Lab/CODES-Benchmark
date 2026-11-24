@@ -1,7 +1,8 @@
 """Run individual training tasks independently of their scheduler."""
 
 import os
-from contextlib import nullcontext
+from contextlib import AbstractContextManager, nullcontext
+from typing import Any, TypeAlias
 
 import torch
 
@@ -15,18 +16,23 @@ from codes.utils import (
     set_random_seeds,
 )
 
+TrainingTask: TypeAlias = (
+    tuple[str, str, int | float | str, str, int | None, int | None]
+    | list[str | int | float | None]
+)
+
 
 def train_and_save_model(
     surr_name: str,
     mode: str,
-    metric: int,
+    metric: int | float | str,
     training_id: str,
     seed: int | None = None,
     epochs: int | None = None,
     device: str = "cpu",
     position: int = 1,
-    threadlock=None,
-):
+    threadlock: AbstractContextManager[Any] | None = None,
+) -> None:
     """
     Train and save a model for a specific benchmark mode.
 
@@ -134,7 +140,7 @@ def train_and_save_model(
     )
 
 
-def validate_execution_settings(device, cpu_threads):
+def validate_execution_settings(device: str, cpu_threads: int) -> torch.device:
     """Validate worker settings without selecting a CUDA context.
 
     CUDA indices are logical indices within the process's visible devices. CPU
@@ -195,7 +201,9 @@ def validate_execution_settings(device, cpu_threads):
     return selected_device
 
 
-def execute_training_task(task, *, device="cpu", position=0, cpu_threads=1):
+def execute_training_task(
+    task: TrainingTask, *, device: str = "cpu", position: int = 0, cpu_threads: int = 1
+) -> None:
     """Configure a worker process and train and save exactly one model.
 
     ``task`` contains ``(surrogate, mode, metric, training_id, seed, epochs)``,

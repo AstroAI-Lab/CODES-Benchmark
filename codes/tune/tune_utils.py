@@ -117,7 +117,9 @@ def apply_tuning_defaults(config: dict) -> dict:
     return cfg
 
 
-def delete_studies_if_requested(config: dict, main_study_name: str, db_url: str):
+def delete_studies_if_requested(
+    config: dict, main_study_name: str, db_url: str
+) -> None:
     """Delete studies if user overwrote run folder."""
     if not config.get("_overwrite_run", False):
         return

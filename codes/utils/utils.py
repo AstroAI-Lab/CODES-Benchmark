@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import functools
 import json
 import os
@@ -6,8 +8,10 @@ import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
@@ -16,7 +20,7 @@ from torch import Tensor
 from tqdm import tqdm
 
 
-def read_yaml_config(config_path):
+def read_yaml_config(config_path: str) -> dict:
     with open(config_path, encoding="utf-8") as file:
         config = yaml.safe_load(file)
 
@@ -61,7 +65,7 @@ def get_version_info() -> dict:
     return info
 
 
-def time_execution(func):
+def time_execution(func: Callable) -> Callable:
     """
     Decorator to time the execution of a function and store the duration
     as an attribute of the function.
@@ -76,7 +80,7 @@ def time_execution(func):
     """
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
@@ -263,7 +267,7 @@ def make_shuffle_generator() -> torch.Generator:
     return generator
 
 
-def worker_init_fn(worker_id):
+def worker_init_fn(worker_id: int) -> None:
     """
     Initialize the random seed for each worker in PyTorch DataLoader.
 
@@ -396,7 +400,9 @@ def check_training_status(config: dict) -> tuple[str, bool]:
     return task_list_filepath, copy_config
 
 
-def determine_batch_size(config, surr_idx, mode, metric):
+def determine_batch_size(
+    config: dict, surr_idx: int, mode: str, metric: int | float | str | None
+) -> int:
     """
     Determine the appropriate batch size based on the config, surrogate index, mode, and metric.
 

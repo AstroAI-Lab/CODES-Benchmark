@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 from typing import TypeVar
 
@@ -32,7 +34,7 @@ class BranchNet(nn.Module):
         output_size: int,
         num_hidden_layers: int,
         activation: nn.Module = nn.ReLU(),
-    ):
+    ) -> None:
         super().__init__()
         layers = [nn.Linear(input_size, hidden_size), activation]
         for _ in range(num_hidden_layers - 1):
@@ -68,7 +70,7 @@ class TrunkNet(nn.Module):
         output_size: int,
         num_hidden_layers: int,
         activation: nn.Module = nn.ReLU(),
-    ):
+    ) -> None:
         super().__init__()
         layers = [nn.Linear(input_size, hidden_size), activation]
         for _ in range(num_hidden_layers - 1):
@@ -108,7 +110,7 @@ class OperatorNetwork(AbstractSurrogateModel):
         n_timesteps: int = 100,
         training_id: str | None = None,
         config: dict | None = None,
-    ):
+    ) -> None:
         super().__init__(
             device=device,
             n_quantities=n_quantities,
@@ -117,7 +119,7 @@ class OperatorNetwork(AbstractSurrogateModel):
             config=config,
         )
 
-    def post_init_check(self):
+    def post_init_check(self) -> None:
         if not hasattr(self, "branch_net") or not hasattr(self, "trunk_net"):
             raise NotImplementedError(
                 "Child classes must initialize a branch_net and trunk_net."
@@ -125,12 +127,14 @@ class OperatorNetwork(AbstractSurrogateModel):
         if not hasattr(self, "forward") or not callable(self.forward):
             raise NotImplementedError("Child classes must implement a forward method.")
 
-    def forward(self, branch_input, trunk_input):
+    def forward(
+        self, branch_input: torch.Tensor, trunk_input: torch.Tensor
+    ) -> torch.Tensor:
         # Define a generic forward pass or raise an error to enforce child class implementation
         raise NotImplementedError("Forward method must be implemented by subclasses.")
 
     @staticmethod
-    def _calculate_split_sizes(total_neurons, num_splits):
+    def _calculate_split_sizes(total_neurons: int, num_splits: int) -> list[int]:
         """Helper function to calculate split sizes for even distribution"""
         base_size = total_neurons // num_splits
         remainder = total_neurons % num_splits
@@ -182,7 +186,7 @@ class MultiONet(OperatorNetwork):
         n_parameters: int = 0,
         training_id: str | None = None,
         config: dict | None = None,
-    ):
+    ) -> None:
         super().__init__(
             device=device,
             n_quantities=n_quantities,
@@ -225,7 +229,9 @@ class MultiONet(OperatorNetwork):
             self.config.activation,
         ).to(device)
 
-    def forward(self, inputs) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, inputs: tuple[torch.Tensor, ...] | list[torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Forward pass for the MultiONet model.
 
@@ -345,7 +351,7 @@ class MultiONet(OperatorNetwork):
         params_in_branch: bool,
         num_workers: int = 0,
         pin_memory: bool = True,
-    ):
+    ) -> DataLoader:
         n_samples, n_timesteps, n_quantities = data.shape
 
         if pin_memory and "cuda" not in self.device:
@@ -424,7 +430,7 @@ class MultiONet(OperatorNetwork):
         dataset_train_params: np.ndarray | None = None,
         dataset_test_params: np.ndarray | None = None,
         dataset_val_params: np.ndarray | None = None,
-    ):
+    ) -> tuple[DataLoader, DataLoader | None, DataLoader | None]:
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
@@ -482,7 +488,9 @@ class MultiONetResidual(MultiONet):
     columns back onto the output leaves the network to learn the deviation.
     """
 
-    def forward(self, inputs) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, inputs: tuple[torch.Tensor, ...] | list[torch.Tensor]
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         outputs, targets = super().forward(inputs)
         branch_input = inputs[0].to(self.device, non_blocking=True)
         return outputs + branch_input[:, : self.N], targets

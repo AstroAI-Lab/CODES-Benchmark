@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Iterator
+
 import torch
 from torch import nn
 from torch.utils.data import IterableDataset
@@ -15,7 +17,7 @@ class FlatBatchIterable(IterableDataset):
         target_t: torch.Tensor,
         batch_size: int,
         shuffle: bool,
-    ):
+    ) -> None:
         self.branch = branch_t
         self.trunk = trunk_t
         self.target = target_t
@@ -24,7 +26,7 @@ class FlatBatchIterable(IterableDataset):
         self.shuffle = shuffle
         self.generator = make_shuffle_generator() if shuffle else None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[torch.Tensor, torch.Tensor, torch.Tensor]]:
         # new permutation (or sequential) each epoch/iterator
         if self.shuffle:
             perm = torch.randperm(self.N, generator=self.generator)
@@ -35,16 +37,18 @@ class FlatBatchIterable(IterableDataset):
             idxs = perm[start : start + self.bs]
             yield (self.branch[idxs], self.trunk[idxs], self.target[idxs])
 
-    def __len__(self):
+    def __len__(self) -> int:
         return (self.N + self.bs - 1) // self.bs
 
 
 def mass_conservation_loss(
     masses: list,
-    criterion=nn.MSELoss(reduction="sum"),
+    criterion: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] = nn.MSELoss(
+        reduction="sum"
+    ),
     weights: tuple = (1, 1),
     device: torch.device = torch.device("cpu"),
-):
+) -> Callable[[torch.Tensor, torch.Tensor], torch.Tensor]:
     """
     Replaces the standard MSE loss with a sum of the standard MSE loss and a mass conservation loss.
 

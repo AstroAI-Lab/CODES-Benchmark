@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import os
 import sys
@@ -16,7 +18,7 @@ from optuna.visualization import (
 )
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
 
     parser = argparse.ArgumentParser(
@@ -121,7 +123,7 @@ def plot_test_losses(
     plt.close()
 
 
-def main():
+def main() -> None:
     """
     Main function to evaluate an Optuna study and its top models.
     Usually, viewing the study database with Optuna Dashboard is more informative.

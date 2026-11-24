@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 import argparse
 import math
 import os
 import subprocess
 import sys
 import time
+from collections.abc import Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
 import optuna
 import psycopg2
 import torch
+from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FormatStrFormatter
 from optuna.trial import TrialState
@@ -87,7 +91,7 @@ def hypervolume_2d(pareto_points: np.ndarray, reference: np.ndarray) -> float:
 
 def compute_hypervolume_over_time(
     study: optuna.Study, ref_slack: float = 1.1, ignore_last_n: int = 10
-):
+) -> tuple[list[float], np.ndarray | None]:
     """
     Compute the 2D hypervolume curve over time while excluding the last N trials
     from the Pareto calculation (by completion time). This prevents unreliable
@@ -181,7 +185,7 @@ def compute_pareto_plot_data(
     suffix: str,
     ignore_last_n: int = 10,
     chosen_trial_number: int | None = None,
-):
+) -> dict | None:
     if len(study.directions) != 2:
         return None
     completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
@@ -235,7 +239,7 @@ def compute_pareto_plot_data(
     }
 
 
-def summarize_pareto_tradeoff(data: dict):
+def summarize_pareto_tradeoff(data: dict) -> None:
     suffix = data["suffix"]
     best_point = data["best_point"]
     chosen_point = data["chosen_point"]
@@ -283,13 +287,13 @@ def summarize_pareto_tradeoff(data: dict):
 
 
 def _render_pareto_scatter(
-    ax,
-    data,
+    ax: Axes,
+    data: dict,
     show_xlabel: bool,
     show_ylabel: bool,
     title: str | None,
     hide_xticklabels: bool = False,
-):
+) -> None:
     pts = data["points"]
     mask = data["mask"]
     best_point = data["best_point"]
@@ -359,7 +363,7 @@ def _render_pareto_scatter(
     ax.yaxis.set_major_formatter(FormatStrFormatter("%.3f"))
 
 
-def save_individual_pareto_plot(data, out_dir: str):
+def save_individual_pareto_plot(data: dict, out_dir: str) -> None:
     fig, ax = plt.subplots(figsize=(5, 3))
     _render_pareto_scatter(
         ax, data, show_xlabel=True, show_ylabel=True, title=data["suffix"]
@@ -375,7 +379,7 @@ def save_individual_pareto_plot(data, out_dir: str):
     )
 
 
-def save_pareto_front_grid(datasets: list[dict], out_dir: str):
+def save_pareto_front_grid(datasets: list[dict], out_dir: str) -> None:
     if not datasets:
         return
     n_cols = 2
@@ -419,7 +423,7 @@ def save_pareto_front_grid(datasets: list[dict], out_dir: str):
     )
 
 
-def save_relative_hv_grid(datasets: list[dict], out_dir: str):
+def save_relative_hv_grid(datasets: list[dict], out_dir: str) -> None:
     if not datasets:
         return
     n_cols = 2
@@ -459,14 +463,14 @@ def save_relative_hv_grid(datasets: list[dict], out_dir: str):
     )
 
 
-def save_relative_hv_combined(datasets: list[dict], out_dir: str):
+def save_relative_hv_combined(datasets: list[dict], out_dir: str) -> None:
     if len(datasets) < 2:
         return
     fig, ax = plt.subplots(figsize=(6, 4))
     color_palette = plt.cm.viridis(np.linspace(0, 0.95, len(SURROGATE_ORDER)))
     order_index = {name: idx for idx, name in enumerate(SURROGATE_ORDER)}
 
-    def color_for(name: str):
+    def color_for(name: str) -> tuple | np.ndarray:
         key = name.lower()
         idx = order_index.get(key)
         if idx is not None:
@@ -554,8 +558,14 @@ def load_loss_history(model_path: str) -> tuple[np.ndarray, np.ndarray, int]:
 
 
 def plot_losses(
-    loss_histories, epochs, labels, title="Losses", save=False, out_dir=None, mode=""
-):
+    loss_histories: Sequence,
+    epochs: int | Sequence[int],
+    labels: Sequence[str],
+    title: str = "Losses",
+    save: bool = False,
+    out_dir: str | None = None,
+    mode: str = "",
+) -> None:
     """
     Plot multiple loss trajectories on a log scale.
     """
@@ -611,7 +621,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
         return [t.number for t in sorted_trials[:top_n]]
 
     # Multi-objective
-    def dominated(a, b):
+    def dominated(a: Sequence[float], b: Sequence[float]) -> bool:
         return all(bi <= ai for ai, bi in zip(a, b)) and any(
             bi < ai for ai, bi in zip(a, b)
         )
@@ -896,7 +906,7 @@ def evaluate_tuning(
     save_relative_hv_combined(hypervolume_datasets, save_dir)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Plot top-N tuning losses for all surrogate studies."
     )
@@ -941,7 +951,7 @@ def parse_args():
     return p.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     chosen_list = None
     if args.chosen_indices:

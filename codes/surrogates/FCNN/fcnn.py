@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import math
+from collections.abc import Iterator
 
 import numpy as np
 import torch
@@ -6,7 +9,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, IterableDataset
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
-from codes.surrogates.training import fit_standard, train_epoch
+from codes.surrogates.training import Batch, fit_standard, train_epoch
 from codes.utils import make_shuffle_generator, time_execution
 
 from .fcnn_config import FCNNBaseConfig
@@ -19,7 +22,7 @@ class FCFlatBatchIterable(IterableDataset):
         targets_t: torch.Tensor,
         batch_size: int,
         shuffle: bool,
-    ):
+    ) -> None:
         self.inputs = inputs_t
         self.targets = targets_t
         self.N = inputs_t.size(0)
@@ -27,7 +30,7 @@ class FCFlatBatchIterable(IterableDataset):
         self.shuffle = shuffle
         self.generator = make_shuffle_generator() if shuffle else None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[torch.Tensor, torch.Tensor]]:
         perm = (
             torch.randperm(self.N, generator=self.generator)
             if self.shuffle
@@ -37,19 +40,19 @@ class FCFlatBatchIterable(IterableDataset):
             idx = perm[start : start + self.bs]
             yield self.inputs[idx], self.targets[idx]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return math.ceil(self.N / self.bs)  # number of batches
 
 
 class FullyConnectedNet(nn.Module):
     def __init__(
         self,
-        input_size,
-        hidden_size,
-        output_size,
-        num_hidden_layers,
-        activation=nn.ReLU(),
-    ):
+        input_size: int,
+        hidden_size: int,
+        output_size: int,
+        num_hidden_layers: int,
+        activation: nn.Module = nn.ReLU(),
+    ) -> None:
         super().__init__()
         layers = [nn.Linear(input_size, hidden_size), activation]
         for _ in range(num_hidden_layers - 1):
@@ -70,7 +73,7 @@ class FullyConnected(AbstractSurrogateModel):
         n_parameters: int = 0,
         training_id: str | None = None,
         config: dict | None = None,
-    ):
+    ) -> None:
         """
         Initialize the FullyConnected model with a configuration.
 
@@ -105,7 +108,7 @@ class FullyConnected(AbstractSurrogateModel):
             activation=self.config.activation,
         ).to(device)
 
-    def forward(self, inputs: tuple) -> torch.Tensor:
+    def forward(self, inputs: Batch) -> tuple[torch.Tensor, torch.Tensor | None]:
         """
         Forward pass for the FullyConnected model.
 
@@ -158,7 +161,7 @@ class FullyConnected(AbstractSurrogateModel):
         dataset_train_params: np.ndarray | None = None,
         dataset_test_params: np.ndarray | None = None,
         dataset_val_params: np.ndarray | None = None,
-    ):
+    ) -> tuple[DataLoader, DataLoader | None, DataLoader | None]:
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
@@ -257,7 +260,7 @@ class FullyConnected(AbstractSurrogateModel):
         dataset_params: np.ndarray | None,
         num_workers: int = 0,
         pin_memory: bool = True,
-    ):
+    ) -> DataLoader:
         """
         Build CPU tensors once and yield shuffled batches each epoch.
         data: (n_samples, n_timesteps, n_quantities)
@@ -315,7 +318,7 @@ class FullyConnectedResidual(FullyConnected):
     the deviation from it. Everything downstream still sees absolute states.
     """
 
-    def forward(self, inputs: tuple) -> torch.Tensor:
+    def forward(self, inputs: Batch) -> tuple[torch.Tensor, torch.Tensor | None]:
         outputs, targets = super().forward(inputs)
         x = inputs[0].to(self.device, non_blocking=True)
         return outputs + x[:, : self.N], targets

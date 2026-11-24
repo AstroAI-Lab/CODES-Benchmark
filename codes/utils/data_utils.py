@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import os
 import urllib.request
 from math import isclose
+from typing import Any
 
 import h5py
 import numpy as np
@@ -24,7 +27,7 @@ def check_and_load_data(
     normalisation_mode: str = "standardise",
     tolerance: float | None = None,
     per_species: bool = False,
-):
+) -> tuple:
     """
     Check the specified dataset and load the data based on the mode (train or test).
 
@@ -309,7 +312,7 @@ def create_dataset(
     split: tuple[float, float, float] = (0.7, 0.1, 0.2),
     timesteps: np.ndarray | None = None,
     labels: list[str] | None = None,
-):
+) -> None:
     """
     Creates a new dataset in the data directory.
 
@@ -497,7 +500,7 @@ def create_hdf5_dataset(
     train_params: np.ndarray | None = None,
     test_params: np.ndarray | None = None,
     val_params: np.ndarray | None = None,
-):
+) -> None:
     """
     Create an HDF5 file for a dataset with train, test, and validation data, along with optional timesteps and parameters.
 
@@ -552,7 +555,7 @@ def get_data_subset(
     metric: int,
     params: tuple[np.ndarray, ...] | None | tuple[None, ...] = None,
     subset_factor: int = 1,
-):
+) -> tuple:
     """
     Get the appropriate data subset based on the mode and metric.
 
@@ -627,7 +630,7 @@ def get_data_subset(
 
 
 class DownloadProgressBar(tqdm):
-    def update_to(self, b=1, bsize=1, tsize=None):
+    def update_to(self, b: int = 1, bsize: int = 1, tsize: int | None = None) -> None:
         """
         Update the progress bar.
         Args:
@@ -640,7 +643,9 @@ class DownloadProgressBar(tqdm):
         self.update(b * bsize - self.n)
 
 
-def download_data(dataset_name: str, path: str | None = None, verbose: bool = True):
+def download_data(
+    dataset_name: str, path: str | None = None, verbose: bool = True
+) -> None:
     """
     Download the specified dataset if it is not present, with a progress bar.
     The downloaded file is always renamed to 'data.hdf5', regardless of the
@@ -690,11 +695,11 @@ def download_data(dataset_name: str, path: str | None = None, verbose: bool = Tr
         print_data_info(data_path)
 
 
-def print_data_info(data_path):
+def print_data_info(data_path: str) -> None:
     with h5py.File(data_path, "r") as f:
         print("Dataset Info:")
 
-        def _attr_or_default(name, default=None):
+        def _attr_or_default(name: str, default: Any = None) -> Any:
             return f.attrs.get(name, default)
 
         # infer n_quantities if missing
@@ -733,7 +738,7 @@ def print_data_info(data_path):
         print(f" - Labels: {labels if labels is not None else 'No labels provided'}")
 
 
-def elapsed_to_dummy(elapsed, timesteps: np.ndarray) -> np.ndarray:
+def elapsed_to_dummy(elapsed: float | np.ndarray, timesteps: np.ndarray) -> np.ndarray:
     """
     Map elapsed times to the dummy time input of a model trained with dummy timesteps.
 

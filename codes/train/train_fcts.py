@@ -4,10 +4,17 @@ import os
 import signal
 import threading
 import traceback
-from multiprocessing.connection import wait
+from collections.abc import Sequence
+from multiprocessing.connection import Connection, wait
+from types import FrameType
+from typing import Any
 
 from codes.train.progress import ProgressDisplay, worker_reporting
-from codes.train.tasks import execute_training_task, validate_execution_settings
+from codes.train.tasks import (
+    TrainingTask,
+    execute_training_task,
+    validate_execution_settings,
+)
 from codes.train.tasks import train_and_save_model as train_and_save_model
 from codes.utils import (
     batch_factor_to_float,
@@ -20,7 +27,9 @@ class TrainingRunError(RuntimeError):
     """One or more local training tasks did not complete successfully."""
 
 
-def create_task_list_for_surrogate(config, surr_name: str) -> list:
+def create_task_list_for_surrogate(
+    config: dict[str, Any], surr_name: str
+) -> list[TrainingTask]:
     """
     Creates a list of training tasks for a specific surrogate model based on the
     configuration file.
@@ -79,7 +88,13 @@ def create_task_list_for_surrogate(config, surr_name: str) -> list:
     return tasks
 
 
-def _run_task_child(task, device, position, cpu_threads, connection):
+def _run_task_child(
+    task: TrainingTask,
+    device: str,
+    position: int,
+    cpu_threads: int,
+    connection: Connection,
+) -> None:
     """Run exactly one task and send only a small status message to the parent."""
     try:
         with worker_reporting(connection.send):
@@ -95,7 +110,7 @@ def _run_task_child(task, device, position, cpu_threads, connection):
         connection.close()
 
 
-def _stop_children(active):
+def _stop_children(active: dict[int, dict[str, Any]]) -> None:
     for state in active.values():
         process = state["process"]
         if process.pid is not None and process.is_alive():
@@ -115,8 +130,12 @@ def _stop_children(active):
 
 
 def _run_training(
-    tasks, devices, task_list_filepath, cpu_threads, progress_mode="auto"
-):
+    tasks: Sequence[TrainingTask],
+    devices: Sequence[str],
+    task_list_filepath: str,
+    cpu_threads: int,
+    progress_mode: str = "auto",
+) -> float:
     tasks = [list(task) for task in tasks]
     devices = list(devices)
     if not devices:
@@ -153,7 +172,7 @@ def _run_training(
     original_handlers = {}
     signal_state = {"defer": False, "pending": None, "cleanup": False}
 
-    def handle_signal(signum, frame):
+    def handle_signal(signum: int, frame: FrameType | None) -> None:
         if signal_state["cleanup"]:
             return
         if signal_state["defer"]:
@@ -310,15 +329,25 @@ def _run_training(
 
 
 def parallel_training(
-    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
-):
+    tasks: Sequence[TrainingTask],
+    device_list: Sequence[str],
+    task_list_filepath: str,
+    *,
+    cpu_threads: int = 1,
+    progress: str = "auto",
+) -> float:
     """Run each task in a fresh process, with one process per device slot."""
     return _run_training(tasks, device_list, task_list_filepath, cpu_threads, progress)
 
 
 def sequential_training(
-    tasks, device_list, task_list_filepath: str, *, cpu_threads=1, progress="auto"
-):
+    tasks: Sequence[TrainingTask],
+    device_list: Sequence[str],
+    task_list_filepath: str,
+    *,
+    cpu_threads: int = 1,
+    progress: str = "auto",
+) -> float:
     """Run each task in a fresh process using the first device slot."""
     return _run_training(
         tasks, device_list[:1], task_list_filepath, cpu_threads, progress

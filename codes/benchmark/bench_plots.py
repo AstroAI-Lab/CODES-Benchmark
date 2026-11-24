@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 import os
+from types import ModuleType
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
+from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import FuncFormatter
 from scipy.ndimage import gaussian_filter1d
 
+from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.utils import batch_factor_to_float, determine_batch_size
 
 from .bench_utils import format_time
@@ -15,7 +20,7 @@ from .bench_utils import format_time
 
 
 def save_plot(
-    plt,
+    plt: ModuleType | Figure,
     filename: str,
     conf: dict,
     surr_name: str = "",
@@ -231,7 +236,7 @@ def plot_dynamic_correlation(
     errors: np.ndarray,
     save: bool = False,
     show_title: bool = True,
-):
+) -> None:
     """
     Plot the correlation between the gradients of the data and the prediction errors.
 
@@ -829,7 +834,7 @@ def plot_uncertainty_vs_errors(
 
 
 def plot_surr_losses(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     conf: dict,
     timesteps: np.ndarray,
@@ -847,7 +852,7 @@ def plot_surr_losses(
     """
     training_id = conf["training_id"]
 
-    def load_losses(model_identifier: str):
+    def load_losses(model_identifier: str) -> tuple[np.ndarray, np.ndarray, int]:
         model.load(training_id, surr_name, model_identifier=model_identifier)
         train_loss = model.train_loss
         test_loss = model.test_loss
@@ -2682,7 +2687,7 @@ def plot_comparative_gradient_heatmaps(
     plt.close()
 
 
-def get_custom_palette(num_colors):
+def get_custom_palette(num_colors: int) -> np.ndarray:
     """
     Returns a list of colors sampled from a custom color palette.
 
@@ -2848,7 +2853,7 @@ def plot_all_generalization_errors(
         axes = [axes]
 
     # Helper: given a modality key, get the corresponding data dictionary.
-    def get_modality_data(modality):
+    def get_modality_data(modality: str) -> dict:
         return {
             "interpolation": interp_data,
             "extrapolation": extrap_data,

@@ -15,6 +15,7 @@ from scipy.stats import pearsonr
 from tabulate import tabulate
 from torch.utils.data import DataLoader
 
+from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.utils import (
     batch_factor_to_float,
     check_and_load_data,
@@ -68,7 +69,9 @@ from .bench_utils import (
 TITLE = True
 
 
-def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]:
+def run_benchmark(
+    surr_name: str, surrogate_class: type[AbstractSurrogateModel], conf: dict
+) -> dict[str, Any]:
     """
     Run benchmarks for a given surrogate model.
 
@@ -231,7 +234,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
 
 
 def evaluate_accuracy(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     timesteps: np.ndarray,
     test_loader: DataLoader,
@@ -365,7 +368,7 @@ def evaluate_accuracy(
 
 
 def fixed_step_rollout(
-    model,
+    model: AbstractSurrogateModel,
     targets: np.ndarray,
     full_preds: np.ndarray,
     timesteps: np.ndarray,
@@ -444,7 +447,7 @@ def fixed_step_rollout(
 
 
 def evaluate_iterative_predictions(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     timesteps: np.ndarray,
     val_loader: DataLoader,
@@ -674,7 +677,7 @@ def evaluate_iterative_predictions(
 
 
 def evaluate_gradients(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     conf: dict,
@@ -754,7 +757,7 @@ def evaluate_gradients(
 
 
 def time_inference(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     conf: dict,
@@ -796,7 +799,7 @@ def time_inference(
 
 
 def evaluate_compute(
-    model, surr_name: str, test_loader: DataLoader, conf: dict
+    model: AbstractSurrogateModel, surr_name: str, test_loader: DataLoader, conf: dict
 ) -> dict[str, Any]:
     """
     Evaluate the computational resource requirements of the surrogate model.
@@ -886,7 +889,7 @@ def _mode_dummy_timesteps(n_timesteps: int, mode: str, metric: int) -> np.ndarra
 
 
 def _mode_loader(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     conf: dict,
     val_data: np.ndarray,
@@ -924,7 +927,7 @@ def _mode_loader(
 
 
 def evaluate_interpolation(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1043,7 +1046,7 @@ def evaluate_interpolation(
 
 
 def evaluate_extrapolation(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1160,7 +1163,7 @@ def evaluate_extrapolation(
 
 
 def evaluate_sparse(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1245,7 +1248,7 @@ def evaluate_sparse(
 
 
 def evaluate_batchsize(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1346,7 +1349,7 @@ def evaluate_batchsize(
 
 
 def evaluate_UQ(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1457,7 +1460,7 @@ def evaluate_UQ(
     return uq_metrics
 
 
-def compare_models(metrics: dict, config: dict):
+def compare_models(metrics: dict, config: dict) -> None:
     """
     Aggregate surrogate-level metrics into comparison plots and CSV summaries.
 
@@ -1551,7 +1554,7 @@ def compare_main_losses(metrics: dict, config: dict) -> None:
             config=model_config,
         )
 
-        def load_losses(model_identifier: str):
+        def load_losses(model_identifier: str) -> tuple[np.ndarray, np.ndarray]:
             model.load(training_id, surr_name, model_identifier=model_identifier)
             return model.train_loss, model.test_loss
 
