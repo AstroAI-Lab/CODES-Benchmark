@@ -190,9 +190,8 @@ def validate_execution_settings(device, cpu_threads):
             raise ValueError(
                 f"CUDA device {device!r} is not available among visible devices"
             )
-    elif selected_device.type == "mps":
-        if not torch.backends.mps.is_available():
-            raise ValueError(f"MPS device {device!r} is not available")
+    elif selected_device.type == "mps" and not torch.backends.mps.is_available():
+        raise ValueError(f"MPS device {device!r} is not available")
     return selected_device
 
 

@@ -312,7 +312,7 @@ rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
-ruff==0.17.3
+ruff==0.17.6
 schedulefree==1.4.1
     # via codes
 scipy==1.17.1

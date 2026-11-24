@@ -36,7 +36,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff==0.17.3",
+    "ruff==0.17.6",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
@@ -55,7 +55,7 @@ pythonpath = ["."]
 include = ["codes*"]
 
 [tool.ruff]
-required-version = "==0.17.3"
+required-version = "==0.17.6"
 line-length = 88
 target-version = "py311"
 
