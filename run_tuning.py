@@ -17,6 +17,7 @@ from codes.tune import (
     apply_tuning_defaults,
     build_fine_optuna_params,
     create_objective,
+    ensure_study_timing,
     initialize_optuna_database,
     load_yaml_config,
     maybe_set_runtime_threshold,
@@ -90,6 +91,9 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
             pruner=pruner,
             load_if_exists=True,
         )
+
+    if multi_objective:
+        ensure_study_timing(study)
 
     have = _count_valid_trials(study)
     if have >= config["n_trials"]:

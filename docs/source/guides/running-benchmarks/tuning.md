@@ -86,6 +86,24 @@ You can add `global_optuna_params` for common parameters, enable `fine: true` fo
 
 You can resume a study by rerunning the same command; Optuna reuses the storage and continues sampling until `n_trials` valid runs exist. Trial budgets are usually sized heuristically (e.g., `~15 ×` the number of tuned hyperparameters), but you can override per surrogate via the `trials` field.
 
+### Inference timing and existing studies
+
+Multi-objective tuning and refinement use the same timing method as evaluation.
+Each measurement has one unmeasured warm-up pass followed by five measured passes.
+CUDA and MPS work is synchronized immediately before and after each forward call.
+The objective is the mean summed forward-call wall time over the held-out loader.
+Data-loader iteration is outside the measured intervals. CPU timing uses the same
+warm-up without accelerator waits.
+
+The `inference_timing` attribute records the protocol on the study and its trials.
+Trials also record the device, batch size, and number of predicted states. Existing
+multi-objective studies with legacy or unmarked timing objectives cannot be resumed.
+Use a new `tuning_id` or study name and retain the old study for historical analysis.
+Single-objective accuracy studies can still be resumed.
+
+Keep the GPU type, batch size, and workload fixed when comparing trial timings.
+Other work on the same GPU can affect measured times even when calls are synchronized.
+
 ## Capturing the best hyperparameters
 
 CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect studies:

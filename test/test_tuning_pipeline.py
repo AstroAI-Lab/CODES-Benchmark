@@ -8,10 +8,12 @@ import pytest
 from optuna.trial import TrialState
 
 import codes.surrogates.AbstractSurrogate.abstract_surrogate as abstract_surrogate
+from codes.benchmark.bench_utils import inference_timing_metadata
 from codes.surrogates import FullyConnected
 from codes.tune.optuna_fcts import (
     MODULE_REGISTRY,
     create_objective,
+    ensure_study_timing,
     make_optuna_params,
     maybe_set_runtime_threshold,
 )
@@ -48,7 +50,8 @@ class DummyModel:
         pass
 
     def prepare_data(self, **kwargs):
-        return "train_loader", "test_loader", None
+        loader = SimpleNamespace(batch_size=kwargs["batch_size"], dataset=None)
+        return "train_loader", loader, None
 
     def fit(self, **kwargs):
         pass
@@ -340,9 +343,17 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
     monkeypatch.setattr("codes.tune.optuna_fcts.set_random_seeds", lambda *a, **k: None)
 
     class DummyModel2(DummyModel):
+        def prepare_data(self, **kwargs):
+            loader = SimpleNamespace(batch_size=None, dataset=SimpleNamespace(bs=6))
+            return "train_loader", loader, None
+
+        def eval(self):
+            self.evaluating = True
+
         def predict(self, loader, leave_log=False):
             import torch
 
+            assert self.evaluating
             return torch.zeros((3, 5, 1)), torch.ones((3, 5, 1))
 
     monkeypatch.setattr(
@@ -357,12 +368,122 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
     )
     monkeypatch.setattr("codes.tune.optuna_fcts.np.percentile", lambda x, q: 5.0)
 
-    trial = type("T", (object,), {"number": 2})()
+    trial = optuna.create_study(directions=["minimize", "minimize"]).ask()
     val = __import__("codes.tune.optuna_fcts", fromlist=["training_run"]).training_run(
         trial, "cpu", 1, config, "study_2"
     )
     # expect (loss, mean_inference)
     assert isinstance(val, tuple) and val[0] == 5.0 and val[1] == pytest.approx(2.0)
+    assert trial.user_attrs["inference_timing"] == inference_timing_metadata()
+    assert trial.user_attrs["inference_device"] == "cpu"
+    assert trial.user_attrs["inference_batch_size"] == 6
+    assert trial.user_attrs["inference_num_predictions"] == 15
+
+
+@pytest.mark.parametrize("legacy_study", [False, True])
+def test_study_timing_allows_oom_penalty_trial_on_resume(monkeypatch, legacy_study):
+    import torch
+
+    study = optuna.create_study(directions=["minimize", "minimize"])
+    if not legacy_study:
+        ensure_study_timing(study)
+    devices = queue.Queue()
+    devices.put(("cpu", 0))
+
+    def fail_with_oom(*args, **kwargs):
+        raise torch.cuda.OutOfMemoryError("test OOM")
+
+    monkeypatch.setattr("codes.tune.optuna_fcts.training_run", fail_with_oom)
+    study.optimize(
+        create_objective({"multi_objective": True}, "oom", devices), n_trials=1
+    )
+    trial = study.trials[0]
+    assert trial.state == TrialState.COMPLETE
+    assert "exception" in trial.user_attrs
+    assert "inference_timing" not in trial.user_attrs
+    ensure_study_timing(study)
+    assert study.user_attrs["inference_timing"] == inference_timing_metadata()
+
+
+def test_study_timing_records_protocol_and_allows_matching_resume():
+    study = optuna.create_study(directions=["minimize", "minimize"])
+    ensure_study_timing(study)
+    assert study.user_attrs["inference_timing"] == inference_timing_metadata()
+    trial = study.ask()
+    trial.set_user_attr("inference_timing", inference_timing_metadata())
+    study.tell(trial, [0.1, 0.2])
+    ensure_study_timing(study)
+    assert study.trials[0].values == [0.1, 0.2]
+
+
+@pytest.mark.parametrize("state", [TrialState.COMPLETE, TrialState.RUNNING])
+def test_study_timing_rejects_unmarked_legacy_trials_without_modifying_them(state):
+    study = optuna.create_study(directions=["minimize", "minimize"])
+    trial = study.ask()
+    if state == TrialState.COMPLETE:
+        study.tell(trial, [0.1, 0.2])
+    with pytest.raises(ValueError, match="new tuning_id/study name"):
+        ensure_study_timing(study)
+    assert study.user_attrs == {}
+    assert study.trials[0].user_attrs == {}
+    assert study.trials[0].state == state
+
+
+def test_study_timing_rejects_incompatible_protocol_and_mixed_trials():
+    study = optuna.create_study(directions=["minimize", "minimize"])
+    study.set_user_attr(
+        "inference_timing", {"timing_method": "legacy_forward_wall_time"}
+    )
+    with pytest.raises(ValueError, match="incompatible"):
+        ensure_study_timing(study)
+
+    # A study-level marker cannot make older unmarked objectives compatible.
+    study.set_user_attr("inference_timing", inference_timing_metadata())
+    trial = study.ask()
+    study.tell(trial, [0.1, 0.2])
+    with pytest.raises(ValueError, match="incompatible"):
+        ensure_study_timing(study)
+
+
+def test_study_timing_allows_failed_trials_without_objective_values():
+    study = optuna.create_study(directions=["minimize", "minimize"])
+    trial = study.ask()
+    study.tell(trial, state=TrialState.FAIL)
+    ensure_study_timing(study)
+    assert study.user_attrs["inference_timing"] == inference_timing_metadata()
+
+
+def test_cli_rejects_legacy_study_before_training(monkeypatch, tmp_path):
+    import run_tuning
+
+    storage = f"sqlite:///{tmp_path / 'legacy.db'}"
+    study = optuna.create_study(
+        study_name="legacy", directions=["minimize", "minimize"], storage=storage
+    )
+    trial = study.ask()
+    study.tell(trial, [0.1, 0.2])
+    monkeypatch.setattr(
+        run_tuning,
+        "download_data",
+        lambda *a, **k: pytest.fail("Legacy study must be rejected before training"),
+    )
+    config = {"multi_objective": True, "seed": 42, "population_size": 50, "n_trials": 2}
+    with pytest.raises(ValueError, match="new tuning_id/study name"):
+        run_tuning.run_single_study(config, "legacy", storage, True)
+    unchanged = optuna.load_study(study_name="legacy", storage=storage)
+    assert unchanged.trials[0].values == [0.1, 0.2]
+    assert unchanged.user_attrs == {}
+
+
+def test_cli_preserves_single_objective_study_resume(tmp_path):
+    import run_tuning
+
+    storage = f"sqlite:///{tmp_path / 'accuracy.db'}"
+    study = optuna.create_study(study_name="accuracy", storage=storage)
+    study.tell(study.ask(), 0.1)
+    config = {"multi_objective": False, "seed": 42, "epochs": 8, "n_trials": 1}
+    run_tuning.run_single_study(config, "accuracy", storage, True)
+    assert optuna.load_study(study_name="accuracy", storage=storage).user_attrs == {}
 
 
 def test_create_objective_simple(monkeypatch):

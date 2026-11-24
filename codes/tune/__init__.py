@@ -9,6 +9,7 @@ from .optuna_fcts import (
     _count_valid_trials,
     build_fine_optuna_params,
     create_objective,
+    ensure_study_timing,
     load_yaml_config,
     make_optuna_params,
     maybe_set_runtime_threshold,
@@ -34,6 +35,7 @@ from .tune_utils import (
 
 __all__ = [
     "create_objective",
+    "ensure_study_timing",
     "MaxValidTrialsCallback",
     "build_fine_optuna_params",
     "load_yaml_config",

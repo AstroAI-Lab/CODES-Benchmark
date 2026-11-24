@@ -188,6 +188,47 @@ def test_measure_inference_time():
     assert all(t >= 0.0 for t in times)
 
 
+@pytest.mark.parametrize("device", ["cuda:0", "cuda:1", "mps", "cpu", None])
+def test_inference_waits_for_device_and_excludes_warmup(monkeypatch, device):
+    events = []
+
+    class Dummy:
+        def forward(self, inputs):
+            assert torch.is_inference_mode_enabled()
+            events.append("forward")
+            return inputs, inputs
+
+    def synchronize(actual_device):
+        assert actual_device == torch.device(device)
+        events.append("wait")
+
+    def mps_synchronize():
+        assert device == "mps"
+        events.append("wait")
+
+    def clock():
+        events.append("clock")
+        return float(events.count("clock"))
+
+    monkeypatch.setattr(torch.cuda, "synchronize", synchronize)
+    monkeypatch.setattr(torch.mps, "synchronize", mps_synchronize)
+    monkeypatch.setattr(bu.time, "perf_counter", clock)
+    model = Dummy()
+    model.device = device
+    assert bu.measure_inference_time(model, [1, 2], 2) == [2, 2]
+    wait = ["wait"] if device and device.startswith(("cuda", "mps")) else []
+    assert (
+        events
+        == ["forward"] * 2 + wait + (wait + ["clock", "forward"] + wait + ["clock"]) * 4
+    )
+
+
+@pytest.mark.parametrize("n_runs", [0, -1, True, 1.5])
+def test_inference_requires_positive_measurement_count(n_runs):
+    with pytest.raises(ValueError, match="positive integer"):
+        bu.measure_inference_time(None, [], n_runs=n_runs)
+
+
 @pytest.mark.parametrize(
     "train_bs, eval_bs", [(8, 8), ([8, 16], [8, 16]), (8, [8, 8]), ([8, 8], 8)]
 )

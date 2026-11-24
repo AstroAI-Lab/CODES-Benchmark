@@ -15,6 +15,27 @@ from torch.utils.data import DataLoader
 from codes.surrogates import SurrogateModel, surrogate_classes
 from codes.utils import determine_batch_size, get_version_info, read_yaml_config
 
+INFERENCE_TIMING_RUNS = 5
+
+
+def inference_timing_metadata(
+    n_runs: int = INFERENCE_TIMING_RUNS,
+) -> dict[str, str | int]:
+    """Identify the inference timing protocol shared by evaluation and tuning."""
+    return {
+        "timing_method": "synchronized_forward_wall_time",
+        "warmup_runs": 1,
+        "n_runs": n_runs,
+    }
+
+
+def inference_batch_size(loader: DataLoader) -> int | None:
+    """Return the batch size of a standard or pre-batched inference loader."""
+    size = loader.batch_size
+    if size is None:
+        size = getattr(loader.dataset, "bs", None)
+    return size
+
 
 def check_surrogate(surrogate: str, conf: dict) -> None:
     """
@@ -744,29 +765,40 @@ def get_model_config(surr_name: str, config: dict) -> dict:
 
 
 def measure_inference_time(
-    model,
+    model: SurrogateModel,
     test_loader: DataLoader,
-    n_runs: int = 5,
+    n_runs: int = INFERENCE_TIMING_RUNS,
 ) -> list[float]:
-    """
-    Measure total inference time over a DataLoader across multiple runs.
+    """Measure forward-call wall time over a loader after an unmeasured warm-up.
 
-    Args:
-        model: Model instance with a `.forward()` method.
-        test_loader (DataLoader): Loader with test data.
-        n_runs (int): Number of repeated runs for averaging.
-
-    Returns:
-        list[float]: List of total inference times per run (in seconds).
+    Data loading is excluded from the measured intervals. Accelerator work is
+    synchronized immediately before and after each forward call.
     """
+    if isinstance(n_runs, bool) or not isinstance(n_runs, int) or n_runs <= 0:
+        raise ValueError("n_runs must be a positive integer")
+
+    device = torch.device(getattr(model, "device", None) or "cpu")
+
+    def wait_for_device() -> None:
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        elif device.type == "mps":
+            torch.mps.synchronize()
+
+    with torch.inference_mode():
+        for inputs in test_loader:
+            model.forward(inputs)
+    wait_for_device()
+
     inference_times = []
     for _ in range(n_runs):
-        total_time = 0
+        total_time = 0.0
         with torch.inference_mode():
             for inputs in test_loader:
+                wait_for_device()
                 start_time = time.perf_counter()
-                _, _ = model.forward(inputs)
-                end_time = time.perf_counter()
-                total_time += end_time - start_time
+                model.forward(inputs)
+                wait_for_device()
+                total_time += time.perf_counter() - start_time
         inference_times.append(total_time)
     return inference_times

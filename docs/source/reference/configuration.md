@@ -52,6 +52,11 @@ All modality blocks are disabled if omitted. If `enabled: true`, the correspondi
 
 ## Evaluation switches
 
+Inference timing uses one unmeasured warm-up pass and five measured passes. CUDA and
+MPS work is synchronized around each measured forward call. Data-loader iteration
+is excluded from the timed intervals. Evaluation results record the timing method,
+repetition count, device, batch size, and number of predicted states.
+
 All switches default to `false` if omitted.
 
 | Key | Default | Notes |

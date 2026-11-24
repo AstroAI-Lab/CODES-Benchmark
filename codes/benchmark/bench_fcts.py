@@ -49,12 +49,15 @@ from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; p
     plot_uncertainty_over_time_comparison,
 )
 from .bench_utils import (
+    INFERENCE_TIMING_RUNS,
     count_trainable_parameters,
     format_seconds,
     format_time,
     format_value,
     get_model_config,
     get_surrogate,
+    inference_batch_size,
+    inference_timing_metadata,
     make_comparison_csv,
     measure_inference_time,
     measure_memory_footprint,
@@ -756,7 +759,7 @@ def time_inference(
     test_loader: DataLoader,
     conf: dict,
     n_test_samples: int,
-    n_runs: int = 5,
+    n_runs: int = INFERENCE_TIMING_RUNS,
 ) -> dict[str, Any]:
     """
     Time the inference of the surrogate model (full version with metrics).
@@ -784,8 +787,11 @@ def time_inference(
         "mean_inference_time_per_run": mean_inference_time,
         "std_inference_time_per_run": std_inference_time,
         "num_predictions": n_test_samples,
+        "device": str(getattr(model, "device", "cpu")),
+        "batch_size": inference_batch_size(test_loader),
         "mean_inference_time_per_prediction": mean_inference_time / n_test_samples,
         "std_inference_time_per_prediction": std_inference_time / n_test_samples,
+        **inference_timing_metadata(n_runs),
     }
 
 

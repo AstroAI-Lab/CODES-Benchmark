@@ -28,6 +28,10 @@ affecting results".
 
 ### Changes affecting results
 
+- Evaluation and multi-objective tuning now use a shared inference timing protocol
+  with one unmeasured warm-up and synchronization around each accelerator forward
+  pass. Legacy multi-objective studies cannot be resumed with the new timings.
+
 - Iterative evaluation now restarts each chunk from the prediction at that chunk's
   start, rather than the prediction one timestep earlier.
 - Rollout time inputs now follow the stored time grid, including non-uniform grids,

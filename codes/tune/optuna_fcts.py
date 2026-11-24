@@ -15,12 +15,42 @@ from tqdm import tqdm
 from codes.benchmark.bench_utils import (
     get_model_config,
     get_surrogate,
+    inference_batch_size,
+    inference_timing_metadata,
     measure_inference_time,
 )
 from codes.utils import check_and_load_data, make_description, set_random_seeds
 from codes.utils.data_utils import download_data
 
 _inference_time_lock = threading.Lock()
+
+
+def ensure_study_timing(study: optuna.Study) -> None:
+    """Prevent incompatible multi-objective measurements in a resumed study."""
+    protocol = inference_timing_metadata()
+    recorded = study.user_attrs.get("inference_timing")
+    trials = study.get_trials(deepcopy=False)
+    incompatible = recorded is not None and recorded != protocol
+    unknown_active = recorded is None and any(
+        trial.state == TrialState.RUNNING
+        or (trial.state == TrialState.COMPLETE and "exception" not in trial.user_attrs)
+        for trial in trials
+    )
+    mixed_completed = any(
+        trial.state == TrialState.COMPLETE
+        and "exception" not in trial.user_attrs
+        and trial.user_attrs.get("inference_timing") != protocol
+        for trial in trials
+    )
+    if incompatible or unknown_active or mixed_completed:
+        raise ValueError(
+            f"Study {study.study_name!r} contains legacy, unknown or incompatible "
+            "inference timings. Use a new tuning_id/study name for synchronized "
+            "HPO; keep the existing study for historical analysis."
+        )
+    if recorded is None:
+        study.set_user_attr("inference_timing", protocol)
+
 
 MODULE_REGISTRY: dict[str, type[nn.Module]] = {
     "relu": nn.ReLU,
@@ -314,6 +344,8 @@ def training_run(
         multi_objective=config.get("multi_objective", False),
     )
 
+    if config.get("multi_objective", False):
+        model.eval()
     preds, targets = model.predict(test_loader, leave_log=True)
     abs_err = (preds - targets).abs().flatten()
     q = float(config.get("target_percentile", 0.99))
@@ -330,6 +362,15 @@ def training_run(
     model.save(model_name=model_name, base_dir="", training_id=savepath)
 
     if config.get("multi_objective", False):
+        trial.set_user_attr("inference_timing", inference_timing_metadata())
+        trial.set_user_attr("inference_device", str(device))
+        trial.set_user_attr(
+            "inference_batch_size",
+            inference_batch_size(test_loader) or config["batch_size"],
+        )
+        trial.set_user_attr(
+            "inference_num_predictions", int(test_data.shape[0] * test_data.shape[1])
+        )
         with _inference_time_lock:
             inference_times = measure_inference_time(model, test_loader)
         return p99_dex, np.mean(inference_times)
