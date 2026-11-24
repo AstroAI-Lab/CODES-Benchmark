@@ -213,6 +213,14 @@ def test_cpu_allocation_and_visible_cuda_validation(monkeypatch):
         set_device.assert_not_called()
 
 
+def test_unavailable_mps_is_rejected():
+    with (
+        patch("codes.train.tasks.torch.backends.mps.is_available", return_value=False),
+        pytest.raises(ValueError, match="MPS device 'mps' is not available"),
+    ):
+        execute_training_task(("x",), device="mps")
+
+
 def test_cli_propagates_failed_training_without_success_message(
     monkeypatch, tmp_path, capsys
 ):
