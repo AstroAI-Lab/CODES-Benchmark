@@ -1,0 +1,42 @@
+{
+  "current": "aa-reference-2026-11",
+  "snapshots": {
+    "aa-reference-2026-11": {
+      "title": "A&A reference configurations (November 2026)",
+      "summary": "Published A&A configurations rerun with corrected CODES. The four original architectures were trained with three independent seeds and five ensemble members per seed, using the archived hyperparameters.",
+      "dataset_record": "https://doi.org/10.5281/zenodo.18018572",
+      "paper": "https://doi.org/10.1051/0004-6361/202658937",
+      "results_sha256": "f83bf48057f35d3e5a6c96fb840252e39b6263b12f2816fac3446a881ee8e280",
+      "evaluation_split": "Validation (val)",
+      "timing": "Synchronized forward calls after one warm-up pass. Each run's total forward-call time is divided by validation trajectories × stored timesteps. The protocol uses model-specific batch sizes.",
+      "rollout": "Ordinary training · stored time grid · 10 stored steps per chunk",
+      "notes": {
+        "cloud": "FullyConnected seed 142 diverged during repeated prediction (132.386 dex). All three FullyConnected seeds also overflowed the real-space rollout error summaries. The log-space results remain visible.",
+        "primordial_parametric": "MultiONet seed 42 diverged during repeated prediction (6.563 dex). Real-space rollout error summaries overflowed for this run and for FullyConnected seed 142.",
+        "cloud_parametric": "The training split was subsampled by a factor of two. Evaluation used the full validation split. All three MultiONet seeds overflowed the real-space rollout error summaries."
+      },
+      "diagnostics": {
+        "cloud": {
+          "catastrophic-error-recall.svg": "19567b8365fc71df21231f0775007f241aeb5d2949fcf2f6c19cc80ccea24e8b",
+          "error-distribution.svg": "5db0eb32ada9a096f7edc08646b1104abba5570607a8c95d637df34408aed4f9",
+          "plot-data.json": "14fa5bc05d1fb3ba102d210e83e43cd1074ed1f447b1fc318ec042d455d96a5d"
+        },
+        "cloud_parametric": {
+          "catastrophic-error-recall.svg": "fe0f2cf63670829464b05356200345ab609523782e2cd85b5d85bfa522628abf",
+          "error-distribution.svg": "f9fafc6e19e7d54c6a6ba86d3aba078551723bb44de175b25461ac8ef4d6991f",
+          "plot-data.json": "d89083b6f4ce0099795f9493d949ddfa5808ae6f9aab16a3210889b0f829d474"
+        },
+        "primordial": {
+          "catastrophic-error-recall.svg": "51bc9482c6db0c13a51e0049814445f18881bc60fbe2a6025a8594c3e0a83ada",
+          "error-distribution.svg": "49e4db1f5b6bcaa91963cba7587bb61967f28d9ed147360ed8b4d861f42252c7",
+          "plot-data.json": "9595120acee9547212d4cf85465aa2507a6806502eb03e7323a2941e690e83ae"
+        },
+        "primordial_parametric": {
+          "catastrophic-error-recall.svg": "f6210c8f105f9ce890a1a33c116b690e8ff564026677dd7c3be7389ac1f236d5",
+          "error-distribution.svg": "5afcf299b71d3114c4e55da251b804f35247be35a72710a5b2d81088e2a53865",
+          "plot-data.json": "abe8e7389310afb4c6519a6b77a9d9ef2cabfa57c6209293c0a4b4a195ea9669"
+        }
+      }
+    }
+  }
+}

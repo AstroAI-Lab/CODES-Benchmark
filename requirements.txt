@@ -188,25 +188,25 @@ nvidia-cublas==13.1.1.3 ; sys_platform == 'linux'
     #   cuda-toolkit
     #   nvidia-cudnn-cu13
     #   nvidia-cusolver
-nvidia-cuda-cupti==13.0.85 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cuda-cupti==13.0.85 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
 nvidia-cuda-nvrtc==13.0.88 ; sys_platform == 'linux'
     # via
     #   cuda-toolkit
     #   nvidia-cublas
-nvidia-cuda-runtime==13.0.96 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cuda-runtime==13.0.96 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
 nvidia-cudnn-cu13==9.24.0.43 ; sys_platform == 'linux'
     # via torch
-nvidia-cufft==12.0.0.61 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cufft==12.0.0.61 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
-nvidia-cufile==1.15.1.6 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cufile==1.15.1.6 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
-nvidia-curand==10.4.0.35 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-curand==10.4.0.35 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
-nvidia-cusolver==12.0.4.66 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cusolver==12.0.4.66 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
-nvidia-cusparse==12.6.3.3 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cusparse==12.6.3.3 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via
     #   cuda-toolkit
     #   nvidia-cusolver
@@ -214,7 +214,7 @@ nvidia-cusparselt-cu13==0.8.1 ; sys_platform == 'linux'
     # via torch
 nvidia-nccl-cu13==2.30.7 ; sys_platform == 'linux'
     # via torch
-nvidia-nvjitlink==13.0.88 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-nvjitlink==13.0.88 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via
     #   cuda-toolkit
     #   nvidia-cufft
@@ -222,7 +222,7 @@ nvidia-nvjitlink==13.0.88 ; (platform_machine == 'aarch64' and sys_platform == '
     #   nvidia-cusparse
 nvidia-nvshmem-cu13==3.4.5 ; sys_platform == 'linux'
     # via torch
-nvidia-nvtx==13.0.85 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-nvtx==13.0.85 ; (platform_machine == 'aarch64' or platform_machine == 'x86_64') and sys_platform == 'linux'
     # via cuda-toolkit
 optuna==4.8.0
     # via

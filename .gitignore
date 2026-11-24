@@ -38,3 +38,4 @@ docs/_build/
 docs/docs/
 .coverage
 tuned/
+/docs/source/benchmarks/snapshots/
