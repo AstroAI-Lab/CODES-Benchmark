@@ -176,11 +176,16 @@ uv run run_tuning.py --slurm status --manifest tuning.json
 Check `valid` against `target` after the array finishes. Use the original
 manifest for another array when the study still has budget. Keep the GPU model,
 software, and inference workload consistent for every worker in a timed study.
-Pass the `tuning_id` as the study prefix when generating Pareto plots. If the
-run used PostgreSQL, keep the connection environment set for analysis.
+Pass the `tuning_id` as the study prefix when generating Pareto plots.
 
 ```bash
 uv run python -m codes.tune.evaluate_tuning --study_name my_tuning_id --chosen_indices ''
+```
+
+For a PostgreSQL study configured through `.env`, use this command.
+
+```bash
+uv run --env-file .env python -m codes.tune.evaluate_tuning --study_name my_tuning_id --chosen_indices ''
 ```
 
 ## Capturing the best hyperparameters
@@ -238,18 +243,36 @@ storage:
   backend: postgres
 ```
 
-On the submission host, set a connection URL without the password and provide
-the password in a [libpq passfile](https://www.postgresql.org/docs/current/libpq-pgpass.html).
-Save `DB_HOST:5432:DB_NAME:DB_USER:DB_PASSWORD` in the passfile using your site's
-values. Put the file on a path visible to the workers and set its permissions to
-`0600`. Use the TLS settings your site provides.
+In the CODES repository root, create `.env` alongside `pyproject.toml` by
+copying `.env.example` if you do not already have a file. Git ignores `.env`.
+Restrict the file to your account, then edit it to use the host, port, database,
+role, password, and TLS settings from your site.
 
 ```bash
-export PGPASSFILE="$HOME/.pgpass-codes"
-chmod 600 "$PGPASSFILE"
-export CODES_OPTUNA_STORAGE_URL='postgresql+psycopg2://DB_USER@DB_HOST:5432/DB_NAME'
+cp .env.example .env
+chmod 600 .env
+```
 
-uv run python - <<'PY'
+```dotenv
+CODES_OPTUNA_STORAGE_URL=postgresql+psycopg2://DB_USER@DB_HOST:5432/DB_NAME
+PGPASSWORD='DB_PASSWORD'
+# PGSSLMODE=verify-full
+# PGSSLROOTCERT=/absolute/path/to/ca.pem
+```
+
+Slurm workers inherit `PGPASSWORD` in their job environment. To keep the
+password out of that environment, remove `PGPASSWORD` and set
+`PGPASSFILE="${HOME}/.pgpass-codes"` in `.env`. Add a line in the form
+`DB_HOST:5432:DB_NAME:DB_USER:DB_PASSWORD` to the passfile, using your connection
+values. Set its permissions to `0600` and put it on a path the workers can read.
+[PostgreSQL password files](https://www.postgresql.org/docs/current/libpq-pgpass.html)
+
+Use `--env-file .env` for the connection check, submission, and status. If you
+previously exported any of these variables, unset them before using `.env` so
+the shell values do not override the file.
+
+```bash
+uv run --env-file .env python - <<'PY'
 import os
 from sqlalchemy import create_engine, text
 
@@ -257,13 +280,14 @@ engine = create_engine(os.environ["CODES_OPTUNA_STORAGE_URL"])
 with engine.connect() as connection:
     print(connection.execute(text("SELECT 1")).scalar_one())
 PY
-uv run run_tuning.py --slurm submit --config tune-postgres.yaml
-uv run run_tuning.py --slurm status --config tune-postgres.yaml
+uv run --env-file .env run_tuning.py --slurm submit --config tune-postgres.yaml
+uv run --env-file .env run_tuning.py --slurm status --config tune-postgres.yaml
 ```
 
-Keep the variables exported for submission, status, and analysis. If your site
-launcher filters the environment, configure it to pass the connection settings
-to workers and preserve access to the passfile.
+CODES passes the submission environment to Slurm's workers. If your site
+launcher filters it, preserve the connection variables and access to any
+passfile or TLS files you configured. If you use the pip workflow, export the
+same variables in your activated environment before invoking the Python commands.
 
 Existing local configs that specify `postgres_config` without a backend continue
 to use PostgreSQL. Explicit `storage.backend: sqlite` with `storage.path` is
