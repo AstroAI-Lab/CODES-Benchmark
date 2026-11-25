@@ -12,6 +12,8 @@ affecting results".
 
 - Optional Slurm arrays for fixed training assignments and shared PostgreSQL
   Optuna studies, with progress inspection and restart support.
+- One-command Slurm submission for training and tuning, with scheduler options
+  in the run YAML and automatically prepared manifests.
 
 - Publish versioned benchmark tables for the four A&A datasets, with absolute
   log-error distributions, catastrophic-error recall curves, per-seed

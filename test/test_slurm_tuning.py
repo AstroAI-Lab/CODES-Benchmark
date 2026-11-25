@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import optuna
 import pytest
@@ -61,6 +62,48 @@ def test_prepare_freezes_config_and_rejects_changes(config, setup):
         slurm.prepare(config, path, "FullyConnected", None)
     study = optuna.load_study(study_name=data["study_name"], storage=storage)
     assert study.user_attrs[slurm.STUDY_FINGERPRINT]
+
+
+def test_submit_prepares_selected_study_and_uses_worker_count(
+    config, setup, monkeypatch
+):
+    from types import SimpleNamespace
+
+    import run_tuning
+
+    path, _ = setup
+    config["slurm"] = {"workers": 3, "cpus_per_task": 2}
+    submitted = []
+    monkeypatch.setattr(
+        "codes.slurm.submit_array",
+        lambda manifest, indices, options, worker_args: (
+            submitted.append((manifest, indices, options, worker_args)) or "7654"
+        ),
+    )
+    monkeypatch.setattr(
+        run_tuning,
+        "parse_arguments",
+        lambda: SimpleNamespace(
+            config="optuna.yaml",
+            slurm="submit",
+            manifest=None,
+            study="FullyConnected",
+            max_attempts=None,
+            device="cpu",
+            cpu_threads=1,
+        ),
+    )
+    monkeypatch.setattr(run_tuning, "load_yaml_config", lambda _: config)
+    run_tuning.main()
+    manifest, indices, options, worker_args = submitted[0]
+    assert (
+        manifest
+        == Path("tuned/slurm_example/slurm_example_fullyconnected.slurm.json").resolve()
+    )
+    assert indices == [0, 1, 2]
+    assert options.cpus_per_task == 2
+    assert worker_args[worker_args.index("--cpu-threads") + 1] == "2"
+    assert "slurm" not in json.loads(manifest.read_text())["config"]
 
 
 def test_singular_config_uses_model_suffixed_study_name(config, setup):

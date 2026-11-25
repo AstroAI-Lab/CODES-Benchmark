@@ -122,6 +122,8 @@ def _load_manifest(path: Path) -> dict:
 def prepare_training(config_path: str, manifest_path: str) -> None:
     """Freeze configuration and deterministic task assignments for one run."""
     config = read_yaml_config(config_path)
+    # Scheduler resources may change when resubmitting unfinished work.
+    config.pop("slurm", None)
     training_id = config["training_id"]
     path = Path(manifest_path).resolve()
     run_dir = _run_dir(training_id)
@@ -297,9 +299,20 @@ def run_worker(
 def training_status(manifest_path: str) -> None:
     """Report completed and retryable assignment indices."""
     manifest = _load_manifest(Path(manifest_path).resolve())
+    pending = unfinished_training_indices(manifest_path, manifest=manifest)
+    completed = len(manifest["tasks"]) - len(pending)
+    print(f"Completed: {completed}/{len(manifest['tasks'])}")
+    print("Retry indices: " + (",".join(map(str, pending)) if pending else "none"))
+
+
+def unfinished_training_indices(
+    manifest_path: str | Path, *, manifest: dict | None = None
+) -> list[int]:
+    """Return assignments without both completion state and saved artifacts."""
+    if manifest is None:
+        manifest = _load_manifest(Path(manifest_path).resolve())
     config = manifest["config"]
     state_dir = _run_dir(config["training_id"]) / "slurm_tasks"
-    done = []
     pending = []
     for index, task in enumerate(manifest["tasks"]):
         checkpoint = _checkpoint(config, task)
@@ -308,8 +321,7 @@ def training_status(manifest_path: str) -> None:
             and checkpoint.is_file()
             and checkpoint.with_suffix(".yaml").is_file()
         ):
-            done.append(index)
+            continue
         else:
             pending.append(index)
-    print(f"Completed: {len(done)}/{len(manifest['tasks'])}")
-    print("Retry indices: " + (",".join(map(str, pending)) if pending else "none"))
+    return pending

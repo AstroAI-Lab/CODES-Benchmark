@@ -76,7 +76,7 @@ def _study_config(
         result = {
             key: value
             for key, value in config.items()
-            if key not in ("storage", "postgres_config", "devices")
+            if key not in ("storage", "postgres_config", "devices", "slurm")
         }
         result["n_trials"] = config.get("n_trials", config["trials"])
         return result, f"{tuning_id}_{model_name.lower()}"
@@ -196,7 +196,8 @@ def _public_config(config: dict[str, Any]) -> dict[str, Any]:
     return {
         key: value
         for key, value in config.items()
-        if key not in {"postgres_config", "storage", "devices", "_overwrite_run"}
+        if key
+        not in {"postgres_config", "storage", "devices", "slurm", "_overwrite_run"}
     }
 
 

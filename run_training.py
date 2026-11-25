@@ -1,6 +1,7 @@
 import os
 from argparse import ArgumentParser
 from datetime import timedelta
+from pathlib import Path
 
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
@@ -89,6 +90,55 @@ def main(args):
     if getattr(args, "slurm", None):
         from codes.train.slurm import prepare_training, run_worker, training_status
 
+        if args.slurm == "submit":
+            from codes.slurm import SlurmOptions, submit_array
+            from codes.train.slurm import _load_manifest, unfinished_training_indices
+            from codes.utils import read_yaml_config
+
+            config = read_yaml_config(args.config)
+            options = SlurmOptions.from_config(config.get("slurm", {}))
+            if config.get("cpu_threads", 1) > options.cpus_per_task:
+                raise ValueError(
+                    "training cpu_threads cannot exceed slurm.cpus_per_task; adjust both settings explicitly"
+                )
+            dataset = Path("datasets") / config["dataset"]["name"].lower() / "data.hdf5"
+            if not os.path.isfile(dataset):
+                raise FileNotFoundError(
+                    f"Dataset must be staged before Slurm submission: {dataset}"
+                )
+            manifest = Path(
+                args.manifest
+                or Path("trained") / config["training_id"] / "manifest.json"
+            ).resolve()
+            prepare_training(args.config, manifest)
+            frozen = _load_manifest(manifest)
+            indices = unfinished_training_indices(manifest, manifest=frozen)
+            if not indices:
+                print("All training tasks are already complete")
+                return
+            job_id = submit_array(
+                manifest,
+                indices,
+                options,
+                [
+                    str(Path(__file__).resolve()),
+                    "--slurm",
+                    "worker",
+                    "--manifest",
+                    str(manifest),
+                    "--device",
+                    options.device,
+                ],
+            )
+            print(f"Submitted Slurm job {job_id} for manifest {manifest}")
+            return
+        if not args.manifest and args.slurm == "status":
+            from codes.utils import read_yaml_config
+
+            config = read_yaml_config(args.config)
+            args.manifest = str(
+                Path("trained") / config["training_id"] / "manifest.json"
+            )
         if not args.manifest:
             raise ValueError("--manifest is required for Slurm training")
         if args.slurm == "prepare":
@@ -119,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config", default="config.yaml", type=str, help="Path to the config file."
     )
-    parser.add_argument("--slurm", choices=("prepare", "worker", "status"))
+    parser.add_argument("--slurm", choices=("prepare", "worker", "status", "submit"))
     parser.add_argument("--manifest", help="Path to the fixed Slurm training manifest")
     parser.add_argument(
         "--device", default="cpu", help="Logical device used by a Slurm worker"

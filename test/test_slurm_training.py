@@ -62,6 +62,40 @@ def test_prepare_and_retry_completed_tasks(setup_run, monkeypatch, capsys):
     assert len(calls) == 2
 
 
+def test_submit_prepares_manifest_and_schedules_only_unfinished(setup_run, monkeypatch):
+    config, config_path, _ = setup_run
+    config.update({"cpu_threads": 1, "slurm": {"workers": 2}})
+    config_path.write_text(yaml.safe_dump(config))
+    manifest_path = Path("trained/array-run/manifest.json")
+    slurm.prepare_training(str(config_path), str(manifest_path))
+    manifest_data = json.loads(manifest_path.read_text())
+    checkpoint = slurm._checkpoint(config, manifest_data["tasks"][1])
+    checkpoint.parent.mkdir(parents=True, exist_ok=True)
+    checkpoint.touch()
+    checkpoint.with_suffix(".yaml").touch()
+    state_dir = Path("trained/array-run/slurm_tasks")
+    state_dir.mkdir(parents=True)
+    (state_dir / "1.json").write_text('{"index": 1}')
+    submitted = []
+
+    def fake_submit(manifest, indices, options, worker_args):
+        submitted.append((manifest, indices, options, worker_args))
+        return "4321"
+
+    monkeypatch.setattr("codes.slurm.submit_array", fake_submit)
+    run_training.main(
+        SimpleNamespace(
+            config=str(config_path), slurm="submit", manifest=None, device="cpu"
+        )
+    )
+    manifest, indices, options, worker_args = submitted.pop()
+    assert manifest == Path("trained/array-run/manifest.json").resolve()
+    assert indices == [0, 2]
+    assert options.workers == 2
+    assert worker_args[0].endswith("run_training.py")
+    assert "--slurm" in worker_args and "worker" in worker_args
+
+
 def test_failed_work_can_retry_and_conflicting_runs_rejected(setup_run, monkeypatch):
     config, config_path, manifest_path = setup_run
     slurm.prepare_training(str(config_path), str(manifest_path))

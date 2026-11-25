@@ -48,8 +48,43 @@ every node. Use a fresh `training_id` and stage `datasets/<name>/data.hdf5`
 before starting the workers. CODES saves the training config and assigns a fixed,
 zero-based index to each model, modality, and ensemble member in the run.
 
+### Submit from the training config
+
+Add a top-level `slurm` block to the training YAML. This example uses one CPU
+thread per assignment and runs at most two assignments at a time.
+
+```yaml
+cpu_threads: 1
+slurm:
+  time: "00:10:00"
+  cpus_per_task: 1
+  mem: 2G
+  max_parallel: 2
+  device: cpu
+```
+
 ```bash
-python run_training.py --slurm prepare --config config.yaml --manifest training.json
+uv run run_training.py --slurm submit --config config.yaml
+uv run run_training.py --slurm status --config config.yaml
+```
+
+`submit` prepares `trained/<training_id>/manifest.json`, submits the unfinished
+indices, and prints the Slurm job ID and manifest path. Logs default to
+`slurm-logs/` beside the manifest. Once the array has stopped, rerun `submit`
+with the same config to retry unfinished assignments. Pass `--manifest` to
+use a different path, including an existing manifest.
+
+The worker uses the Python interpreter that ran `submit`. For a GPU job set
+`gres: 'gpu:1'` and `device: 'cuda:0'`. Other optional Slurm settings include
+`qos`, `partition`, `account`, `constraint`, `nodelist`, `reservation`, `job_name`,
+and `log_dir`. Use `launcher` to name a site-local batch script that accepts a
+Python entry point and its arguments. CODES sets `CODES_PYTHON` for that launcher
+unless you supply it in the submission environment.
+
+### Prepare and submit an array manually
+
+```bash
+uv run run_training.py --slurm prepare --config config.yaml --manifest training.json
 mkdir -p logs
 ```
 
@@ -79,7 +114,7 @@ in the training config. Each worker takes its assignment from
 The shared filesystem must support POSIX file locking across nodes.
 
 ```bash
-python run_training.py --slurm status --manifest training.json
+uv run run_training.py --slurm status --manifest training.json
 ```
 
 After the running array has stopped, use the reported retry indices in a new

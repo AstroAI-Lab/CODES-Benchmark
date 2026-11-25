@@ -115,8 +115,37 @@ existing PostgreSQL database reachable from those hosts. Use your environment
 or PostgreSQL passfile for credentials. CODES stores the selected study settings
 in the manifest.
 
+### Submit from the tuning config
+
+Add a top-level `slurm` block to your tuning YAML. `workers` sets the number
+of array tasks for the selected study. The tuning config's `trials` setting
+sets the target number of valid trials for the whole study.
+
+```yaml
+slurm:
+  time: "00:10:00"
+  cpus_per_task: 1
+  mem: 2G
+  workers: 2
+  max_parallel: 2
+  device: cpu
+```
+
 ```bash
-python run_tuning.py --slurm prepare --config tuning.yaml --study MultiONet --manifest tuning.json
+uv run run_tuning.py --slurm submit --config tuning.yaml --study MultiONet
+uv run run_tuning.py --slurm status --config tuning.yaml --study MultiONet
+```
+
+`submit` prepares `tuned/<tuning_id>/<study_name>.slurm.json`, submits the
+workers, and prints the Slurm job ID. Use the same resource and launcher
+settings described in {ref}`the training guide <slurm-training-array>`.
+`--study` is required when the tuning config lists several surrogates. The
+submit environment must contain `CODES_OPTUNA_STORAGE_URL`.
+
+### Prepare and submit an array manually
+
+```bash
+uv run run_tuning.py --slurm prepare --config tuning.yaml --study MultiONet --manifest tuning.json
 mkdir -p logs
 ```
 
@@ -144,7 +173,7 @@ an interrupted trial failed once its heartbeat has expired. The next worker then
 resumes sampling from the same study within the remaining budget. [Optuna RDBStorage](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.storages.RDBStorage.html)
 
 ```bash
-python run_tuning.py --slurm status --manifest tuning.json
+uv run run_tuning.py --slurm status --manifest tuning.json
 ```
 
 Check `valid` against `target` after the array finishes. Use the original

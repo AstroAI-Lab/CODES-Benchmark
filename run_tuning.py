@@ -293,7 +293,7 @@ def parse_arguments():
         default="configs/tuning/sqlite_quickstart.yaml",
         help="Path to tuning config YAML.",
     )
-    parser.add_argument("--slurm", choices=("prepare", "worker", "status"))
+    parser.add_argument("--slurm", choices=("prepare", "worker", "status", "submit"))
     parser.add_argument("--manifest", type=Path, help="Frozen Slurm study manifest")
     parser.add_argument(
         "--study", help="Surrogate to select from a multi-model tuning config"
@@ -313,6 +313,51 @@ def main():
     if args.slurm:
         from codes.tune import slurm
 
+        if args.slurm == "submit":
+            from codes.slurm import SlurmOptions, submit_array
+
+            config = apply_tuning_defaults(load_yaml_config(args.config))
+            options = SlurmOptions.from_config(config.get("slurm", {}))
+            data_path = (
+                Path("datasets") / config["dataset"]["name"].lower() / "data.hdf5"
+            )
+            if not data_path.is_file():
+                raise FileNotFoundError(
+                    f"Dataset must be staged before Slurm submission: {data_path}"
+                )
+            selected, study_name = slurm._study_config(config, args.study)
+            manifest = (
+                args.manifest
+                or Path("tuned") / config["tuning_id"] / f"{study_name}.slurm.json"
+            )
+            manifest = Path(manifest).resolve()
+            slurm.prepare(config, manifest, args.study, args.max_attempts)
+            counts = slurm.status(manifest)
+            if counts["valid"] >= selected["n_trials"]:
+                print(f"Study {study_name} is complete; no array submitted")
+                return
+            worker_args = [
+                str(Path(__file__).resolve()),
+                "--slurm",
+                "worker",
+                "--manifest",
+                str(manifest),
+                "--device",
+                options.device,
+                "--cpu-threads",
+                str(options.cpus_per_task),
+            ]
+            job_id = submit_array(
+                manifest, list(range(options.workers)), options, worker_args
+            )
+            print(f"Submitted Slurm job {job_id} for manifest {manifest}")
+            return
+        if args.manifest is None and args.slurm == "status":
+            config = apply_tuning_defaults(load_yaml_config(args.config))
+            _, study_name = slurm._study_config(config, args.study)
+            args.manifest = (
+                Path("tuned") / config["tuning_id"] / f"{study_name}.slurm.json"
+            )
         if args.manifest is None:
             raise ValueError("--manifest is required for Slurm tuning")
         if args.slurm == "prepare":
