@@ -78,8 +78,8 @@ def test_submit_prepares_manifest_and_schedules_only_unfinished(setup_run, monke
     (state_dir / "1.json").write_text('{"index": 1}')
     submitted = []
 
-    def fake_submit(manifest, indices, options, worker_args):
-        submitted.append((manifest, indices, options, worker_args))
+    def fake_submit(manifest, indices, options, worker_args, *, default_job_name):
+        submitted.append((manifest, indices, options, worker_args, default_job_name))
         return "4321"
 
     monkeypatch.setattr("codes.slurm.submit_array", fake_submit)
@@ -88,10 +88,11 @@ def test_submit_prepares_manifest_and_schedules_only_unfinished(setup_run, monke
             config=str(config_path), slurm="submit", manifest=None, device="cpu"
         )
     )
-    manifest, indices, options, worker_args = submitted.pop()
+    manifest, indices, options, worker_args, job_name = submitted.pop()
     assert manifest == Path("trained/array-run/manifest.json").resolve()
     assert indices == [0, 2]
     assert options.workers == 2
+    assert job_name == "codes-train-array-run"
     assert worker_args[0].endswith("run_training.py")
     assert "--slurm" in worker_args and "worker" in worker_args
 

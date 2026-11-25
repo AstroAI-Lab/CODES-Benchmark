@@ -113,3 +113,31 @@ def test_submit_compacts_contiguous_array(tmp_path, monkeypatch):
     manifest.write_text("{}", encoding="utf-8")
     submit_array(manifest, [2, 1, 0], SlurmOptions(), ["run_training.py"])
     assert "--array=0-2" in capture.read_text().splitlines()
+
+
+def test_submit_uses_default_job_name_and_preserves_override(tmp_path, monkeypatch):
+    capture = tmp_path / "args.txt"
+    _commands(
+        tmp_path, monkeypatch, f"printf '%s\\n' \"$@\" > '{capture}'\nprintf '555\\n'\n"
+    )
+    manifest = tmp_path / "m.json"
+    manifest.write_text("{}", encoding="utf-8")
+
+    submit_array(
+        manifest,
+        [0],
+        SlurmOptions(),
+        ["run_training.py"],
+        default_job_name="codes-train-training 42",
+    )
+    assert "--job-name=codes-train-training 42" in capture.read_text().splitlines()
+
+    manifest.with_suffix(".json.submit.json").unlink()
+    submit_array(
+        manifest,
+        [0],
+        SlurmOptions.from_config({"job_name": "my custom name"}),
+        ["run_training.py"],
+        default_job_name="codes-train-training-42",
+    )
+    assert "--job-name=my custom name" in capture.read_text().splitlines()

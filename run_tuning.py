@@ -337,7 +337,11 @@ def main():
                 str(options.cpus_per_task),
             ]
             job_id = submit_array(
-                manifest, list(range(options.workers)), options, worker_args
+                manifest,
+                list(range(options.workers)),
+                options,
+                worker_args,
+                default_job_name=f"codes-tune-{study_name}",
             )
             print(f"Submitted Slurm job {job_id} for manifest {manifest}")
             return

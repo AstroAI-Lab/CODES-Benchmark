@@ -129,6 +129,7 @@ def main(args):
                     "--device",
                     options.device,
                 ],
+                default_job_name=f"codes-train-{config['training_id']}",
             )
             print(f"Submitted Slurm job {job_id} for manifest {manifest}")
             return

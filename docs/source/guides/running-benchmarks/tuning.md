@@ -130,7 +130,9 @@ uv run run_tuning.py --slurm status --config tuning.yaml --study MultiONet
 ```
 
 `submit` prepares `tuned/<tuning_id>/<study_name>.slurm.json`, submits the
-workers, and prints the Slurm job ID. Use the same resource and launcher
+workers, and prints the Slurm job ID. The job name defaults to
+`codes-tune-<study_name>`. Set `slurm.job_name` to choose a custom name.
+Use the same resource and launcher
 settings described in {ref}`the training guide <slurm-training-array>`.
 `--study` is required when the tuning config lists several surrogates. Use
 `--slurm status --config tuning.yaml --study MultiONet` to read the trial counts.

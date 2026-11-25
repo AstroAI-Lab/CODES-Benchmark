@@ -79,8 +79,11 @@ def test_submit_prepares_selected_study_and_uses_worker_count(
     submitted = []
     monkeypatch.setattr(
         "codes.slurm.submit_array",
-        lambda manifest, indices, options, worker_args: (
-            submitted.append((manifest, indices, options, worker_args)) or "7654"
+        lambda manifest, indices, options, worker_args, default_job_name: (
+            submitted.append(
+                (manifest, indices, options, worker_args, default_job_name)
+            )
+            or "7654"
         ),
     )
     monkeypatch.setattr(
@@ -98,13 +101,14 @@ def test_submit_prepares_selected_study_and_uses_worker_count(
     )
     monkeypatch.setattr(run_tuning, "load_yaml_config", lambda _: config)
     run_tuning.main()
-    manifest, indices, options, worker_args = submitted[0]
+    manifest, indices, options, worker_args, job_name = submitted[0]
     assert (
         manifest
         == Path("tuned/slurm_example/slurm_example_fullyconnected.slurm.json").resolve()
     )
     assert indices == [0, 1, 2]
     assert options.cpus_per_task == 2
+    assert job_name == "codes-tune-slurm_example_fullyconnected"
     assert worker_args[worker_args.index("--cpu-threads") + 1] == "2"
     assert "slurm" not in json.loads(manifest.read_text())["config"]
 

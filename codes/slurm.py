@@ -93,6 +93,8 @@ def submit_array(
     indices: Sequence[int],
     options: SlurmOptions,
     worker_args: Sequence[str],
+    *,
+    default_job_name: str | None = None,
 ) -> str:
     """Submit array indices and return the parsable Slurm job id."""
     manifest = Path(manifest).resolve()
@@ -171,11 +173,13 @@ def submit_array(
             "constraint",
             "nodelist",
             "reservation",
-            "job_name",
         ):
             value = getattr(options, name)
             if value is not None:
                 command.append(f"--{name.replace('_', '-')}={value}")
+        job_name = options.job_name or default_job_name
+        if job_name is not None:
+            command.append(f"--job-name={job_name}")
         if options.launcher is not None:
             launcher = options.launcher.expanduser().resolve()
             if not launcher.is_file():

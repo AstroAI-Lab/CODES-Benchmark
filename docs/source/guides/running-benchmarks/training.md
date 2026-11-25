@@ -72,7 +72,8 @@ uv run run_training.py --slurm status --config config.yaml
 ```
 
 `submit` prepares `trained/<training_id>/manifest.json`, submits the unfinished
-indices, and prints the Slurm job ID and manifest path. Logs default to
+indices, and prints the Slurm job ID and manifest path. The job name defaults to
+`codes-train-<training_id>`. Set `slurm.job_name` to choose a custom name. Logs default to
 `slurm-logs/` beside the manifest. Once the array has stopped, rerun `submit`
 with the same config to retry unfinished assignments. Pass `--manifest` to
 use a different path, including an existing manifest.
