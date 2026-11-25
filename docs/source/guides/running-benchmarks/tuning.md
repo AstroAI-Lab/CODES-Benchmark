@@ -2,20 +2,22 @@
 
 Optuna powers the tuning stage. Each study runs inside `run_tuning.py`, which manages device pools, Optuna storage, and all surrogate-specific settings.
 
+For a first run, follow [Getting Started](../../getting-started.md) to install CODES, stage the Lotka–Volterra dataset, and run four CPU trials locally or on Slurm.
+
 ## Workspace layout
 
-1. Create a config file under `configs/tuning/` (for example `configs/tuning/sqlite_quickstart.yaml`). Each config must contain a unique `tuning_id`.
+1. Copy `configs/tuning/config_smoke.yaml` and give the copy its own `tuning_id` when changing the dataset or search space.
 2. Launch the tuner and pass the config path:
    ```bash
-   python run_tuning.py --config configs/tuning/sqlite_quickstart.yaml
+   uv run run_tuning.py --config configs/tuning/config_smoke.yaml
    ```
 3. CODES copies the config into `tuned/<tuning_id>/optuna_config.yaml` for reproducibility. On subsequent runs it compares the stored copy against the newly provided file and asks whether you want to reuse the stored config, overwrite it (the old one is backed up), or abort.
 
-`tuning_id` becomes the prefix for all Optuna studies (e.g., `primordial_MultiONet`). The script also creates `tuned/<tuning_id>/models/` to store intermediate checkpoints when you enable pruning.
+`tuning_id` becomes the prefix for all Optuna studies, for example `primordial_multionet`. The script creates `tuned/<tuning_id>/models/` to store trial checkpoints.
 
 ## Config anatomy
 
-Below is a condensed version of `configs/tuning/sqlite_quickstart.yaml` using SQLite storage for zero setup. Adjust datasets/surrogates as needed.
+This example uses the default journal storage. For a smoke test, use `configs/tuning/config_smoke.yaml` as shipped.
 
 ```yaml
 seed: 42
@@ -28,10 +30,6 @@ devices: ["cuda:0"]
 prune: true
 multi_objective: true
 population_size: 50
-
-storage:
-  backend: "sqlite"
-  path: "tuned/primordial/primordial.db"
 
 surrogates:
   - name: MultiONet
@@ -60,11 +58,8 @@ surrogates:
 ### Key sections
 
 - **dataset** — mirrors the training config and ensures Optuna downloads/configures the same data pipeline.
-- **devices** — every entry becomes a worker slot. `run_tuning.py` keeps a queue (`queue.Queue`) of device tokens and runs Optuna with `n_jobs = len(devices)`. SQLite storage warns about concurrent writers; you can list multiple devices, but heavy parallelism works best with Postgres.
-- **storage** — choose between `sqlite` (single-file DB, no external services) and `postgres` (scales to many workers). If omitted, CODES defaults to Postgres for backward compatibility and expects `postgres_config` to be present.
-- **postgres_config** — only required when `storage.backend: "postgres"`. Supports
-  - `mode: local`: launches/validates a local PostgreSQL instance (binaries in `database_folder`).
-  - `mode: remote`: connects to an existing server (set `host`, `port`, `user`, and optionally `password` or rely on `PGPASSWORD`).
+- **devices** — each entry is a local worker slot. For Slurm use `slurm.workers` and `slurm.device` to set the array size and per-worker device.
+- **storage** — omit this block to use `tuned/<tuning_id>/optuna.journal`. Set `storage.backend` explicitly to use a different backend. See {ref}`storage options <tuning-storage-options>`.
 - **surrogates** — per-architecture specs. Each entry sets:
   - `batch_size` / `epochs`: used to build the objective.
   - `trials`: maximum valid trials for that surrogate.
@@ -75,12 +70,12 @@ You can add `global_optuna_params` for common parameters, enable `fine: true` fo
 ## What `run_tuning.py` does
 
 1. Loads the YAML and copies it into `tuned/<tuning_id>/` (via `prepare_workspace`).
-2. Initializes the Optuna database (SQLite file or Postgres), prompting if a study with the same `tuning_id` already exists.
+2. Opens the configured Optuna storage and loads or creates each study.
 3. Downloads the dataset once per run.
-    4. Iterates over the `surrogates` list. For each surrogate it:
-       - Builds a study name (`<tuning_id>_<surrogate>`).
-       - Selects the sampler/pruner (`TPESampler` + Hyperband or NSGA-II with no pruning).
-       - Creates a device queue and `objective_fn = create_objective(...)`.
+4. Iterates over the `surrogates` list. For each surrogate it:
+   - Builds a study name (`<tuning_id>_<surrogate>`).
+   - Selects the sampler/pruner (`TPESampler` + Hyperband or NSGA-II with no pruning).
+   - Creates a device queue and `objective_fn = create_objective(...)`.
    - Calls `study.optimize()` with `n_jobs=len(devices)`. Each Optuna worker pulls a device token, trains a model with the sampled hyperparameters, and returns the objective(s).
    - Tracks ETA via `tqdm`. The helper `MaxValidTrialsCallback` stops once enough successful trials finished (OOM and time-pruned trials are ignored).
 
@@ -106,14 +101,12 @@ Other work on the same GPU can affect measured times even when calls are synchro
 
 ## Tuning with a Slurm array
 
-Use one array per study and a `tuning_id` dedicated to this campaign. Prepare
-the study once from a workspace visible at the same path on the submit host
-and all workers. Stage `datasets/<name>/data.hdf5` in that workspace before
-submitting. Set `CODES_OPTUNA_STORAGE_URL` in the
-environment used by `prepare`, `worker`, and `status`. It must point to an
-existing PostgreSQL database reachable from those hosts. Use your environment
-or PostgreSQL passfile for credentials. CODES stores the selected study settings
-in the manifest.
+Use one array per study and a `tuning_id` dedicated to this campaign. Submit
+from a workspace visible at the same path on the submit host and all workers.
+{ref}`Stage the dataset <stage-dataset>` at
+`datasets/<name>/data.hdf5` before submitting. All workers use the journal on
+that shared filesystem by default. To use an existing PostgreSQL service,
+follow the {ref}`PostgreSQL setup <tuning-postgresql-service>`.
 
 ### Submit from the tuning config
 
@@ -139,8 +132,9 @@ uv run run_tuning.py --slurm status --config tuning.yaml --study MultiONet
 `submit` prepares `tuned/<tuning_id>/<study_name>.slurm.json`, submits the
 workers, and prints the Slurm job ID. Use the same resource and launcher
 settings described in {ref}`the training guide <slurm-training-array>`.
-`--study` is required when the tuning config lists several surrogates. The
-submit environment must contain `CODES_OPTUNA_STORAGE_URL`.
+`--study` is required when the tuning config lists several surrogates. Use
+`--slurm status --config tuning.yaml --study MultiONet` to read the trial counts.
+Slurm logs default to `slurm-logs/` next to the manifest.
 
 ### Prepare and submit an array manually
 
@@ -168,9 +162,12 @@ sbatch --chdir="$PWD" --array=0-3 --ntasks=1 --gres=gpu:1 \
 Workers sample and train independently against the shared study. Only completed
 trials with finite objectives and no recorded exception count toward the target.
 Trials already training can finish after the target is reached. The attempt cap
-also counts failed or pruned work. PostgreSQL heartbeats let a later worker mark
-an interrupted trial failed once its heartbeat has expired. The next worker then
-resumes sampling from the same study within the remaining budget. [Optuna RDBStorage](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.storages.RDBStorage.html)
+also counts failed or pruned work. Journal storage has no Optuna heartbeat, so
+trials from workers killed abruptly can remain `RUNNING` and still use an attempt.
+If `status` reports `budget_exhausted`, the study cannot start more trials even
+if a trial is still marked `RUNNING`.
+PostgreSQL heartbeats let a later worker mark interrupted trials failed once
+their heartbeat expires. [Optuna RDBStorage](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.storages.RDBStorage.html)
 
 ```bash
 uv run run_tuning.py --slurm status --manifest tuning.json
@@ -179,26 +176,28 @@ uv run run_tuning.py --slurm status --manifest tuning.json
 Check `valid` against `target` after the array finishes. Use the original
 manifest for another array when the study still has budget. Keep the GPU model,
 software, and inference workload consistent for every worker in a timed study.
-Use the same storage environment when generating Pareto plots. Pass the
-`tuning_id` as the study prefix.
+Pass the `tuning_id` as the study prefix when generating Pareto plots. If the
+run used PostgreSQL, keep the connection environment set for analysis.
 
 ```bash
-python -m codes.tune.evaluate_tuning --study_name my_tuning_id --chosen_indices ''
+uv run python -m codes.tune.evaluate_tuning --study_name my_tuning_id --chosen_indices ''
 ```
 
 ## Capturing the best hyperparameters
 
 CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect studies:
 
-- Python REPL / script:
+- Python REPL or script, using the journal from the smoke example:
   ```python
   import optuna
+  from optuna.storages.journal import JournalFileBackend
 
-  study = optuna.create_study(
-      study_name="primordial_MultiONet",
-      storage="postgresql+psycopg2://optuna_user@localhost:5432/primordial",
-      direction="minimize",
-      load_if_exists=True,
+  storage = optuna.storages.JournalStorage(
+      JournalFileBackend("tuned/codes_smoke_tuning/optuna.journal")
+  )
+  study = optuna.load_study(
+      study_name="codes_smoke_tuning_fullyconnected",
+      storage=storage,
   )
   print(study.best_trial.params)
   ```
@@ -206,25 +205,71 @@ CODES does not auto-promote trial settings. Use Optuna’s tooling to inspect st
 
 Dual-objective runs produce Pareto fronts like the ones shown in the paper excerpt. You can manually pick a “knee point” trade-off (accuracy vs. latency) or script your own selection rule. Whatever you choose, feed the accepted settings back into `config.yaml` under `surrogate_configs` or store dataset-specific defaults in `datasets/<name>/surrogates_config.py` (dataclasses). Those defaults load automatically when `dataset.use_optimal_params` is `true`; setting `use_optimal_params: false` switches back to plain config-defined hyperparameters.
 
-## Advanced options
+(tuning-storage-options)=
+## Storage options
 
-### Postgres storage
+### Journal (default)
 
-For large-scale or multi-GPU sweeps, switch the storage block to Postgres:
+Journal storage uses a file under the tuning run directory. Set `storage.path`
+to put it elsewhere. For Slurm, every worker must be able to access and write
+the same file and its parent directory at the same path. Optuna's journal file
+backend supports NFS. [Optuna Journal Storage](https://optuna.readthedocs.io/en/v4.8.0/tutorial/20_recipes/011_journal_storage.html)
 
 ```yaml
 storage:
-  backend: "postgres"
-
-postgres_config:
-  mode: "local"         # or "remote"
-  host: "localhost"
-  port: 5432
-  user: "optuna_user"
-  database_folder: "/path/to/postgres/"
+  backend: journal
+  path: tuned/my_campaign/optuna.journal
 ```
 
-If the `storage` section is omitted entirely, CODES assumes `backend: "postgres"` to remain backward compatible. Postgres handles concurrent writers gracefully, so `devices` can list many GPUs without hitting `database is locked` errors.
+(tuning-postgresql-service)=
+### Existing PostgreSQL service
+
+Ask your cluster administrator for a database, login role, hostname, port,
+and TLS settings. Both the submission host and compute nodes must be able to
+connect. The database must already exist, and the role needs permission to
+create and update Optuna's tables in the target schema. Copy the smoke config
+with `cp configs/tuning/config_smoke.yaml tune-postgres.yaml`, add your site's
+scheduler settings under `slurm`, and set the new tuning ID and storage backend.
+Stage the dataset first if you have not already done so.
+
+```yaml
+tuning_id: codes_smoke_tuning_postgres
+storage:
+  backend: postgres
+```
+
+On the submission host, set a connection URL without the password and provide
+the password in a [libpq passfile](https://www.postgresql.org/docs/current/libpq-pgpass.html).
+Save `DB_HOST:5432:DB_NAME:DB_USER:DB_PASSWORD` in the passfile using your site's
+values. Put the file on a path visible to the workers and set its permissions to
+`0600`. Use the TLS settings your site provides.
+
+```bash
+export PGPASSFILE="$HOME/.pgpass-codes"
+chmod 600 "$PGPASSFILE"
+export CODES_OPTUNA_STORAGE_URL='postgresql+psycopg2://DB_USER@DB_HOST:5432/DB_NAME'
+
+uv run python - <<'PY'
+import os
+from sqlalchemy import create_engine, text
+
+engine = create_engine(os.environ["CODES_OPTUNA_STORAGE_URL"])
+with engine.connect() as connection:
+    print(connection.execute(text("SELECT 1")).scalar_one())
+PY
+uv run run_tuning.py --slurm submit --config tune-postgres.yaml
+uv run run_tuning.py --slurm status --config tune-postgres.yaml
+```
+
+Keep the variables exported for submission, status, and analysis. If your site
+launcher filters the environment, configure it to pass the connection settings
+to workers and preserve access to the passfile.
+
+Existing local configs that specify `postgres_config` without a backend continue
+to use PostgreSQL. Explicit `storage.backend: sqlite` with `storage.path` is
+available for local runs. Use one worker with SQLite to avoid writer contention.
+
+## Advanced options
 
 ### Fine-tuning stage
 

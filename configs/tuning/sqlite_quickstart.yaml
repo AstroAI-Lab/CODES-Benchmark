@@ -1,3 +1,5 @@
+# SQLite example for osu2008. Set devices to the slots visible to your process.
+# For the small CPU smoke run, use config_smoke.yaml.
 seed: 123
 tuning_id: "sqlite_quickstart"
 

@@ -1,0 +1,26 @@
+training_id: codes_smoke_training
+seed: 42
+devices: [cpu]
+cpu_threads: 1
+surrogates: [FullyConnected]
+batch_size: 64
+epochs: 1
+dataset:
+  name: lotka_volterra
+  log10_transform: false
+  normalise: minmax
+  subset_factor: 8
+  use_optimal_params: false
+surrogate_configs:
+  FullyConnected:
+    hidden_size: 8
+    num_hidden_layers: 2
+uncertainty:
+  enabled: true
+  ensemble_size: 2
+slurm:
+  device: cpu
+  cpus_per_task: 1
+  mem: 2G
+  time: "00:10:00"
+  max_parallel: 2

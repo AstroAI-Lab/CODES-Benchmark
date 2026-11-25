@@ -25,7 +25,7 @@ Use `datasets/_data_generation/make_new_dataset.py` as a working example. It sho
    )
    ```
    `create_dataset` writes `datasets/my_new_dataset/data.hdf5` with the following groups: `train`, `test`, `val`, optional `*_params`, and `timesteps`. The helper also ensures consistent shuffling and folder creation.
-3. **Register the download link** (optional) in `datasets/data_sources.yaml` so `scripts/download_datasets.py` knows where to fetch the data. The docs pull this file automatically, so your dataset will appear in the catalog without extra work.
+3. **Register the download link** (optional) in `datasets/data_sources.yaml` so `codes.download_data` knows where to fetch the data. The docs use this file to build the dataset catalog.
 4. **Reference the dataset in configs** via `dataset.name`. Log transforms / normalization flags in the config can stay unchanged unless your data needs special treatment.
 
 Once the folder exists, all CLI entry points (`run_training.py`, `run_eval.py`, `run_tuning.py`) will automatically pick it up based on `dataset.name`.

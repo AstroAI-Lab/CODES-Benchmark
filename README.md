@@ -18,17 +18,18 @@ Benchmark coupled ODE surrogate models on curated datasets with reproducible tra
 - Optional studies for interpolation/extrapolation, sparse data regimes, uncertainty estimation, and batch scaling
 - Automated reporting: accuracy tables, resource usage, gradient analyses, and dozens of diagnostic plots
 
-## Two-minute quickstart
+## Quickstart
 
 **uv (recommended)**
 
 ```bash
 git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
-uv sync                       # creates .venv from pyproject/uv.lock
-source .venv/bin/activate
-uv run python run_training.py --config configs/train_eval/config_minimal.yaml
-uv run python run_eval.py --config configs/train_eval/config_minimal.yaml
+uv sync --locked
+uv run python -c 'from codes import download_data; download_data("lotka_volterra")'
+uv run run_training.py --config configs/train_eval/config_smoke.yaml
+uv run run_eval.py --config configs/train_eval/config_smoke.yaml
+uv run run_tuning.py --config configs/tuning/config_smoke.yaml
 ```
 
 **pip alternative**
@@ -37,13 +38,14 @@ uv run python run_eval.py --config configs/train_eval/config_minimal.yaml
 git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
 python -m venv .venv && source .venv/bin/activate
-pip install -e .
-pip install -r requirements.txt
-python run_training.py --config configs/train_eval/config_minimal.yaml
-python run_eval.py --config configs/train_eval/config_minimal.yaml
+python -m pip install -e .
+python -c 'from codes import download_data; download_data("lotka_volterra")'
+python run_training.py --config configs/train_eval/config_smoke.yaml
+python run_eval.py --config configs/train_eval/config_smoke.yaml
+python run_tuning.py --config configs/tuning/config_smoke.yaml
 ```
 
-Outputs land in `trained/<training_id>`, `results/<training_id>`, and `plots/<training_id>`. The `configs/` folder contains ready-to-use templates (`train_eval/config_minimal.yaml`, `config_full.yaml`, etc.). Copy a file there and adjust datasets/surrogates/modalities before running the CLIs.
+These CPU examples use [Lotka–Volterra](https://zenodo.org/records/14703867), a 4.9 MB download. Training writes to `trained/`, evaluation writes to `results/`, and tuning writes to `tuned/`. On a Slurm cluster, use the same examples with `--slurm submit` and your site's scheduler settings. Follow the [first-run guide](docs/source/getting-started.md#first-run-on-slurm) for the cluster commands.
 
 ## Documentation
 
@@ -57,7 +59,7 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 | Path                                              | Purpose                                                                          |
 | ------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `configs/`                                        | Ready-to-edit benchmark configs (`train_eval/`, `tuning/`, etc.)                 |
-| `datasets/`                                       | Bundled datasets + download helper (`data_sources.yaml`)                         |
+| `datasets/`                                       | Dataset metadata, download URLs, and data generation tools                       |
 | `codes/`                                          | Python package with surrogates, training, tuning, and benchmarking utilities     |
 | `run_training.py`, `run_eval.py`, `run_tuning.py` | CLI entry points for the main workflows                                          |
 | `run_finetuning.py`                               | Optional: finetune trained surrogates for autoregressive rollout                 |

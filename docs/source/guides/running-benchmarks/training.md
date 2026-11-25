@@ -2,6 +2,8 @@
 
 `run_training.py` converts your benchmark config into a concrete list of training jobs, executes them sequentially or in parallel, and saves everything under `trained/<training_id>/`. All surrogates share the same pipeline: they learn trajectories represented at fixed timesteps, but the models learn to predict the state at any continuous time within the training horizon given an initial condition (and optional physical parameters).
 
+For a first run, follow [Getting Started](../../getting-started.md) to install CODES, stage the Lotka–Volterra dataset, and run the CPU example locally or on Slurm.
+
 ## From config to task list
 
 1. **Ordered surrogates** — the entries under `surrogates`, `batch_size`, and `epochs` must align. The `i`‑th surrogate uses `batch_size[i]` and `epochs[i]`.
@@ -12,7 +14,7 @@
 ## Local execution
 
 ```bash
-python run_training.py --config config.yaml
+uv run run_training.py --config configs/train_eval/config_minimal.yaml
 ```
 
 - **Devices** — `config.devices` defines concurrent worker slots. A single entry (e.g., `["cuda:0"]` or `"cpu"`) runs one task at a time. Multiple entries allow that many concurrent tasks. Each task gets a fresh spawned process, including in sequential runs. Repeated entries deliberately share a device, for example `["cpu", "cpu"]`; allow enough CPU or GPU memory for every concurrent task.
@@ -43,11 +45,12 @@ and tuning retain their existing progress behavior.
 (slurm-training-array)=
 ## Training with a Slurm array
 
-Prepare a manifest from the root of a workspace visible at the same path on
-every node. Use a fresh `training_id` and stage `datasets/<name>/data.hdf5`
-before starting the workers. CODES saves the training config and assigns a fixed,
-zero-based index to each model, modality, and ensemble member in the run.
+Submit from the root of a workspace visible at the same path on every node.
+Use a fresh `training_id` and {ref}`stage the dataset <stage-dataset>`
+at `datasets/<name>/data.hdf5` before submitting. CODES saves the training config
+and assigns a fixed, zero-based index to each model, modality, and ensemble member.
 
+(slurm-submit-config)=
 ### Submit from the training config
 
 Add a top-level `slurm` block to the training YAML. This example uses one CPU

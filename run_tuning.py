@@ -18,42 +18,28 @@ from codes.tune import (
     build_fine_optuna_params,
     create_objective,
     ensure_study_timing,
-    initialize_optuna_database,
     load_yaml_config,
     maybe_set_runtime_threshold,
     prepare_workspace,
 )
+from codes.tune.storage import create_optuna_storage
 from codes.utils import download_data, nice_print
 
 
-def resolve_storage_backend(config: dict, tuning_id: str) -> tuple[str, bool]:
-    """
-    Return (storage_url, is_sqlite).
-    Defaults to Postgres for backward compatibility.
-    """
-    storage_cfg = config.get("storage", {})
-    backend = storage_cfg.get("backend", "postgres").lower()
-
-    if backend == "sqlite":
-        sqlite_path = storage_cfg.get("path")
-        if not sqlite_path:
-            raise ValueError(
-                "SQLite storage requires `storage.path` in optuna_config.yaml."
-            )
-        sqlite_path = Path(sqlite_path).expanduser().resolve()
-        sqlite_path.parent.mkdir(parents=True, exist_ok=True)
-        return f"sqlite:///{sqlite_path}", True
-
-    if backend == "postgres":
-        storage_url = initialize_optuna_database(config, study_folder_name=tuning_id)
-        return storage_url, False
-
-    raise ValueError(
-        f"Unknown storage backend '{backend}'. Use 'sqlite' or 'postgres'."
-    )
+def resolve_storage_backend(
+    config: dict, tuning_id: str
+) -> tuple[optuna.storages.BaseStorage | str, bool]:
+    """Return configured Optuna storage and whether it is SQLite."""
+    storage, backend = create_optuna_storage(config, tuning_id)
+    return storage, backend == "sqlite"
 
 
-def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend: bool):
+def run_single_study(
+    config: dict,
+    study_name: str,
+    storage: optuna.storages.BaseStorage | str,
+    sqlite_backend: bool,
+):
     if not config.get("optuna_logging", False):
         optuna.logging.set_verbosity(optuna.logging.WARNING)
 
@@ -67,7 +53,7 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
         study = optuna.create_study(
             study_name=study_name,
             directions=["minimize", "minimize"],
-            storage=db_url,
+            storage=storage,
             sampler=sampler,
             pruner=pruner,
             load_if_exists=True,
@@ -76,7 +62,7 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
         sampler = optuna.samplers.TPESampler(seed=config["seed"])
         pruner = (
             optuna.pruners.HyperbandPruner(
-                min_resource=config["epochs"] // 8,
+                min_resource=max(1, config["epochs"] // 8),
                 max_resource=config["epochs"],
                 reduction_factor=2,
             )
@@ -86,7 +72,7 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
         study = optuna.create_study(
             study_name=study_name,
             direction="minimize",
-            storage=db_url,
+            storage=storage,
             sampler=sampler,
             pruner=pruner,
             load_if_exists=True,
@@ -168,13 +154,16 @@ def run_single_study(config: dict, study_name: str, db_url: str, sqlite_backend:
             if sqlite_backend and "database is locked" in str(exc).lower():
                 raise RuntimeError(
                     "SQLite storage encountered a concurrency lock. "
-                    "Please rerun with fewer devices or switch to Postgres."
+                    "Use one device, or use journal or PostgreSQL storage for a new run."
                 ) from exc
             raise
 
 
 def run_all_studies(
-    config: dict, main_study_name: str, db_url: str, sqlite_backend: bool
+    config: dict,
+    main_study_name: str,
+    storage: optuna.storages.BaseStorage | str,
+    sqlite_backend: bool,
 ):
     surrogates = config["surrogates"]
     dataset_cfg = config["dataset"]
@@ -271,7 +260,7 @@ def run_all_studies(
             if config.get("fine", False):
                 sub_config["fine_space"] = fine_space
 
-            run_single_study(sub_config, study_name, db_url, sqlite_backend)
+            run_single_study(sub_config, study_name, storage, sqlite_backend)
             arch_pbar.update(1)
             arch_pbar.set_postfix({"done": study_name})
 
@@ -290,7 +279,7 @@ def parse_arguments():
     parser.add_argument(
         "--config",
         type=str,
-        default="configs/tuning/sqlite_quickstart.yaml",
+        default="configs/tuning/config_smoke.yaml",
         help="Path to tuning config YAML.",
     )
     parser.add_argument("--slurm", choices=("prepare", "worker", "status", "submit"))
@@ -383,14 +372,13 @@ def main():
     config = apply_tuning_defaults(config)
     tuning_id = config["tuning_id"]
 
-    # Initialize DB (remote/local)
-    db_url, sqlite_backend = resolve_storage_backend(config, tuning_id)
+    storage, sqlite_backend = resolve_storage_backend(config, tuning_id)
 
     # Run
     if "surrogates" in config:
-        run_all_studies(config, tuning_id, db_url, sqlite_backend)
+        run_all_studies(config, tuning_id, storage, sqlite_backend)
     else:
-        run_single_study(config, tuning_id, db_url, sqlite_backend)
+        run_single_study(config, tuning_id, storage, sqlite_backend)
 
     nice_print("Optuna tuning completed!")
 

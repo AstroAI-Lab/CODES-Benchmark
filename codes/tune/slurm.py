@@ -19,7 +19,6 @@ import optuna
 import torch
 import yaml
 from optuna.trial import TrialState
-from sqlalchemy.engine import make_url
 
 from codes.benchmark import get_model_config
 from codes.train.tasks import validate_execution_settings
@@ -28,6 +27,11 @@ from codes.tune.optuna_fcts import (
     create_objective,
     ensure_study_timing,
     maybe_set_runtime_threshold,
+)
+from codes.tune.storage import (
+    create_optuna_storage,
+    postgres_environment_url,
+    storage_metadata,
 )
 from codes.tune.tune_utils import apply_tuning_defaults
 
@@ -41,19 +45,17 @@ def _fingerprint(value: dict[str, Any]) -> str:
     ).hexdigest()
 
 
-def _storage() -> optuna.storages.RDBStorage:
-    url = os.environ.get("CODES_OPTUNA_STORAGE_URL", "")
+def _storage(metadata: dict[str, str] | None = None, *, create: bool = True) -> Any:
+    # Manifests predating journal support always used PostgreSQL.
+    metadata = metadata or {"backend": "postgres"}
+    if metadata["backend"] == "journal":
+        return create_optuna_storage({"storage": metadata}, "unused", create=create)[0]
+    if metadata["backend"] != "postgres":
+        raise ValueError("Slurm tuning supports journal or PostgreSQL storage")
+    url = postgres_environment_url()
     if not url:
         raise ValueError("Set CODES_OPTUNA_STORAGE_URL to a PostgreSQL database URL")
-    try:
-        backend = make_url(url).get_backend_name()
-    except Exception:
-        raise ValueError(
-            "CODES_OPTUNA_STORAGE_URL is not a valid database URL"
-        ) from None
-    if backend != "postgresql":
-        raise ValueError("Slurm tuning requires a PostgreSQL database URL")
-    # Optuna records heartbeats only during Study.optimize; one trial is run per call.
+    # Preserve heartbeat recovery for the explicit PostgreSQL backend.
     return optuna.storages.RDBStorage(url, heartbeat_interval=60, grace_period=180)
 
 
@@ -191,23 +193,27 @@ def _model_config_digest(config: dict[str, Any]) -> str | None:
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
 
 
-def _public_config(config: dict[str, Any]) -> dict[str, Any]:
+def _public_config(config: dict[str, Any], storage: dict[str, str]) -> dict[str, Any]:
     """Retain the scientific config while excluding connection details."""
-    return {
+    public = {
         key: value
         for key, value in config.items()
         if key
         not in {"postgres_config", "storage", "devices", "slurm", "_overwrite_run"}
     }
+    public["storage"] = storage
+    return public
 
 
-def _check_workspace(config: dict[str, Any]) -> tuple[Path, dict[str, Any]]:
+def _check_workspace(
+    config: dict[str, Any], storage: dict[str, str]
+) -> tuple[Path, dict[str, Any]]:
     path = Path("tuned") / config["tuning_id"] / "optuna_config.yaml"
-    public = _public_config(config)
+    public = _public_config(config, storage)
     if path.exists():
         with path.open(encoding="utf-8") as handle:
             existing = yaml.safe_load(handle)
-        if not isinstance(existing, dict) or _public_config(existing) != public:
+        if not _workspace_matches(existing, public):
             raise ValueError(
                 f"Existing tuning workspace {path.parent} has a different configuration"
             )
@@ -216,6 +222,20 @@ def _check_workspace(config: dict[str, Any]) -> tuple[Path, dict[str, Any]]:
             f"Existing tuning workspace {path.parent} has no configuration"
         )
     return path, public
+
+
+def _workspace_matches(existing: Any, public: dict[str, Any]) -> bool:
+    if not isinstance(existing, dict):
+        return False
+    if existing == public:
+        return True
+    # Before storage metadata was recorded, Slurm workspaces were PostgreSQL-only.
+    return (
+        "storage" not in existing
+        and public.get("storage", {}).get("backend") == "postgres"
+        and existing
+        == {key: value for key, value in public.items() if key != "storage"}
+    )
 
 
 def _write_workspace(path: Path, public: dict[str, Any]) -> None:
@@ -232,7 +252,7 @@ def _write_workspace(path: Path, public: dict[str, Any]) -> None:
         except FileExistsError:
             with path.open(encoding="utf-8") as handle:
                 existing = yaml.safe_load(handle)
-            if not isinstance(existing, dict) or _public_config(existing) != public:
+            if not _workspace_matches(existing, public):
                 raise ValueError(
                     f"Existing tuning workspace {path.parent} has a different configuration"
                 ) from None
@@ -245,7 +265,15 @@ def prepare(
     config: dict[str, Any], path: Path, surrogate: str | None, max_attempts: int | None
 ) -> None:
     selected, name = _study_config(config, surrogate)
-    workspace_path, public_config = _check_workspace(config)
+    existing_manifest = _read_manifest(path) if path.exists() else None
+    storage_info = storage_metadata(config, config["tuning_id"])
+    if (
+        existing_manifest is not None
+        and "storage" not in existing_manifest
+        and not config.get("storage")
+    ):
+        storage_info = {"backend": "postgres"}
+    workspace_path, public_config = _check_workspace(config, storage_info)
     target = selected["n_trials"]
     if isinstance(target, bool) or not isinstance(target, int) or target < 1:
         raise ValueError("Study trial target must be a positive integer")
@@ -264,10 +292,15 @@ def prepare(
         "config": selected,
         "model_config_sha256": _model_config_digest(selected),
         "max_attempts": max_attempts,
+        "storage": storage_info,
     }
-    if path.exists() and json.loads(path.read_text(encoding="utf-8")) != manifest:
-        raise ValueError("Manifest already exists with different contents")
-    storage = _storage()
+    if existing_manifest is not None:
+        # Keep the pre-journal manifest format reusable; it unambiguously meant PG.
+        if "storage" not in existing_manifest and storage_info["backend"] == "postgres":
+            manifest.pop("storage")
+        if existing_manifest != manifest:
+            raise ValueError("Manifest already exists with different contents")
+    storage = _storage(storage_info)
     study = optuna.create_study(
         study_name=name,
         storage=storage,
@@ -334,7 +367,11 @@ def _counts(study: optuna.Study) -> dict[str, int]:
 
 def status(path: Path) -> dict[str, int]:
     manifest = _read_manifest(path)
-    study = _load_study(manifest, _storage(), manifest["config"]["seed"])
+    study = _load_study(
+        manifest,
+        _storage(manifest.get("storage"), create=False),
+        manifest["config"]["seed"],
+    )
     _check_study(study, manifest)
     counts = _counts(study)
     print(
@@ -345,8 +382,7 @@ def status(path: Path) -> dict[str, int]:
                 "max_attempts": manifest["max_attempts"],
                 "budget_exhausted": len(study.get_trials(deepcopy=False))
                 >= manifest["max_attempts"]
-                and counts["valid"] < manifest["config"]["n_trials"]
-                and counts["running"] == 0,
+                and counts["valid"] < manifest["config"]["n_trials"],
                 **counts,
             },
             sort_keys=True,
@@ -381,7 +417,7 @@ def worker(path: Path, device: str, cpu_threads: int) -> None:
         f"{config['seed']}:{os.environ.get('SLURM_ARRAY_JOB_ID', '')}:{index}"
     )
     seed = int.from_bytes(hashlib.sha256(seed_material.encode()).digest()[:4], "big")
-    study = _load_study(manifest, _storage(), seed)
+    study = _load_study(manifest, _storage(manifest.get("storage"), create=False), seed)
     _check_study(study, manifest)
     devices: queue.Queue = queue.Queue()
     devices.put((device, 0))

@@ -3,6 +3,7 @@ from pathlib import Path
 
 import optuna
 import pytest
+import yaml
 from optuna.trial import TrialState
 
 from codes.tune import slurm
@@ -36,7 +37,9 @@ def setup(tmp_path, monkeypatch):
     (tmp_path / "datasets" / "dummy").mkdir(parents=True)
     (tmp_path / "datasets" / "dummy" / "data.hdf5").touch()
     storage = optuna.storages.InMemoryStorage()
-    monkeypatch.setattr(slurm, "_storage", lambda: storage)
+    monkeypatch.setattr(
+        slurm, "_storage", lambda metadata=None, *, create=True: storage
+    )
     monkeypatch.setattr(
         slurm,
         "validate_execution_settings",
@@ -299,11 +302,6 @@ def test_evaluate_tuning_uses_cluster_database_without_admin(
     monkeypatch.setenv(
         "CODES_OPTUNA_STORAGE_URL", "postgresql://user:secret@example/db"
     )
-    monkeypatch.setattr(
-        evaluate_tuning.psycopg2,
-        "connect",
-        lambda **kwargs: pytest.fail("database admin attempted"),
-    )
     called = []
     monkeypatch.setattr(
         optuna.study,
@@ -323,6 +321,42 @@ def test_legacy_study_config_reader_resolves_slurm_study(config, setup):
     loaded = load_study_config("slurm_example_fullyconnected")
     assert loaded["surrogate"]["name"] == "FullyConnected"
     assert loaded["dataset"] == config["dataset"]
+
+
+def test_journal_study_status_uses_the_prepared_file(config, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("CODES_OPTUNA_STORAGE_URL", raising=False)
+    del config["postgres_config"]
+    path = tmp_path / "manifest.json"
+    slurm.prepare(config, path, "FullyConnected", None)
+
+    journal = tmp_path / "tuned" / "slurm_example" / "optuna.journal"
+    assert journal.is_file()
+    assert slurm.status(path)["valid"] == 0
+
+    journal.unlink()
+    with pytest.raises(FileNotFoundError, match="Optuna journal does not exist"):
+        slurm.status(path)
+    assert not journal.exists()
+
+
+def test_resubmit_legacy_postgres_manifest_without_storage_block(config, setup):
+    path, storage = setup
+    slurm.prepare(config, path, "FullyConnected", None)
+    manifest = json.loads(path.read_text())
+    del manifest["storage"]
+    path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    study = optuna.load_study(study_name=manifest["study_name"], storage=storage)
+    study.set_user_attr(slurm.STUDY_FINGERPRINT, slurm._fingerprint(manifest))
+    snapshot = Path("tuned/slurm_example/optuna_config.yaml")
+    saved = yaml.safe_load(snapshot.read_text())
+    del saved["storage"]
+    snapshot.write_text(yaml.safe_dump(saved))
+
+    del config["postgres_config"]
+    slurm.prepare(config, path, "FullyConnected", None)
+    assert json.loads(path.read_text()) == manifest
+    assert slurm.status(path)["valid"] == 0
 
 
 def test_new_dataset_model_config_rejected_before_trial(config, setup):

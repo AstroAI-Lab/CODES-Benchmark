@@ -10,10 +10,11 @@ affecting results".
 
 ### Added
 
-- Optional Slurm arrays for fixed training assignments and shared PostgreSQL
-  Optuna studies, with progress inspection and restart support.
+- Optional Slurm arrays for fixed training assignments and shared Optuna
+  studies, with progress inspection and restart support.
 - One-command Slurm submission for training and tuning, with scheduler options
   in the run YAML and automatically prepared manifests.
+- CPU smoke configs using Lotka–Volterra for first runs locally and on Slurm.
 
 - Publish versioned benchmark tables for the four A&A datasets, with absolute
   log-error distributions, catastrophic-error recall curves, per-seed
@@ -30,6 +31,11 @@ affecting results".
 - FullyConnectedResidual and MultiONetResidual surrogates, with fallback to their
   parent's dataset configuration.
 - Optional `gradient_clip` for FullyConnected, MultiONet and LatentNeuralODE training.
+
+### Changed
+
+- Optuna tuning defaults to a file journal for new runs locally and on Slurm.
+  PostgreSQL remains available for tuning against a shared database.
 
 ### Changes affecting results
 

@@ -3,21 +3,18 @@ from __future__ import annotations
 import argparse
 import math
 import os
-import subprocess
 import sys
-import time
 from collections.abc import Sequence
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import optuna
-import psycopg2
 import torch
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FormatStrFormatter
 from optuna.trial import TrialState
-from psycopg2 import sql
 
 # add codes directory to path
 sys.path.append(
@@ -25,6 +22,7 @@ sys.path.append(
 )
 
 from codes.tune import load_yaml_config
+from codes.tune.storage import create_optuna_storage
 from codes.utils import nice_print
 
 os.environ.setdefault("PGCONNECT_TIMEOUT", "3")
@@ -658,7 +656,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
 def evaluate_tuning(
     study_prefix: str,
     top_n: int = 10,
-    storage_name: str = "optuna_db",
+    storage_name: str | None = None,
     ignore_last_n: int = 10,
     chosen_indices: list[int] | None = None,
 ) -> None:
@@ -673,72 +671,17 @@ def evaluate_tuning(
         return
     config = load_yaml_config(config_path)
 
-    storage_url = os.environ.get("CODES_OPTUNA_STORAGE_URL")
-    if storage_url is None:
-        # Ensure Postgres server
-        pg = config.get("postgres_config", {})
-        try:
-            psycopg2.connect(
-                dbname="postgres",
-                user=pg.get("user"),
-                password=pg.get("password"),
-                host=pg.get("host"),
-                port=pg.get("port"),
-                connect_timeout=5,
-            ).close()
-        except Exception:
-            if str(pg.get("host", "localhost")) not in (
-                "localhost",
-                "127.0.0.1",
-                "::1",
-            ):
-                raise  # don’t try to start a local server if host isn't local
-            pg_data = pg.get("data_dir", os.path.expanduser("~/postgres/data"))
-            pg_ctl = os.path.join(
-                pg.get("database_folder", os.path.expanduser("~/postgres")),
-                "bin",
-                "pg_ctl",
-            )
-            subprocess.run(
-                [
-                    pg_ctl,
-                    "-D",
-                    pg_data,
-                    "-l",
-                    pg.get("log_file", "/tmp/pg.log"),
-                    "start",
-                ],
-                check=True,
-            )
-            time.sleep(2)
-        # Create DB if absent
-        conn = psycopg2.connect(
-            dbname="postgres",
-            user=pg.get("user"),
-            password=pg.get("password"),
-            host=pg.get("host"),
-            port=pg.get("port"),
-        )
-        conn.autocommit = True
-        cur = conn.cursor()
-        cur.execute(
-            sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [study_prefix]
-        )
-        if not cur.fetchone():
-            cur.execute(
-                sql.SQL("CREATE DATABASE {};").format(sql.Identifier(study_prefix))
-            )
-        cur.close()
-        conn.close()
-
-        # Build storage URL (hard-coded prefix)
-        db_prefix = "postgresql://optuna_user:your_password@localhost:5432/"
-        storage_url = f"{db_prefix}{storage_name}"
+    # Slurm workspaces written before storage metadata always used PostgreSQL.
+    if "storage" not in config and any(Path(config_path).parent.glob("*.slurm.json")):
+        config["storage"] = {"backend": "postgres"}
+    storage, _ = create_optuna_storage(
+        config, study_prefix, create=False, postgres_database=storage_name
+    )
 
     # Discover all studies with this prefix
     from optuna.study import get_all_study_summaries
 
-    summaries = get_all_study_summaries(storage=storage_url)
+    summaries = get_all_study_summaries(storage=storage)
     study_names_all = [
         s.study_name for s in summaries if s.study_name.startswith(f"{study_prefix}_")
     ]
@@ -790,7 +733,7 @@ def evaluate_tuning(
         suffix = full_name[len(study_prefix) + 1 :]
         print(f"--- Evaluating study {full_name} -> surrogate '{suffix}' ---")
         try:
-            study = optuna.load_study(study_name=full_name, storage=storage_url)
+            study = optuna.load_study(study_name=full_name, storage=storage)
         except KeyError:
             print(f"Could not load study '{full_name}'")
             continue
@@ -940,8 +883,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--storage_name",
         type=str,
-        default="primordial_final",
-        help="Main study prefix (e.g. lvparams5)",
+        help="Override the database name for legacy PostgreSQL configs",
     )
     p.add_argument(
         "--top_n",
