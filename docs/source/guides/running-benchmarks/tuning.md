@@ -253,7 +253,7 @@ cp .env.example .env
 chmod 600 .env
 ```
 
-```dotenv
+```text
 CODES_OPTUNA_STORAGE_URL=postgresql+psycopg2://DB_USER@DB_HOST:5432/DB_NAME
 PGPASSWORD='DB_PASSWORD'
 # PGSSLMODE=verify-full
