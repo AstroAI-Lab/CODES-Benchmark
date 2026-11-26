@@ -88,6 +88,7 @@ All switches default to `false` if omitted.
 | Key | Default | Notes |
 | --- | --- | --- |
 | `inference_timing.batch_sizes` | `[1, 8, 32, 128, 512, 2048, 8192]` | Evaluation. Number of independent cells per request. |
+| `inference_timing.host_to_host` | `true` | Evaluation. Measure the blocking physical-unit call from CPU inputs to CPU outputs for each workload. |
 | `inference_timing.batch_size` | `512` | Multi-objective tuning. Reference number of cells per endpoint request. |
 | `inference_timing.rollout_step` | None | Maximum autoregressive substep in dataset time units. Evaluation also accepts a mapping from surrogate names to durations. Without a step size CODES queries the surrogate directly. |
 

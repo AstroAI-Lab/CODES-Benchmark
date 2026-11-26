@@ -40,6 +40,8 @@ affecting results".
 ### Changes affecting results
 
 - Evaluation reports endpoint and trajectory timing curves by number of cells.
+  Host-to-host curves include input packing, physical-unit transforms, accelerator
+  transfers, and making the output available on the CPU.
   Multi-objective tuning uses the geometric mean of endpoint latencies over short,
   medium, and long horizons at an independent inference batch size. Use a new
   study for the new objective.

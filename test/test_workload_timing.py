@@ -5,6 +5,7 @@ import torch
 from codes.benchmark.workload_timing import (
     select_horizons,
     time_endpoint_workload,
+    time_host_to_host_workloads,
     time_inference_workloads,
 )
 
@@ -57,6 +58,43 @@ def test_trajectory_direct_mode_uses_one_vector_query_and_reports_cell_rate():
     stats = result["trajectory"]["3"]["1.0"]
     assert stats["query_count"] == 16
     assert stats["cells_per_second"] > 0
+
+
+def test_host_to_host_timing_packs_and_returns_physical_states(monkeypatch):
+    from codes.benchmark import workload_timing
+
+    returned = []
+    measure = workload_timing._measure
+
+    def capture_output(request, *args, **kwargs):
+        returned.append(request().copy())
+        return measure(request, *args, **kwargs)
+
+    monkeypatch.setattr(workload_timing, "_measure", capture_output)
+
+    class Capture(_Echo):
+        def forward_from_state(self, state, times, params=None):
+            self.states = state.detach().cpu().numpy().copy()
+            return super().forward_from_state(state, times, params)
+
+    model = Capture()
+    result = time_host_to_host_workloads(
+        model,
+        np.array([[0.0], [10.0]], dtype=np.float32),
+        None,
+        np.array([0.0, 1.0]),
+        batch_sizes=(3,),
+        normalisation={"mode": "minmax", "min": [0.0], "max": [10.0]},
+    )
+    np.testing.assert_allclose(model.states[:, 0], [-1.0, 1.0, -1.0])
+    for states in returned:
+        np.testing.assert_allclose(
+            states[:, :, 0], np.broadcast_to([[0.0], [10.0], [0.0]], states.shape[:2])
+        )
+    assert result["metadata"]["input_residency"] == "host"
+    assert result["metadata"]["output_residency"] == "host"
+    assert result["endpoint"]["3"]["1.0"]["query_count"] == 1
+    assert result["trajectory"]["3"]["1.0"]["query_count"] == 16
 
 
 def test_endpoint_rollout_policy_advances_in_fixed_steps_and_remainder():

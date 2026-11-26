@@ -1,4 +1,4 @@
-"""Device-resident timing for endpoint and trajectory surrogate requests."""
+"""Benchmark timing for endpoint and trajectory surrogate requests."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ import numpy as np
 import torch
 
 from codes.utils import elapsed_to_dummy
+
+from .host_io import pack_model_inputs, unpack_model_outputs
 
 DEFAULT_BATCH_SIZES = (1, 8, 32, 128, 512, 2048, 8192)
 TRAJECTORY_QUERIES = 16
@@ -131,7 +133,11 @@ def _make_request(
 
 
 def _measure(
-    request: Callable[[], torch.Tensor], device: torch.device, size: int
+    request: Callable[[], torch.Tensor | np.ndarray],
+    device: torch.device,
+    size: int,
+    *,
+    request_blocks: bool = False,
 ) -> dict[str, Any]:
     with torch.inference_mode():
         request()
@@ -144,7 +150,8 @@ def _measure(
             _sync(device)
             start = time.perf_counter()
             request()
-            _sync(device)
+            if not request_blocks:
+                _sync(device)
             samples.append((time.perf_counter() - start) * 1000)
         peak = (
             torch.cuda.max_memory_allocated(device) - before
@@ -292,5 +299,183 @@ def time_inference_workloads(
         "metadata": {
             **_metadata(rollout_step),
             "trajectory_query_count": TRAJECTORY_QUERIES,
+        },
+    }
+
+
+def time_host_to_host_workloads(
+    model: Any,
+    states: np.ndarray,
+    params: np.ndarray | None,
+    timesteps: np.ndarray,
+    *,
+    batch_sizes: Sequence[int] = DEFAULT_BATCH_SIZES,
+    rollout_step: float | None = None,
+    log: bool = False,
+    log_params: bool = False,
+    tolerance: float | None = None,
+    normalisation: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Time endpoint and trajectory requests with physical inputs and outputs on host.
+
+    Validation rows are cyclically selected before timing. Every request includes
+    physical-to-model input packing, host-to-device copies (when applicable),
+    the prepared model request, device-to-host output copies, and output unpacking.
+    """
+    sizes = [_batch_size(size) for size in batch_sizes]
+    if not sizes or len(set(sizes)) != len(sizes):
+        raise ValueError(
+            "inference_timing.batch_sizes must contain distinct batch sizes"
+        )
+    _check_rollout_step(rollout_step)
+    source = np.asarray(states, dtype=np.float32)
+    if source.ndim != 2 or not len(source):
+        raise ValueError("states must have shape (N, C) with N > 0")
+    raw_params = None if params is None else np.asarray(params, dtype=np.float32)
+    if raw_params is not None and (
+        raw_params.ndim != 2 or len(raw_params) != len(source)
+    ):
+        raise ValueError("params must have shape (N, P) matching states")
+    device = _device(model)
+    normalisation = normalisation or {"mode": "disable"}
+    grid = np.asarray(timesteps, dtype=float)
+    horizons = select_horizons(grid)
+    output: dict[str, dict[str, dict]] = {"endpoint": {}, "trajectory": {}}
+    pinned = device.type == "cuda"
+    stream = torch.cuda.current_stream(device) if pinned else None
+    event = torch.cuda.Event() if pinned else None
+    channels = source.shape[1]
+    for size in sizes:
+        rows = {kind: output[kind].setdefault(str(size), {}) for kind in output}
+        indices = np.arange(size) % len(source)
+        selected_states = np.ascontiguousarray(source[indices])
+        selected_params = (
+            None if raw_params is None else np.ascontiguousarray(raw_params[indices])
+        )
+        try:
+            state_host = torch.empty(
+                (size, source.shape[1]), dtype=torch.float32, pin_memory=pinned
+            )
+            parameter_host = (
+                None
+                if selected_params is None
+                else torch.empty(
+                    (size, selected_params.shape[1]),
+                    dtype=torch.float32,
+                    pin_memory=pinned,
+                )
+            )
+            state_device = (
+                state_host
+                if device.type == "cpu"
+                else torch.empty_like(state_host, device=device)
+            )
+            parameter_device = (
+                None
+                if parameter_host is None
+                else (
+                    parameter_host
+                    if device.type == "cpu"
+                    else torch.empty_like(parameter_host, device=device)
+                )
+            )
+            out_host = (
+                torch.empty(
+                    (size * TRAJECTORY_QUERIES, channels),
+                    dtype=torch.float32,
+                    pin_memory=pinned,
+                )
+                if device.type != "cpu"
+                else None
+            )
+        except torch.OutOfMemoryError:
+            for row in rows.values():
+                row.update({str(float(h)): {"status": "oom"} for h in horizons})
+            continue
+
+        state_dest = state_host.numpy()
+        param_dest = None if parameter_host is None else parameter_host.numpy()
+        physical_output = np.empty(
+            (size * TRAJECTORY_QUERIES, channels), dtype=np.float32
+        )
+
+        def make_host_request(times: np.ndarray) -> Callable[[], np.ndarray]:
+            query_count = len(times)
+            shape = (size, query_count, channels)
+            # Use a contiguous prefix even when a request returns only one time.
+            staging = (
+                out_host[: size * query_count].view(shape)
+                if out_host is not None
+                else None
+            )
+            normalized_host = staging.numpy() if staging is not None else None
+            physical = physical_output[: size * query_count].reshape(shape)
+            prepared = _make_request(
+                model, state_device, parameter_device, times, grid, rollout_step
+            )
+
+            def run() -> np.ndarray:
+                pack_model_inputs(
+                    selected_states,
+                    state_dest,
+                    normalisation,
+                    log=log,
+                    tolerance=tolerance,
+                )
+                if selected_params is not None:
+                    pack_model_inputs(
+                        selected_params,
+                        param_dest,
+                        normalisation,
+                        parameters=True,
+                        log=log_params,
+                    )
+                if device.type != "cpu":
+                    state_device.copy_(state_host, non_blocking=pinned)
+                    if parameter_device is not None:
+                        parameter_device.copy_(parameter_host, non_blocking=pinned)
+                prediction = prepared()
+                if staging is None:
+                    normalized = prediction.numpy()
+                else:
+                    staging.copy_(prediction, non_blocking=pinned)
+                    if event is not None:
+                        event.record(stream)
+                        event.synchronize()
+                    else:
+                        _sync(device)
+                    normalized = normalized_host
+                unpack_model_outputs(normalisation, normalized, physical, log=log)
+                return physical
+
+            return run
+
+        for horizon in horizons:
+            cases = {
+                "endpoint": np.array([horizon]),
+                "trajectory": np.linspace(
+                    horizon / TRAJECTORY_QUERIES, horizon, TRAJECTORY_QUERIES
+                ),
+            }
+            for kind, times in cases.items():
+                try:
+                    request = make_host_request(times)
+                    stats = _measure(request, device, size, request_blocks=True)
+                    stats["query_count"] = len(times)
+                except torch.OutOfMemoryError:
+                    stats = {"status": "oom", "query_count": len(times)}
+                rows[kind][str(float(horizon))] = stats
+    return {
+        **output,
+        "device": str(device),
+        "metadata": {
+            **_metadata(rollout_step),
+            "input_residency": "host",
+            "output_residency": "host",
+            "staging": "pinned" if device.type == "cuda" else "pageable",
+            "trajectory_query_count": TRAJECTORY_QUERIES,
+            "log": bool(log),
+            "log_params": bool(log_params),
+            "tolerance": tolerance,
         },
     }

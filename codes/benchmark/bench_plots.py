@@ -95,7 +95,11 @@ def save_plot_counter(
 
 
 def plot_inference_workloads(
-    workloads: dict[str, dict], config: dict, surr_name: str = ""
+    workloads: dict[str, dict],
+    config: dict,
+    surr_name: str = "",
+    *,
+    host_to_host: bool = False,
 ) -> None:
     """Plot median batch latency for each workload and elapsed horizon."""
     for workload in ("endpoint", "trajectory"):
@@ -113,9 +117,8 @@ def plot_inference_workloads(
         fig, axes = plt.subplots(
             1, len(horizons), figsize=(4.2 * len(horizons), 3.7), squeeze=False
         )
-        fig.suptitle(
-            "Endpoint updates" if workload == "endpoint" else "Trajectory queries"
-        )
+        title = "Endpoint updates" if workload == "endpoint" else "Trajectory queries"
+        fig.suptitle(f"{title} (host to host)" if host_to_host else title)
         for ax, horizon in zip(axes[0], horizons, strict=True):
             for name, result in workloads.items():
                 points = sorted(
@@ -135,7 +138,14 @@ def plot_inference_workloads(
             if len(workloads) > 1:
                 ax.legend()
         fig.tight_layout()
-        save_plot(fig, f"inference_{workload}_latency", config, surr_name, format="png")
+        suffix = "_host_to_host" if host_to_host else ""
+        save_plot(
+            fig,
+            f"inference_{workload}{suffix}_latency",
+            config,
+            surr_name,
+            format="png",
+        )
         plt.close(fig)
 
 

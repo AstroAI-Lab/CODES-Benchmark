@@ -26,7 +26,7 @@ python run_eval.py --config config.yaml
 | `losses` | Saves epoch-wise train/test loss plots. |
 | `iterative` | Runs multi-step rollouts to measure drift over time. Set to `true`, or to a block of options (see below). |
 | `gradients` | Correlates gradient norms with prediction errors. |
-| `timing` | Measures endpoint and trajectory batch latency and preserves the held-out loader timing. |
+| `timing` | Measures device-resident and host-to-host endpoint and trajectory latency. |
 | `compute` | Records parameter counts and memory usage. |
 | `compare` | Builds cross-surrogate comparison tables/plots (requires ≥2 surrogates). |
 
@@ -45,6 +45,7 @@ The same horizons are used for both requests. CODES selects the first positive e
 timing: true
 inference_timing:
   batch_sizes: [1, 8, 32, 128, 512, 2048, 8192]
+  host_to_host: true
   # Optional maximum autoregressive substep in dataset time units
   # rollout_step:
   #   FullyConnectedResidual: 0.01
@@ -54,11 +55,11 @@ Set `rollout_step` to a positive duration for all surrogates, or map surrogate n
 
 The curves report median and p95 batch latency from five measured calls, cells per second, and additional CUDA peak allocated memory above the preloaded model and batch. The detailed values are in `timing.workloads` of each metrics YAML. A trajectory cell counts once in cells per second even though its request returns multiple states. The previous full-loader timing stays available for historical comparisons.
 
-### Proposed host-to-host measurement
+### Host-to-host measurement
 
-Use a separate scenario for a CPU-hosted simulation. Start the wall-clock timer with CPU-resident arrays in physical units. Pack and normalize them into a preallocated pinned input buffer using the checkpoint's transforms, copy it to the GPU, invoke the same endpoint or trajectory request, and copy the result into a preallocated pinned output buffer. Issue the copies and inference on one CUDA stream and wait for an event recorded after the output copy. Convert to physical units and write the caller's CPU output before stopping the timer. Reuse model weights and buffers between requests, and include packing and conversion work on each call.
+This measures a blocking call from raw, CPU-resident validation states and parameters to updated states in a CPU output buffer in physical units. Each timed call packs and transforms the input using the dataset settings and saved normalization statistics, invokes the same endpoint or trajectory request, then converts the prediction back to physical units. On CUDA, the call uses reusable pinned buffers, copies inputs and outputs on the same stream as inference, and waits for an event after the output copy before converting the result. CPU evaluation measures the equivalent physical-unit call in memory. MPS uses ordinary host buffers and synchronizes before reading the result.
 
-This gives a blocking host-to-host latency. Any overlap across batches can be measured separately when the integration can use it. Include rank-level gathering and scattering when the integration performs those operations. A matching CPU solver comparison would use the same input and output contract and accuracy target.
+Checkpoint loading, disk reads, and buffer setup happen before timing. This models a single blocking request, so a simulation integration can measure rank-level gathering, scattering, or pipelining separately. Results are saved under `timing.host_to_host` in the metrics YAML and in separate host-to-host endpoint and trajectory plots. Set `inference_timing.host_to_host: false` to skip this measurement.
 
 ## Iterative rollouts
 

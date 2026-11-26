@@ -66,7 +66,8 @@ from .bench_utils import (
     save_table_csv,
     write_metrics_to_yaml,
 )
-from .workload_timing import time_inference_workloads
+from .host_io import load_physical_validation_inputs
+from .workload_timing import time_host_to_host_workloads, time_inference_workloads
 
 TITLE = True
 
@@ -100,7 +101,7 @@ def run_benchmark(
         (train_params, test_params, val_params),
         timesteps,
         n_train_samples,
-        _,
+        data_info,
         labels,
     ) = check_and_load_data(
         dataset_conf["name"],
@@ -177,6 +178,9 @@ def run_benchmark(
         timing_conf = conf.get("inference_timing", {})
         if not isinstance(timing_conf, dict):
             raise ValueError("inference_timing must be a mapping")
+        host_to_host = timing_conf.get("host_to_host", True)
+        if not isinstance(host_to_host, bool):
+            raise ValueError("inference_timing.host_to_host must be a boolean")
         rollout_step = timing_conf.get("rollout_step")
         if isinstance(rollout_step, dict):
             rollout_step = rollout_step.get(surr_name)
@@ -196,6 +200,31 @@ def run_benchmark(
             workloads = {"status": "unsupported", "reason": str(exc)}
         metrics["timing"]["workloads"] = workloads
         plot_inference_workloads({surr_name: workloads}, conf, surr_name=surr_name)
+        if host_to_host and workloads.get("status") != "unsupported":
+            raw_states, raw_params = load_physical_validation_inputs(
+                dataset_conf["name"]
+            )
+            normalisation = model.normalisation or data_info
+            host_workloads = time_host_to_host_workloads(
+                model,
+                raw_states,
+                raw_params,
+                timesteps,
+                normalisation=normalisation,
+                log=normalisation.get(
+                    "log10_transform", dataset_conf.get("log10_transform", True)
+                ),
+                log_params=dataset_conf.get("log10_transform_params", True),
+                tolerance=dataset_conf.get("tolerance"),
+                **options,
+            )
+            metrics["timing"]["host_to_host"] = host_workloads
+            plot_inference_workloads(
+                {surr_name: host_workloads},
+                conf,
+                surr_name=surr_name,
+                host_to_host=True,
+            )
 
     # Compute (resources) benchmark
     if conf.get("compute", False):
@@ -1707,13 +1736,15 @@ def compare_inference_time(
 
     inference_time_bar_plot(surrogates, means, stds, config, save, show_title=TITLE)
     if save:
-        plot_inference_workloads(
-            {
-                name: entry.get("timing", {}).get("workloads", {})
-                for name, entry in metrics.items()
-            },
-            config,
-        )
+        for key in ("workloads", "host_to_host"):
+            plot_inference_workloads(
+                {
+                    name: entry.get("timing", {}).get(key, {})
+                    for name, entry in metrics.items()
+                },
+                config,
+                host_to_host=key == "host_to_host",
+            )
 
 
 def compare_gradients(metrics: dict, config: dict) -> None:
