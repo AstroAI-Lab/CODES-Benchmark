@@ -8,6 +8,8 @@ import optuna
 
 from codes.utils.utils import read_yaml_config
 
+from .optuna_fcts import endpoint_timing_protocol
+
 
 def yes_no(prompt: str, default: bool = False) -> bool:
     """Simple Y/N prompt. default=False -> [y/N], True -> [Y/n]."""
@@ -113,6 +115,10 @@ def apply_tuning_defaults(config: dict) -> dict:
     cfg.setdefault("use_optimal_params", True)
     cfg.setdefault("prune", True)
     cfg.setdefault("trials", 50)
+    if cfg.get("multi_objective", False):
+        timing = endpoint_timing_protocol(cfg)
+        timing.pop("protocol")
+        cfg["inference_timing"] = timing
 
     return cfg
 

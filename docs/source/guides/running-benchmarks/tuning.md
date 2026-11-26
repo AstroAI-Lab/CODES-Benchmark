@@ -83,21 +83,30 @@ You can resume a study by rerunning the same command; Optuna reuses the storage 
 
 ### Inference timing and existing studies
 
-Multi-objective tuning and refinement use the same timing method as evaluation.
-Each measurement has one unmeasured warm-up pass followed by five measured passes.
-CUDA and MPS work is synchronized immediately before and after each forward call.
-The objective is the mean summed forward-call wall time over the held-out loader.
-Data-loader iteration is outside the measured intervals. CPU timing uses the same
-warm-up without accelerator waits.
+Multi-objective tuning and refinement use the endpoint request from the
+[evaluation timing suite](evaluation.md). All candidates get the same batch of
+held-out initial states and parameters, already resident on the device. The
+inference batch size is independent of the training batch size.
 
-The `inference_timing` attribute records the protocol on the study and its trials.
-Trials also record the device, batch size, and number of predicted states. Existing
-multi-objective studies with legacy or unmarked timing objectives cannot be resumed.
-Use a new `tuning_id` or study name and retain the old study for historical analysis.
-Single-objective accuracy studies can still be resumed.
+```yaml
+inference_timing:
+  batch_size: 512
+  # rollout_step: 0.01  # optional maximum substep in dataset time units
+```
 
-Keep the GPU type, batch size, and workload fixed when comparing trial timings.
-Other work on the same GPU can affect measured times even when calls are synchronized.
+The endpoint horizons are the first positive elapsed time, the recorded time
+nearest the geometric midpoint on a log scale, and the full stored span.
+For Lotka–Volterra, those elapsed times are 1, 10, and 100. CODES measures one
+warm-up and five synchronized repetitions per horizon, then takes the geometric
+mean of the median batch latencies as the timing objective in seconds. The
+accuracy objective still measures error over the held-out trajectories.
+
+The study records the timing protocol and fixed configuration. Trials record
+the device, batch size, selected horizons, and individual latencies. Use a new
+`tuning_id` or study name when changing the timing settings or moving a study
+from the previous full-loader objective. Existing single-objective accuracy
+studies can still resume. Keep host type and accelerator settings consistent
+across the workers in a timed study.
 
 ## Tuning with a Slurm array
 

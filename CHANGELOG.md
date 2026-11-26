@@ -39,9 +39,10 @@ affecting results".
 
 ### Changes affecting results
 
-- Evaluation and multi-objective tuning now use a shared inference timing protocol
-  with one unmeasured warm-up and synchronization around each accelerator forward
-  pass. Legacy multi-objective studies cannot be resumed with the new timings.
+- Evaluation reports endpoint and trajectory timing curves by number of cells.
+  Multi-objective tuning uses the geometric mean of endpoint latencies over short,
+  medium, and long horizons at an independent inference batch size. Use a new
+  study for the new objective.
 
 - Iterative evaluation now restarts each chunk from the prediction at that chunk's
   start, rather than the prediction one timestep earlier.

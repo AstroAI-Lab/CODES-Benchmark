@@ -41,6 +41,7 @@ from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; p
     plot_example_predictions_with_uncertainty,
     plot_generalization_error_comparison,
     plot_gradients_heatmap,
+    plot_inference_workloads,
     plot_loss_comparison,
     plot_loss_comparison_equal,
     plot_loss_comparison_train_duration,
@@ -65,6 +66,7 @@ from .bench_utils import (
     save_table_csv,
     write_metrics_to_yaml,
 )
+from .workload_timing import time_inference_workloads
 
 TITLE = True
 
@@ -172,6 +174,28 @@ def run_benchmark(
         metrics["timing"] = time_inference(
             model, surr_name, val_loader, conf, n_test_samples
         )
+        timing_conf = conf.get("inference_timing", {})
+        if not isinstance(timing_conf, dict):
+            raise ValueError("inference_timing must be a mapping")
+        rollout_step = timing_conf.get("rollout_step")
+        if isinstance(rollout_step, dict):
+            rollout_step = rollout_step.get(surr_name)
+        options = {"rollout_step": rollout_step}
+        if "batch_sizes" in timing_conf:
+            options["batch_sizes"] = timing_conf["batch_sizes"]
+        try:
+            workloads = time_inference_workloads(
+                model,
+                val_data[:, 0, :],
+                val_params,
+                timesteps,
+                reference_trajectories=val_data,
+                **options,
+            )
+        except NotImplementedError as exc:
+            workloads = {"status": "unsupported", "reason": str(exc)}
+        metrics["timing"]["workloads"] = workloads
+        plot_inference_workloads({surr_name: workloads}, conf, surr_name=surr_name)
 
     # Compute (resources) benchmark
     if conf.get("compute", False):
@@ -1682,6 +1706,14 @@ def compare_inference_time(
     stds = list(std_inference_times.values())
 
     inference_time_bar_plot(surrogates, means, stds, config, save, show_title=TITLE)
+    if save:
+        plot_inference_workloads(
+            {
+                name: entry.get("timing", {}).get("workloads", {})
+                for name, entry in metrics.items()
+            },
+            config,
+        )
 
 
 def compare_gradients(metrics: dict, config: dict) -> None:

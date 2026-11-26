@@ -58,6 +58,7 @@ def test_prepare_freezes_config_and_rejects_changes(config, setup):
     data = json.loads(path.read_text())
     assert data["study_name"] == "slurm_example_fullyconnected"
     assert data["max_attempts"] == 4
+    assert "inference_timing" not in data["config"]
     assert "top-secret-token-409" not in path.read_text()
     slurm.prepare(config, path, "FullyConnected", None)
     config["surrogates"][0]["epochs"] = 3
@@ -121,6 +122,14 @@ def test_singular_config_uses_model_suffixed_study_name(config, setup):
     data = json.loads(path.read_text())
     assert data["study_name"] == "slurm_example_fullyconnected"
     assert optuna.load_study(study_name="slurm_example_fullyconnected", storage=storage)
+
+
+def test_multiobjective_slurm_manifest_freezes_timing_settings(config, setup):
+    path, _ = setup
+    config["multi_objective"] = True
+    slurm.prepare(config, path, "FullyConnected", None)
+    data = json.loads(path.read_text())
+    assert data["config"]["inference_timing"] == {"batch_size": 512}
 
 
 def test_worker_completes_target_and_resumes(config, setup, monkeypatch):

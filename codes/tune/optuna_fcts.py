@@ -12,22 +12,55 @@ import yaml
 from optuna.trial import TrialState
 from tqdm import tqdm
 
-from codes.benchmark.bench_utils import (
-    get_model_config,
-    get_surrogate,
-    inference_batch_size,
-    inference_timing_metadata,
-    measure_inference_time,
-)
+from codes.benchmark import get_model_config, get_surrogate
+from codes.benchmark.workload_timing import time_endpoint_workload
 from codes.utils import check_and_load_data, make_description, set_random_seeds
 from codes.utils.data_utils import download_data
 
 _inference_time_lock = threading.Lock()
 
 
-def ensure_study_timing(study: optuna.Study) -> None:
-    """Prevent incompatible multi-objective measurements in a resumed study."""
-    protocol = inference_timing_metadata()
+def endpoint_timing_protocol(config: dict | None = None) -> dict:
+    """Version the endpoint-workload study objective and its fixed settings."""
+    timing = (config or {}).get("inference_timing")
+    if timing is None:
+        timing = {}
+    if not isinstance(timing, dict):
+        raise ValueError("inference_timing must be a mapping")
+    unknown = set(timing) - {"batch_size", "rollout_step"}
+    if unknown:
+        raise ValueError(
+            f"Unknown inference_timing settings for tuning: {sorted(unknown)}"
+        )
+    batch_size = timing.get("batch_size", 512)
+    if (
+        isinstance(batch_size, bool)
+        or not isinstance(batch_size, int)
+        or batch_size < 1
+    ):
+        raise ValueError("inference_timing.batch_size must be a positive integer")
+    protocol = {
+        "protocol": "endpoint_workload_v1",
+        "batch_size": batch_size,
+    }
+    step = timing.get("rollout_step")
+    if step is not None:
+        if (
+            isinstance(step, bool)
+            or not isinstance(step, (int, float))
+            or not math.isfinite(step)
+            or step <= 0
+        ):
+            raise ValueError(
+                "inference_timing.rollout_step must be a finite positive duration"
+            )
+        protocol["rollout_step"] = float(step)
+    return protocol
+
+
+def ensure_study_timing(study: optuna.Study, config: dict | None = None) -> None:
+    """Prevent incompatible or legacy timing objectives in a resumed study."""
+    protocol = endpoint_timing_protocol(config)
     recorded = study.user_attrs.get("inference_timing")
     trials = study.get_trials(deepcopy=False)
     incompatible = recorded is not None and recorded != protocol
@@ -45,7 +78,7 @@ def ensure_study_timing(study: optuna.Study) -> None:
     if incompatible or unknown_active or mixed_completed:
         raise ValueError(
             f"Study {study.study_name!r} contains legacy, unknown or incompatible "
-            "inference timings. Use a new tuning_id/study name for synchronized "
+            "endpoint-workload timings. Use a new tuning_id/study name for synchronized "
             "HPO; keep the existing study for historical analysis."
         )
     if recorded is None:
@@ -254,7 +287,7 @@ def training_run(
 ) -> float | tuple[float, float]:
     """
     Run the training for a single Optuna trial and return the loss.
-    In multi-objective mode, also returns the mean inference time.
+    In multi-objective mode, also returns endpoint-workload geomean latency.
 
     Args:
         trial (optuna.Trial): Optuna trial object.
@@ -265,7 +298,7 @@ def training_run(
 
     Returns:
         float: Loss value in single objective mode.
-        tuple[float, float]: (loss, mean_inference_time) in multi objective mode.
+        tuple[float, float]: (loss, endpoint workload geomean latency) in multi-objective mode.
     """
 
     download_data(config["dataset"]["name"], verbose=False)
@@ -364,18 +397,25 @@ def training_run(
     model.save(model_name=model_name, base_dir="", training_id=savepath)
 
     if config.get("multi_objective", False):
-        trial.set_user_attr("inference_timing", inference_timing_metadata())
-        trial.set_user_attr("inference_device", str(device))
-        trial.set_user_attr(
-            "inference_batch_size",
-            inference_batch_size(test_loader) or config["batch_size"],
-        )
-        trial.set_user_attr(
-            "inference_num_predictions", int(test_data.shape[0] * test_data.shape[1])
-        )
+        timing_protocol = endpoint_timing_protocol(config)
+        timing_batch_size = timing_protocol["batch_size"]
         with _inference_time_lock:
-            inference_times = measure_inference_time(model, test_loader)
-        return p99_dex, np.mean(inference_times)
+            timing = time_endpoint_workload(
+                model,
+                test_data[:, 0, :],
+                test_params,
+                timesteps,
+                batch_size=timing_batch_size,
+                rollout_step=timing_protocol.get("rollout_step"),
+                reference_trajectories=test_data,
+            )
+        trial.set_user_attr("inference_timing", timing_protocol)
+        trial.set_user_attr("inference_device", str(timing.get("device", device)))
+        trial.set_user_attr("inference_batch_size", timing_batch_size)
+        trial.set_user_attr("inference_horizons", timing["horizons"])
+        trial.set_user_attr("inference_timing_metadata", timing.get("metadata", {}))
+        trial.set_user_attr("inference_objective_ms", timing["geomean_objective_ms"])
+        return p99_dex, float(timing["geomean_objective_ms"]) / 1000.0
     else:
         return p99_dex
 

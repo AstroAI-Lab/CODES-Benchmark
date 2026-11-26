@@ -75,6 +75,17 @@ class LatentNeuralODE(AbstractSurrogateModel):
         latent_prediction = self.model(x0, t_range, params)
         return latent_prediction, x
 
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Roll out an initial state at requested dummy-time coordinates."""
+        state = state.to(self.device, dtype=self.dtype)
+        times = times.to(self.device, dtype=self.dtype)
+        params = (
+            params.to(self.device, dtype=self.dtype) if params is not None else None
+        )
+        return self.model.forward_from_state(state, times, params)
+
     def prepare_data(
         self,
         dataset_train: np.ndarray,
@@ -353,7 +364,14 @@ class ModelWrapper(nn.Module):
                 dtype=dtype,
             )
 
-    def forward(self, x0: Tensor, t_range: Tensor, params: Tensor = None) -> Tensor:
+    def forward(
+        self,
+        x0: Tensor,
+        t_range: Tensor,
+        params: Tensor = None,
+        *,
+        t_start: Tensor | None = None,
+    ) -> Tensor:
         # encode initial state
         if self.n_parameters > 0 and self.config.encode_params:
             assert params is not None
@@ -373,12 +391,25 @@ class ModelWrapper(nn.Module):
         assert z0.dtype == torch.float64, f"z0 dtype {z0.dtype}"
         assert t_eval.dtype == torch.float64, f"t_eval dtype {t_eval.dtype}"
 
-        sol = self.solver.solve(to.InitialValueProblem(y0=z0, t_eval=t_eval))
+        problem = to.InitialValueProblem(y0=z0, t_start=t_start, t_eval=t_eval)
+        sol = self.solver.solve(problem)
 
         latent_traj = sol.ys  # [timesteps, batch, latent_dim]
 
         # decode
         return self.decoder(latent_traj.to(self.dtype))
+
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Device-resident rollout; the ODE must always start at coordinate zero."""
+        if times.ndim != 1 or times.numel() == 0:
+            raise ValueError("times must be a non-empty one-dimensional tensor")
+        # Native forward handles encoding, parameter injection, solver execution,
+        # and decoding. Explicit t_start fixes the integration origin even when
+        # the first requested observation is a positive endpoint.
+        t_start = times.new_zeros(state.shape[0], dtype=torch.float64)
+        return self.forward(state, times, params, t_start=t_start)
 
     def total_loss(
         self,

@@ -79,7 +79,7 @@ def run_single_study(
         )
 
     if multi_objective:
-        ensure_study_timing(study)
+        ensure_study_timing(study, config)
 
     have = _count_valid_trials(study)
     if have >= config["n_trials"]:
@@ -250,6 +250,10 @@ def run_all_studies(
                 "loss_cap": config.get("loss_cap", 20),
                 "time_pruning": config.get("time_pruning", True),
             }
+            if sub_config["multi_objective"]:
+                sub_config["inference_timing"] = config.get(
+                    "inference_timing", {"batch_size": 512}
+                )
 
             if sub_config["n_trials"] is None:
                 raise ValueError(

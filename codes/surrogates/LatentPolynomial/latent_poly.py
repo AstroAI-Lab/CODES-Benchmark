@@ -88,6 +88,19 @@ class LatentPoly(AbstractSurrogateModel):
         x, t_range, params = inputs
         return self.model(x, t_range, params), x
 
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Predict a trajectory directly from initial states on this model's device."""
+        state = state.to(self.device, non_blocking=True)
+        times = times.to(self.device, dtype=state.dtype, non_blocking=True)
+        params = (
+            params.to(self.device, dtype=state.dtype, non_blocking=True)
+            if params is not None
+            else None
+        )
+        return self.model.forward_from_state(state, times, params)
+
     def create_dataloader(
         self,
         data: np.ndarray,  # (N, T, Q)
@@ -366,6 +379,16 @@ class PolynomialModelWrapper(nn.Module):
             poly_out = self.poly(t)
         z_pred = poly_out + z0.unsqueeze(1)
         return self.decoder(z_pred)
+
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        if times.ndim != 1 or times.numel() == 0:
+            raise ValueError("times must be a non-empty one-dimensional tensor")
+        # forward expects a sequence but only consumes its first state. Expand
+        # without copying so parameter and polynomial paths remain identical.
+        x = state.unsqueeze(1)
+        return self.forward(x, times, params)
 
     def total_loss(
         self,

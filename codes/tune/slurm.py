@@ -118,6 +118,8 @@ def _study_config(
         "loss_cap": config["loss_cap"],
         "time_pruning": config["time_pruning"],
     }
+    if result.get("multi_objective", False):
+        result["inference_timing"] = config.get("inference_timing", {"batch_size": 512})
     if fine:
         space = build_fine_optuna_params(get_model_config(name, config))
         result["fine_space"] = space
@@ -153,11 +155,13 @@ def _load_study(manifest: dict[str, Any], storage: Any, seed: int) -> optuna.Stu
     )
 
 
-def _check_study(study: optuna.Study, manifest: dict[str, Any]) -> None:
+def _check_study(
+    study: optuna.Study, manifest: dict[str, Any], *, check_timing: bool = True
+) -> None:
     if study.user_attrs.get(STUDY_FINGERPRINT) != _fingerprint(manifest):
         raise ValueError("Study does not match the frozen Slurm manifest")
-    if manifest["config"].get("multi_objective", False):
-        ensure_study_timing(study)
+    if check_timing and manifest["config"].get("multi_objective", False):
+        ensure_study_timing(study, manifest["config"])
 
 
 def _write_manifest(path: Path, manifest: dict[str, Any]) -> None:
@@ -372,7 +376,7 @@ def status(path: Path) -> dict[str, int]:
         _storage(manifest.get("storage"), create=False),
         manifest["config"]["seed"],
     )
-    _check_study(study, manifest)
+    _check_study(study, manifest, check_timing=False)
     counts = _counts(study)
     print(
         json.dumps(
