@@ -18,6 +18,8 @@ from optuna.visualization import (
     plot_param_importances,
 )
 
+from codes.tune.tune_utils import is_valid_complete
+
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -158,8 +160,17 @@ def main() -> None:
 
     # Print best trial
     print(f"Best trial parameters for study '{study_name}':")
-    best_trial = study.best_trial
-    for key, value in best_trial.params.items():
+    if len(study.directions) != 1:
+        raise ValueError("evaluate_study supports single-objective studies only")
+    valid_trials = [trial for trial in study.trials if is_valid_complete(trial)]
+    if not valid_trials:
+        print(f"No valid completed trials in study '{study_name}'.")
+        return
+    valid_trials.sort(
+        key=lambda trial: trial.value,
+        reverse=study.direction == optuna.study.StudyDirection.MAXIMIZE,
+    )
+    for key, value in valid_trials[0].params.items():
         print(f"  {key}: {value}")
 
     # Print total number of runs
@@ -187,17 +198,13 @@ def main() -> None:
     config = load_study_config(study_name)
     surrogate_name = config["surrogate"]["name"]
 
-    # Filter out None-value trials
-    completed_trials = [t for t in study.trials if t.value is not None]
-    best_trials = sorted(completed_trials, key=lambda t: t.value)[:top_n]
-
     test_losses = []
     labels = []
 
     # Models are stored:
     #   tuned/studies/<study_name>/models/<ClassName>/<model_name>.pth
     # where <model_name> might be something like "fullyconnected_3.pth"
-    for trial in best_trials:
+    for trial in valid_trials[:top_n]:
         model_filename = f"{surrogate_name.lower()}_{trial.number}.pth"
         model_path = os.path.join(
             "tuned",

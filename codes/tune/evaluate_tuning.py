@@ -14,7 +14,6 @@ import torch
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FormatStrFormatter
-from optuna.trial import TrialState
 
 # add codes directory to path
 sys.path.append(
@@ -23,6 +22,7 @@ sys.path.append(
 
 from codes.tune import load_yaml_config
 from codes.tune.storage import create_optuna_storage
+from codes.tune.tune_utils import is_valid_complete
 from codes.utils import nice_print
 
 os.environ.setdefault("PGCONNECT_TIMEOUT", "3")
@@ -97,9 +97,7 @@ def compute_hypervolume_over_time(
 
     Returns (hypervolumes, reference_point).
     """
-    from optuna.trial import TrialState
-
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         return [], None
 
@@ -186,7 +184,7 @@ def compute_pareto_plot_data(
 ) -> dict | None:
     if len(study.directions) != 2:
         return None
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         print(f"Skipping Pareto plot for {suffix}: no completed trials.")
         return None
@@ -610,7 +608,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
     Single-objective: lowest value.
     Multi-objective: Pareto front; if fewer than top_n, pad with closest-to-origin among the rest.
     """
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         return []
     # Single-objective
