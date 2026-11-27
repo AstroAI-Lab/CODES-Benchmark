@@ -70,16 +70,17 @@ The GitHub Pages site now hosts the narrative guides, configuration reference, a
 
 CODES follows [semantic versioning](https://semver.org/). [CHANGELOG.md](CHANGELOG.md) lists the changes in each release, including every change that affects benchmark results. Saved models and metrics record the CODES version and commit that produced them.
 
-Development builds for the next release use `0.3.0.dev0`. When using an unreleased
-build, record the git commit as well as the package version.
+When using an unreleased build, record the git commit as well as the package
+version.
 
 ## Citation & Publications using CODES
 
 If you use `CODES` in your research, please cite the archived software release you
-used. [CODES 0.2.0](https://doi.org/10.5281/zenodo.23810177) is archived on Zenodo;
-you can export its citation there or use GitHub's **Cite this repository** button,
-which reads [CITATION.cff](CITATION.cff). Include the version used in your methods.
-The DOI badge above links to [all archived versions](https://doi.org/10.5281/zenodo.23810176).
+used. You can export the citation for an archived release such as
+[CODES 0.2.0](https://doi.org/10.5281/zenodo.23810177) from Zenodo. GitHub's
+**Cite this repository** button reads [CITATION.cff](CITATION.cff). Include the
+version used in your methods. The DOI badge above links to
+[all archived versions](https://doi.org/10.5281/zenodo.23810176).
 
 If you use the astrochemical datasets or analysis presented in **Janssen, Branca &
 Buck (2026)**, please also cite that paper, listed below.

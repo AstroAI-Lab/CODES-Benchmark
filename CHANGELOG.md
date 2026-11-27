@@ -8,14 +8,25 @@ affecting results".
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-27
+
 ### Added
 
-- Optional Slurm arrays for fixed training assignments and shared Optuna
-  studies, with progress inspection and restart support.
-- One-command Slurm submission for training and tuning, with scheduler options
-  in the run YAML and automatically prepared manifests.
-- CPU smoke configs using Lotka–Volterra for first runs locally and on Slurm.
-
+- Optional Slurm arrays for training and tuning. Training workers use fixed
+  assignments and completion records to retry unfinished tasks. Tuning workers
+  share one Optuna study with target and attempt limits.
+- One-command Slurm submission with frozen manifests, scheduler options in the
+  run YAML, run- or study-based job names, per-task logs, and status commands.
+- A first-run guide and Lotka–Volterra CPU smoke configs for training and tuning
+  locally or on Slurm, plus evaluation of the trained checkpoints. The
+  PostgreSQL guide includes an `.env.example` for site-local connection settings.
+- Optional checkpoint Pareto pruning for multi-objective tuning. Shadow mode
+  records decisions while trials finish. Active mode counts policy-pruned
+  trials toward the configured target and tracks failed attempts separately.
+- Configurable NSGA-II and TPE sampling for local and Slurm tuning. Study
+  resumes retain their sampler.
+- Versioned 0.3.0 tuning configs for six surrogates across the four astrochemistry
+  datasets, with fixed training batches from the GPU pilot and 5,190 trial slots.
 - Publish versioned benchmark tables for the four A&A datasets, with absolute
   log-error distributions, catastrophic-error recall curves, per-seed
   downloads, and links to the measured code revision.
@@ -32,16 +43,13 @@ affecting results".
   parent's dataset configuration.
 - Optional `gradient_clip` for FullyConnected, MultiONet and LatentNeuralODE training.
 
-### Changed
-
-- Optuna tuning defaults to a file journal for new runs locally and on Slurm.
-  PostgreSQL remains available for tuning against a shared database.
-
 ### Changes affecting results
 
-- Evaluation reports endpoint and trajectory timing curves by number of cells.
-  Host-to-host curves include input packing, physical-unit transforms, accelerator
-  transfers, and making the output available on the CPU.
+- Evaluation and tuning share synchronized inference timing. Evaluation keeps the
+  full-loader timings and adds endpoint and trajectory latency and throughput
+  curves by batch size under `timing.workloads` and `timing.host_to_host`.
+  Host-to-host timings include input packing, physical-unit transforms, accelerator
+  transfers, and making predictions available on the CPU.
   Multi-objective tuning uses the geometric mean of endpoint latencies over short,
   medium, and long horizons at an independent inference batch size. Use a new
   study for the new objective.
@@ -54,6 +62,12 @@ affecting results".
 
 ### Fixed
 
+- Pareto reporting and finalist selection use the same validity check as tuning
+  budgets, excluding non-finite objectives and exception-marked trials such as
+  OOM penalties.
+- Latent surrogates support state-based endpoint and trajectory requests. The
+  LatentNeuralODE solver starts from the supplied state at time zero even when
+  the first requested output is a positive endpoint.
 - Failed local training runs now raise an error instead of reporting successful
   completion. Successful sibling tasks remain recorded; unfinished tasks are kept
   for retry after exceptions, worker crashes or interruption.
@@ -69,6 +83,13 @@ affecting results".
 
 ### Changed
 
+- New tuning studies default to Optuna JournalStorage locally and on Slurm.
+  PostgreSQL is available for shared studies with heartbeat recovery on Slurm.
+  SQLite remains available for local runs. Campaign tuning reports read the
+  configured storage, and legacy PostgreSQL setups remain supported.
+- Added missing library annotations and clarified shared batch, loss-callback,
+  and training-task types. Ruff's `ANN` rules enforce annotation presence in
+  `codes/`.
 - Local training progress is rendered by the parent, using stacked bars for
   interactive terminals and timestamped text for redirected or batch output.
   The `progress` setting supports `auto`, `bars`, `plain` and `off`; per-task
@@ -86,8 +107,7 @@ affecting results".
   is also deprecated; training uses the configured loss.
 - Updated the checkout, uv setup, Codecov and Pages Actions to current releases
   compatible with Node 24. CI also checks the pinned requirements against `uv.lock`.
-- Development builds now identify themselves as `0.3.0.dev0`; the documentation
-  displays the installed package version.
+- The documentation displays the installed package version.
 - Added the 0.2.0 release DOI and publication date to citation metadata, an
   all-versions DOI badge, and corrected repository and Codecov links.
 - Replaced Black and isort with Ruff for linting, import sorting and formatting.
@@ -166,6 +186,7 @@ optimizer and seeding fixes below; the conclusions of the paper are unchanged.
 
 The version used for the A&A paper.
 
-[Unreleased]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/AstroAI-Lab/CODES-Benchmark/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/AstroAI-Lab/CODES-Benchmark/releases/tag/v0.1.0
