@@ -4,6 +4,24 @@ Optuna powers the tuning stage. Each study runs inside `run_tuning.py`, which ma
 
 For a first run, follow [Getting Started](../../getting-started.md) to install CODES, stage the Lotka–Volterra dataset, and run four CPU trials locally or on Slurm.
 
+## 0.3.0 astrochemistry campaign
+
+`configs/tuning/v0.3.0/` contains one configuration per astrochemistry dataset.
+Each covers six architectures with fixed training batches from the RTX 2080 Ti
+pilot, full training data, and 15 trial slots per distinct search-space key.
+The configs specify 4,000 epochs, multi-objective TPE, and checkpoint Pareto
+pruning. Endpoint timing uses 512 device-resident states and queries each
+horizon directly. Rollout evaluation and finetuning have their own settings.
+
+Before submitting, set `slurm.time` for your site and choose a consistent GPU
+type for the study. The configs request one GPU per worker and use journal
+storage. Select one surrogate per submission with `--study`.
+
+```bash
+uv run run_tuning.py --slurm submit \
+  --config configs/tuning/v0.3.0/cloud_parametric.yaml --study MultiONetResidual
+```
+
 ## Workspace layout
 
 1. Copy `configs/tuning/config_smoke.yaml` and give the copy its own `tuning_id` when changing the dataset or search space.
@@ -62,7 +80,7 @@ surrogates:
 - **storage** — omit this block to use `tuned/<tuning_id>/optuna.journal`. Set `storage.backend` explicitly to use a different backend. See {ref}`storage options <tuning-storage-options>`.
 - **surrogates** — per-architecture specs. Each entry sets:
   - `batch_size` / `epochs`: used to build the objective.
-  - `trials`: maximum valid trials for that surrogate.
+  - `trials`: target number of trial slots for that surrogate. A successful trial uses one slot. With checkpoint Pareto pruning enabled, a trial stopped by that policy also uses one slot.
   - `optuna_params`: the search space. The keys correspond to attributes on the surrogate’s config dataclass; Optuna writes the sampled values into that config before training.
 
 You can add `global_optuna_params` for common parameters, enable `fine: true` for automatic “around-the-best” refinement, or toggle between single-objective (`direction="minimize"`) and dual-objective (`directions=["minimize","minimize"]`) mode. In multi-objective runs we typically optimize log-space accuracy (LAE$_{99}$) and inference time, but you can choose any pair of metrics.
@@ -74,12 +92,27 @@ You can add `global_optuna_params` for common parameters, enable `fine: true` fo
 3. Downloads the dataset once per run.
 4. Iterates over the `surrogates` list. For each surrogate it:
    - Builds a study name (`<tuning_id>_<surrogate>`).
-   - Selects the sampler/pruner (`TPESampler` + Hyperband or NSGA-II with no pruning).
+   - Selects the sampler (`TPESampler` or NSGA-II) and the configured pruning rules.
    - Creates a device queue and `objective_fn = create_objective(...)`.
    - Calls `study.optimize()` with `n_jobs=len(devices)`. Each Optuna worker pulls a device token, trains a model with the sampled hyperparameters, and returns the objective(s).
-   - Tracks ETA via `tqdm`. The helper `MaxValidTrialsCallback` stops once enough successful trials finished (OOM and time-pruned trials are ignored).
+   - Tracks progress and ETA via `tqdm`.
 
-You can resume a study by rerunning the same command; Optuna reuses the storage and continues sampling until `n_trials` valid runs exist. Trial budgets are usually sized heuristically (e.g., `~15 ×` the number of tuned hyperparameters), but you can override per surrogate via the `trials` field.
+You can resume a study by rerunning the same command. Optuna reuses existing trials in the study's storage. Set `trials` for each surrogate to size the search budget, for example at 15 times the number of tuned hyperparameters.
+
+### Sampler selection
+
+Set `sampler: tpe` to use Optuna's TPE sampler for a multi-objective study.
+Set `sampler: nsgaii` to select NSGA-II explicitly. With `sampler` omitted,
+CODES uses NSGA-II for multi-objective tuning and TPE for single-objective
+tuning. The same setting applies to local tuning and Slurm workers.
+
+```yaml
+multi_objective: true
+sampler: tpe
+```
+
+Use separate tuning IDs for sampler comparisons. The sampler is fixed when
+resuming a study. `population_size` applies to NSGA-II.
 
 ### Inference timing and existing studies
 
@@ -101,12 +134,76 @@ warm-up and five synchronized repetitions per horizon, then takes the geometric
 mean of the median batch latencies as the timing objective in seconds. The
 accuracy objective still measures error over the held-out trajectories.
 
+CODES reads the HDF5 split named `test` for tuning checkpoint selection and
+for both checkpoint and final HPO objectives. Benchmark evaluation reads the
+separate HDF5 split named `val`.
+
 The study records the timing protocol and fixed configuration. Trials record
 the device, batch size, selected horizons, and individual latencies. Use a new
 `tuning_id` or study name when changing the timing settings or moving a study
 from the previous full-loader objective. Existing single-objective accuracy
 studies can still resume. Keep host type and accelerator settings consistent
 across the workers in a timed study.
+
+### Checkpoint Pareto pruning
+
+Checkpoint pruning is opt-in for studies with `multi_objective: true`. Start
+with a separate `tuning_id` and run a representative shadow study before
+enabling it for a campaign.
+
+```yaml
+multi_objective: true
+multi_objective_pruning:
+  mode: shadow
+  checkpoints: [0.20, 0.40, 0.70]
+  peer_warmup: 8
+  error_gap: 0.02
+  latency_margin: 0.10
+  max_recent_error_improvement: 0.05
+```
+
+At each checkpoint, CODES measures the same held-out error percentile and the
+same device-resident endpoint latency used in the final objectives. Every
+checkpoint has its own set of observed peers in the same study. Once at least
+eight peers have reached that point, a trial counts as dominated if a single
+peer has at least 0.02 lower error and 10% lower latency. Requiring a clear latency
+advantage reduces the chance of pruning a fast candidate when timings are
+noisy. Set `latency_margin: 0` to let a peer with the same measured latency
+qualify if your shadow run supports that choice. The default rule requires
+two successive dominated checkpoints and at most 5% error improvement in each
+of the two most recent checkpoint intervals, or in the one observed interval
+at the second checkpoint. A trial with recent gains can continue even
+when it trails at two checkpoints. The comparison is asynchronous, so which
+peers are available depends on the order in which workers reach each checkpoint.
+
+In `shadow` mode, `pareto_would_prune` records the first qualifying checkpoint
+and the trial continues. Check those trials against the final `study.best_trials`
+and compare the proposed savings against the overhead of measuring checkpoints.
+For example, the following works with the default journal backend from the repo root.
+
+```python
+import optuna
+from optuna.storages import JournalStorage
+from optuna.storages.journal import JournalFileBackend
+
+study = optuna.load_study(
+    study_name="my_shadow_fullyconnected",
+    storage=JournalStorage(JournalFileBackend("tuned/my_shadow/optuna.journal")),
+)
+front = {trial.number for trial in study.best_trials}
+for trial in study.trials:
+    decision = trial.user_attrs.get("pareto_would_prune")
+    if decision is not None:
+        print(trial.number, decision, trial.values, trial.number in front)
+```
+
+Use a new study and `mode: prune` to enable stopping. Qualifying trials end
+as Optuna `PRUNED` and use a slot in `trials`. Failed, OOM, and runtime-pruned
+attempts use the separate attempt ceiling, which defaults to twice the target.
+Set `max_attempts` in local tuning YAML or use `--max-attempts` for Slurm.
+The existing runtime proxy defaults
+to off with checkpoint pruning so the extra measurement time does not affect
+its decisions. Set `time_pruning: true` to explicitly combine both rules.
 
 ## Tuning with a Slurm array
 
@@ -121,7 +218,9 @@ follow the {ref}`PostgreSQL setup <tuning-postgresql-service>`.
 
 Add a top-level `slurm` block to your tuning YAML. `workers` sets the number
 of array tasks for the selected study. The tuning config's `trials` setting
-sets the target number of valid trials for the whole study.
+sets the study-wide target. Status reports `valid` completions, `pareto_pruned`
+trials, and their sum in `target_count`. Already running trials can finish
+after the target is reached.
 
 ```yaml
 slurm:
@@ -328,7 +427,7 @@ Some hyperparameters only matter when a parent switch takes a specific value (e.
 
 ### Time-based pruning
 
-To avoid exceptionally slow trials hogging resources, CODES automatically sets a runtime threshold after the initial warm-up period. Once enough successful trials complete, it computes `mean + std` of their durations and prunes future trials whose wall-clock time exceeds that threshold. In multi-objective mode, this applies to both accuracy/time objectives—the accuracy value is capped while the runtime objective records the observed duration.
+In multi-objective studies, the runtime proxy can stop expensive trials based on projected training time. After a warm-up, CODES uses `mean + std` of the observed trial durations as the threshold. Stopped trials are recorded as `PRUNED`. Completed trials use measured endpoint inference latency as their second objective.
 
 Disable this behaviour by adding:
 
@@ -336,6 +435,6 @@ Disable this behaviour by adding:
 time_pruning: false
 ```
 
-to your tuning config. When disabled, all trials run to completion unless Optuna’s other pruners intervene.
+to your tuning config.
 
 Remember that tuning explores unconstrained space—double-check the resulting configs before launching expensive training sweeps.
