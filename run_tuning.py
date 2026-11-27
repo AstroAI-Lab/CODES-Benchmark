@@ -23,6 +23,14 @@ from codes.tune import (
     prepare_workspace,
 )
 from codes.tune.storage import create_optuna_storage
+from codes.tune.tune_utils import (
+    SAMPLER_ATTR,
+    count_tuning_trials,
+    create_sampler,
+    is_pareto_pruned,
+    is_valid_complete,
+    sampler_name,
+)
 from codes.utils import download_data, nice_print
 
 
@@ -44,11 +52,9 @@ def run_single_study(
         optuna.logging.set_verbosity(optuna.logging.WARNING)
 
     multi_objective = config.get("multi_objective", False)
+    sampler = create_sampler(config, config["seed"])
 
     if multi_objective:
-        sampler = optuna.samplers.NSGAIISampler(
-            seed=config["seed"], population_size=config["population_size"]
-        )
         pruner = optuna.pruners.NopPruner()
         study = optuna.create_study(
             study_name=study_name,
@@ -59,7 +65,6 @@ def run_single_study(
             load_if_exists=True,
         )
     else:
-        sampler = optuna.samplers.TPESampler(seed=config["seed"])
         pruner = (
             optuna.pruners.HyperbandPruner(
                 min_resource=max(1, config["epochs"] // 8),
@@ -78,13 +83,34 @@ def run_single_study(
             load_if_exists=True,
         )
 
+    selected_sampler = sampler_name(config)
+    stored_sampler = study.user_attrs.get(SAMPLER_ATTR)
+    if stored_sampler is not None and stored_sampler != selected_sampler:
+        raise ValueError(
+            f"Study {study_name!r} was created with sampler {stored_sampler!r}; "
+            "use a new study name to change samplers"
+        )
+    historical_sampler = "nsgaii" if multi_objective else "tpe"
+    if (
+        stored_sampler is None
+        and study.get_trials(deepcopy=False)
+        and selected_sampler != historical_sampler
+    ):
+        raise ValueError(
+            f"Legacy study {study_name!r} has trials using the historical "
+            f"{historical_sampler!r} sampler; use a new study name to change samplers"
+        )
     if multi_objective:
         ensure_study_timing(study, config)
 
-    have = _count_valid_trials(study)
+    if stored_sampler is None:
+        study.set_user_attr(SAMPLER_ATTR, selected_sampler)
+
+    pareto_policy = config.get("multi_objective_pruning")
+    have = count_tuning_trials(study) if pareto_policy else _count_valid_trials(study)
     if have >= config["n_trials"]:
         print(
-            f"[skip] {study_name}: already has {have} valid trials (target {config['n_trials']}). Skipping optimize()."
+            f"[skip] {study_name}: already reached its trial target {config['n_trials']} ({have} counted)."
         )
         return
 
@@ -112,8 +138,13 @@ def run_single_study(
         trial_timepruned = (
             "prune_reason" in trial_.user_attrs
         )  # do not count time-pruned trials
-        wanted_states = (TrialState.COMPLETE, TrialState.PRUNED)
-        if trial_.state in wanted_states and not (trial_oom or trial_timepruned):
+        counted = (
+            (is_valid_complete(trial_) or is_pareto_pruned(trial_))
+            if pareto_policy
+            else trial_.state in (TrialState.COMPLETE, TrialState.PRUNED)
+            and not (trial_oom or trial_timepruned)
+        )
+        if counted:
             trial_pbar.update(1)
 
         # duration/eta
@@ -121,13 +152,13 @@ def run_single_study(
             dur = time.time() - trial_.datetime_start.timestamp()
             all_durations.append(dur)
             avg = sum(all_durations) / len(all_durations)
-            eta = (avg * (n_trials - len(all_durations))) / n_jobs
+            eta = avg * max(n_trials - trial_pbar.n, 0) / n_jobs
             trial_pbar.set_postfix_str(
                 f"ETA: {eta / 60:.1f}m, Avg: {avg:.1f}s, Last: {dur:.1f}s"
             )
 
         # try to set threshold (no-op if not enough data or already set)
-        if config.get("time_pruning", True):
+        if config.get("time_pruning", not pareto_policy):
             maybe_set_runtime_threshold(study_, warmup_target, include_pruned=True)
 
     dataset_cfg = config["dataset"]
@@ -141,15 +172,54 @@ def run_single_study(
         bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}{postfix}]",
     ) as trial_pbar:
         try:
-            study.optimize(
-                objective_fn,
-                n_trials=n_trials,
-                n_jobs=n_jobs,
-                callbacks=[
-                    MaxValidTrialsCallback(n_trials),
-                    trial_complete_callback,
-                ],
-            )
+            if pareto_policy:
+                trial_pbar.update(min(have, n_trials))
+            if not pareto_policy:
+                study.optimize(
+                    objective_fn,
+                    n_trials=n_trials,
+                    n_jobs=n_jobs,
+                    callbacks=[
+                        MaxValidTrialsCallback(n_trials),
+                        trial_complete_callback,
+                    ],
+                )
+            else:
+                max_attempts = config.get("max_attempts")
+                if max_attempts is None:
+                    max_attempts = 2 * n_trials
+                if (
+                    isinstance(max_attempts, bool)
+                    or not isinstance(max_attempts, int)
+                    or max_attempts < n_trials
+                ):
+                    raise ValueError(
+                        "max_attempts must be an integer at least n_trials"
+                    )
+                while have < n_trials:
+                    attempts = sum(
+                        t.state != TrialState.WAITING
+                        for t in study.get_trials(deepcopy=False)
+                    )
+                    remaining = max_attempts - attempts
+                    if remaining <= 0:
+                        break
+                    study.optimize(
+                        objective_fn,
+                        n_trials=min(remaining, n_trials - have),
+                        n_jobs=n_jobs,
+                        callbacks=[trial_complete_callback],
+                    )
+                    have = count_tuning_trials(study)
+                counts = study.get_trials(deepcopy=False)
+                valid_complete = sum(is_valid_complete(trial) for trial in counts)
+                mo_pruned = sum(is_pareto_pruned(trial) for trial in counts)
+                attempts = sum(trial.state != TrialState.WAITING for trial in counts)
+                print(
+                    f"[status] {study_name}: valid={valid_complete}, "
+                    f"pareto_pruned={mo_pruned}, target_count={have}/{n_trials}, "
+                    f"attempts={attempts}/{max_attempts}"
+                )
         except Exception as exc:  # pragma: no cover - guidance-oriented handling
             if sqlite_backend and "database is locked" in str(exc).lower():
                 raise RuntimeError(
@@ -178,8 +248,11 @@ def run_all_studies(
         total=total_sub_studies, desc="Overall Surrogates", position=0, leave=True
     ) as arch_pbar:
         if config.get("multi_objective", False):
+            policy = config.get("multi_objective_pruning")
+            policy_mode = policy["mode"] if policy else "off"
             print(
-                "⚠️ Multi-objective mode enabled: using NSGA-II sampler and disabling pruning."
+                f"⚠️ Multi-objective mode enabled: using {sampler_name(config)} sampler; "
+                f"checkpoint pruning mode is {policy_mode}."
             )
 
         for surr in surrogates:
@@ -244,11 +317,14 @@ def run_all_studies(
                 "optuna_logging": config.get("optuna_logging", False),
                 "use_optimal_params": config.get("use_optimal_params", True),
                 "multi_objective": config.get("multi_objective", False),
+                **({"sampler": config["sampler"]} if "sampler" in config else {}),
                 "population_size": config.get("population_size", 50),
                 "target_percentile": config.get("target_percentile", 0.99),
                 "fine": config.get("fine", False),  # pass through
                 "loss_cap": config.get("loss_cap", 20),
                 "time_pruning": config.get("time_pruning", True),
+                "multi_objective_pruning": config.get("multi_objective_pruning"),
+                "max_attempts": config.get("max_attempts"),
             }
             if sub_config["multi_objective"]:
                 sub_config["inference_timing"] = config.get(
@@ -326,7 +402,7 @@ def main():
             manifest = Path(manifest).resolve()
             slurm.prepare(config, manifest, args.study, args.max_attempts)
             counts = slurm.status(manifest)
-            if counts["valid"] >= selected["n_trials"]:
+            if counts["target_count"] >= selected["n_trials"]:
                 print(f"Study {study_name} is complete; no array submitted")
                 return
             worker_args = [

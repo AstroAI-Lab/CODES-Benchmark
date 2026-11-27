@@ -4,6 +4,7 @@ import dataclasses
 import os
 import time
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from datetime import datetime
 from typing import Any, TypeVar
 
@@ -120,6 +121,10 @@ class AbstractSurrogateModel(ABC, nn.Module):
         self.config = config if config is not None else {}
         self.train_duration = None
         self.optuna_trial = None
+        # Optional hook called by the shared fit loop with the 1-based count of
+        # completed epochs and the optimizer. HPO callers can attach a callback
+        # without changing the training API used by individual architectures.
+        self.epoch_callback: Callable[[int, torch.optim.Optimizer], None] | None = None
         self.update_epochs = 10
         self.n_epochs = 0
         self.training_id = training_id

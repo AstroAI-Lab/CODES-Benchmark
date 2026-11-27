@@ -111,6 +111,9 @@ def fit_standard(
                 total_epochs=epochs,
                 multi_objective=multi_objective,
             )
+            epoch_callback = getattr(model, "epoch_callback", None)
+            if epoch_callback is not None:
+                epoch_callback(epoch + 1, optimizer)
         model.n_epochs = epoch + 1
         # Schedule-free optimizers expose evaluation weights in eval mode.
         optimizer.eval()

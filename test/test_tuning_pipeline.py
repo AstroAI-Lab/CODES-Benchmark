@@ -305,7 +305,8 @@ def test_training_run_single_objective(monkeypatch, tmp_path):
     assert isinstance(val, float) and val == 7.0
 
 
-def test_training_run_multi_objective(monkeypatch, tmp_path):
+@pytest.mark.parametrize("shadow", [False, True])
+def test_training_run_multi_objective(monkeypatch, tmp_path, shadow):
     config = {
         "dataset": {
             "name": "ds",
@@ -321,6 +322,8 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
         "target_percentile": 0.5,
         "multi_objective": True,
     }
+    if shadow:
+        config["multi_objective_pruning"] = {"mode": "shadow"}
     # stub all as above
     monkeypatch.setattr("codes.tune.optuna_fcts.download_data", lambda *args, **k: None)
     import numpy as np
@@ -343,12 +346,26 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
     monkeypatch.setattr("codes.tune.optuna_fcts.set_random_seeds", lambda *a, **k: None)
 
     class DummyModel2(DummyModel):
+        epoch_callback = None
+
         def prepare_data(self, **kwargs):
             loader = SimpleNamespace(batch_size=None, dataset=SimpleNamespace(bs=6))
             return "train_loader", loader, None
 
         def eval(self):
             self.evaluating = True
+
+        def train(self):
+            self.evaluating = False
+
+        def fit(self, **kwargs):
+            if self.epoch_callback is not None:
+                optimizer = SimpleNamespace(eval=lambda: None, train=lambda: None)
+                for epoch in range(1, kwargs["epochs"] + 1):
+                    self.epoch_callback(epoch, optimizer)
+
+        def save(self, **kwargs):
+            assert self.epoch_callback is None
 
         def predict(self, loader, leave_log=False):
             import torch
@@ -380,6 +397,9 @@ def test_training_run_multi_objective(monkeypatch, tmp_path):
     )
     # Accuracy stays the first objective; endpoint workload is the second.
     assert isinstance(val, tuple) and val[0] == 5.0 and val[1] == pytest.approx(0.002)
+    assert [item["epoch"] for item in trial.user_attrs.get("pareto_history", [])] == (
+        [1, 2, 4] if shadow else []
+    )
     assert trial.user_attrs["inference_timing"] == {
         "protocol": "endpoint_workload_v1",
         "batch_size": 512,
@@ -423,6 +443,40 @@ def test_study_timing_records_protocol_and_allows_matching_resume():
     study.tell(trial, [0.1, 0.2])
     ensure_study_timing(study)
     assert study.trials[0].values == [0.1, 0.2]
+
+
+def test_pareto_protocol_survives_journal_resume_and_rejects_changes(tmp_path):
+    from optuna.storages import JournalStorage
+    from optuna.storages.journal import JournalFileBackend
+
+    path = str(tmp_path / "optuna.journal")
+    config = {
+        "multi_objective": True,
+        "multi_objective_pruning": {"mode": "shadow"},
+        "epochs": 40,
+        "batch_size": 8,
+        "dataset": {"name": "lotka_volterra"},
+        "surrogate": {"name": "FullyConnected"},
+    }
+    study = optuna.create_study(
+        storage=JournalStorage(JournalFileBackend(path)),
+        study_name="test",
+        directions=["minimize", "minimize"],
+    )
+    study.enqueue_trial({})
+    ensure_study_timing(study, config)
+
+    study = optuna.load_study(
+        storage=JournalStorage(JournalFileBackend(path)), study_name="test"
+    )
+    ensure_study_timing(study, config)
+    for updated in (
+        {"multi_objective_pruning": None},
+        {"multi_objective_pruning": {"mode": "prune"}},
+        {"epochs": 60},
+    ):
+        with pytest.raises(ValueError, match="different multi-objective pruning"):
+            ensure_study_timing(study, config | updated)
 
 
 def test_endpoint_timing_protocol_tracks_fixed_batch_setting():
@@ -503,7 +557,9 @@ def test_cli_preserves_single_objective_study_resume(tmp_path):
     study.tell(study.ask(), 0.1)
     config = {"multi_objective": False, "seed": 42, "epochs": 8, "n_trials": 1}
     run_tuning.run_single_study(config, "accuracy", storage, True)
-    assert optuna.load_study(study_name="accuracy", storage=storage).user_attrs == {}
+    assert optuna.load_study(study_name="accuracy", storage=storage).user_attrs == {
+        "codes_sampler": "tpe"
+    }
 
 
 def test_create_objective_simple(monkeypatch):

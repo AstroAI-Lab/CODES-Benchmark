@@ -132,6 +132,30 @@ def test_multiobjective_slurm_manifest_freezes_timing_settings(config, setup):
     assert data["config"]["inference_timing"] == {"batch_size": 512}
 
 
+def test_multiobjective_tpe_manifest_reloads_and_worker_checks_sampler(config, setup):
+    path, storage = setup
+    config["multi_objective"] = True
+    config["sampler"] = "tpe"
+    slurm.prepare(config, path, "FullyConnected", None)
+    manifest = slurm._read_manifest(path)
+    assert manifest["config"]["sampler"] == "tpe"
+    loaded = slurm._load_study(manifest, storage, manifest["config"]["seed"])
+    assert isinstance(loaded.sampler, optuna.samplers.TPESampler)
+
+    loaded.set_user_attr(slurm.SAMPLER_ATTR, "nsgaii")
+    with pytest.raises(ValueError, match="sampler does not match"):
+        slurm.worker(path, "cpu", 1)
+
+
+def test_public_config_canonicalizes_default_sampler():
+    default = {"multi_objective": True, "sampler": "nsgaii"}
+    null = {"multi_objective": True, "sampler": None}
+    assert slurm._public_config(
+        default, {"backend": "postgres"}
+    ) == slurm._public_config(null, {"backend": "postgres"})
+    assert "sampler" not in slurm._public_config(default, {"backend": "postgres"})
+
+
 def test_worker_completes_target_and_resumes(config, setup, monkeypatch):
     path, storage = setup
     slurm.prepare(config, path, "FullyConnected", 4)
@@ -154,6 +178,71 @@ def test_worker_completes_target_and_resumes(config, setup, monkeypatch):
     assert slurm._counts(study)["valid"] == 2
     assert len(study.trials) == 2
     assert slurm.status(path)["valid"] == 2
+
+
+def test_journal_worker_counts_pareto_prunes_toward_target(config, setup, monkeypatch):
+    import sys
+
+    import run_tuning
+
+    path, _ = setup
+    # Use the real journal backend for preparation, worker reload, and status.
+    original_storage = slurm.create_optuna_storage
+    monkeypatch.setattr(
+        slurm,
+        "_storage",
+        lambda metadata, *, create=True: original_storage(
+            {"storage": metadata}, "unused", create=create
+        )[0],
+    )
+    config["multi_objective"] = True
+    config["multi_objective_pruning"] = {"mode": "prune"}
+    config["storage"] = {"backend": "journal"}
+    submit_config = slurm.apply_tuning_defaults(config)
+    slurm.prepare(submit_config, path, "FullyConnected", None)
+    slurm.prepare(submit_config, path, "FullyConnected", None)
+
+    def objective(trial):
+        if trial.number == 0:
+            raise optuna.TrialPruned("runtime cap")
+        if trial.number == 1:
+            trial.set_user_attr("pareto_pruned", True)
+            raise optuna.TrialPruned("checkpoint Pareto pruning")
+        trial.set_user_attr(
+            "inference_timing", trial.study.user_attrs["inference_timing"]
+        )
+        return 0.5, 0.01
+
+    monkeypatch.setattr(slurm, "create_objective", lambda *a: objective)
+    slurm.worker(path, "cpu", 1)
+    slurm.worker(path, "cpu", 1)
+    counts = slurm.status(path)
+    assert counts["valid"] == 1
+    assert counts["pruned"] == 2
+    assert counts["pareto_pruned"] == 1
+    assert counts["target_count"] == 2
+
+    config_path = path.parent / "study.yaml"
+    config_path.write_text(yaml.safe_dump(config))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_tuning.py",
+            "--slurm",
+            "submit",
+            "--config",
+            str(config_path),
+            "--study",
+            "FullyConnected",
+            "--manifest",
+            str(path),
+        ],
+    )
+    monkeypatch.setattr(
+        "codes.slurm.submit_array", lambda *a, **k: pytest.fail("Study reached target")
+    )
+    run_tuning.main()
 
 
 def test_worker_limits_failed_attempts(config, setup, monkeypatch):

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 import os
 import queue
 import tempfile
@@ -33,7 +32,14 @@ from codes.tune.storage import (
     postgres_environment_url,
     storage_metadata,
 )
-from codes.tune.tune_utils import apply_tuning_defaults
+from codes.tune.tune_utils import (
+    SAMPLER_ATTR,
+    apply_tuning_defaults,
+    create_sampler,
+    is_pareto_pruned,
+    is_valid_complete,
+    sampler_name,
+)
 
 MANIFEST_VERSION = 1
 STUDY_FINGERPRINT = "codes_slurm_fingerprint"
@@ -80,7 +86,15 @@ def _study_config(
             for key, value in config.items()
             if key not in ("storage", "postgres_config", "devices", "slurm")
         }
+        selected_sampler = sampler_name(result)
+        default_sampler = sampler_name(
+            {"multi_objective": result.get("multi_objective", False)}
+        )
+        if selected_sampler == default_sampler:
+            result.pop("sampler", None)
         result["n_trials"] = config.get("n_trials", config["trials"])
+        if result.get("multi_objective_pruning") is None:
+            result.pop("multi_objective_pruning", None)
         return result, f"{tuning_id}_{model_name.lower()}"
 
     models = config["surrogates"]
@@ -118,6 +132,12 @@ def _study_config(
         "loss_cap": config["loss_cap"],
         "time_pruning": config["time_pruning"],
     }
+    selected_sampler = sampler_name(config)
+    default_sampler = sampler_name({"multi_objective": config["multi_objective"]})
+    if selected_sampler != default_sampler:
+        result["sampler"] = selected_sampler
+    if config.get("multi_objective_pruning") is not None:
+        result["multi_objective_pruning"] = config["multi_objective_pruning"]
     if result.get("multi_objective", False):
         result["inference_timing"] = config.get("inference_timing", {"batch_size": 512})
     if fine:
@@ -128,11 +148,7 @@ def _study_config(
 
 
 def _sampler(config: dict[str, Any], seed: int) -> optuna.samplers.BaseSampler:
-    if config.get("multi_objective", False):
-        return optuna.samplers.NSGAIISampler(
-            seed=seed, population_size=config["population_size"]
-        )
-    return optuna.samplers.TPESampler(seed=seed)
+    return create_sampler(config, seed)
 
 
 def _pruner(config: dict[str, Any]) -> optuna.pruners.BasePruner:
@@ -160,6 +176,11 @@ def _check_study(
 ) -> None:
     if study.user_attrs.get(STUDY_FINGERPRINT) != _fingerprint(manifest):
         raise ValueError("Study does not match the frozen Slurm manifest")
+    stored_sampler = study.user_attrs.get(SAMPLER_ATTR)
+    if stored_sampler is not None and stored_sampler != sampler_name(
+        manifest["config"]
+    ):
+        raise ValueError("Study sampler does not match the frozen Slurm manifest")
     if check_timing and manifest["config"].get("multi_objective", False):
         ensure_study_timing(study, manifest["config"])
 
@@ -205,7 +226,17 @@ def _public_config(config: dict[str, Any], storage: dict[str, str]) -> dict[str,
         if key
         not in {"postgres_config", "storage", "devices", "slurm", "_overwrite_run"}
     }
+    configured_sampler = sampler_name(public)
+    default_sampler = sampler_name(
+        {"multi_objective": public.get("multi_objective", False)}
+    )
+    if configured_sampler == default_sampler:
+        public.pop("sampler", None)
+    elif public.get("sampler") is not None:
+        public["sampler"] = configured_sampler
     public["storage"] = storage
+    if public.get("multi_objective_pruning") is None:
+        public.pop("multi_objective_pruning", None)
     return public
 
 
@@ -320,6 +351,10 @@ def prepare(
     )
     if study.directions != expected_directions:
         raise ValueError("Existing study has incompatible objective directions")
+    selected_sampler = sampler_name(selected)
+    stored_sampler = study.user_attrs.get(SAMPLER_ATTR)
+    if stored_sampler is not None and stored_sampler != selected_sampler:
+        raise ValueError("Existing study was created with a different sampler")
     marker = study.user_attrs.get(STUDY_FINGERPRINT)
     if marker is None:
         checkpoint_dir = (
@@ -335,6 +370,15 @@ def prepare(
             )
         study.set_user_attr(STUDY_FINGERPRINT, _fingerprint(manifest))
     _check_study(study, manifest)
+    if stored_sampler is None:
+        historical_sampler = sampler_name(
+            {"multi_objective": selected.get("multi_objective", False)}
+        )
+        if study.get_trials(deepcopy=False) and selected_sampler != historical_sampler:
+            raise ValueError(
+                "Legacy study uses its historical sampler; use a new study name"
+            )
+        study.set_user_attr(SAMPLER_ATTR, selected_sampler)
     _write_workspace(workspace_path, public_config)
     _write_manifest(path, manifest)
     print(
@@ -357,15 +401,14 @@ def _counts(study: optuna.Study) -> dict[str, int]:
     trials = study.get_trials(deepcopy=False)
     counts = {state.name.lower(): 0 for state in TrialState}
     counts["valid"] = 0
+    counts["pareto_pruned"] = 0
     for trial in trials:
         counts[trial.state.name.lower()] += 1
-        if (
-            trial.state == TrialState.COMPLETE
-            and "exception" not in trial.user_attrs
-            and trial.values is not None
-            and all(math.isfinite(value) for value in trial.values)
-        ):
+        if is_valid_complete(trial):
             counts["valid"] += 1
+        if is_pareto_pruned(trial):
+            counts["pareto_pruned"] += 1
+    counts["target_count"] = counts["valid"] + counts["pareto_pruned"]
     return counts
 
 
@@ -386,7 +429,7 @@ def status(path: Path) -> dict[str, int]:
                 "max_attempts": manifest["max_attempts"],
                 "budget_exhausted": len(study.get_trials(deepcopy=False))
                 >= manifest["max_attempts"]
-                and counts["valid"] < manifest["config"]["n_trials"],
+                and counts["target_count"] < manifest["config"]["n_trials"],
                 **counts,
             },
             sort_keys=True,
@@ -430,7 +473,7 @@ def worker(path: Path, device: str, cpu_threads: int) -> None:
     warmup_target = max(10, int(target * 0.10))
 
     def run_one(trial: optuna.Trial) -> float | tuple[float, float]:
-        if trial.number >= max_attempts or _counts(study)["valid"] >= target:
+        if trial.number >= max_attempts or _counts(study)["target_count"] >= target:
             raise optuna.TrialPruned("Slurm study budget reached")
         if _model_config_digest(config) != manifest["model_config_sha256"]:
             raise ValueError(
@@ -445,7 +488,7 @@ def worker(path: Path, device: str, cpu_threads: int) -> None:
     while True:
         optuna.storages.fail_stale_trials(study)
         trials = study.get_trials(deepcopy=False)
-        if _counts(study)["valid"] >= target or any(
+        if _counts(study)["target_count"] >= target or any(
             t.number >= max_attempts - 1 for t in trials
         ):
             break
