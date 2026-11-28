@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 import os
+from types import ModuleType
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
+from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
 from matplotlib.ticker import FuncFormatter
 from scipy.ndimage import gaussian_filter1d
 
+from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.utils import batch_factor_to_float, determine_batch_size
 
 from .bench_utils import format_time
@@ -15,7 +20,7 @@ from .bench_utils import format_time
 
 
 def save_plot(
-    plt,
+    plt: ModuleType | Figure,
     filename: str,
     conf: dict,
     surr_name: str = "",
@@ -87,6 +92,61 @@ def save_plot_counter(
 
 
 # Per-surrogate model plots
+
+
+def plot_inference_workloads(
+    workloads: dict[str, dict],
+    config: dict,
+    surr_name: str = "",
+    *,
+    host_to_host: bool = False,
+) -> None:
+    """Plot median batch latency for each workload and elapsed horizon."""
+    for workload in ("endpoint", "trajectory"):
+        horizons = sorted(
+            {
+                float(horizon)
+                for result in workloads.values()
+                for row in result.get(workload, {}).values()
+                for horizon, stats in row.items()
+                if stats.get("median_ms") is not None
+            }
+        )
+        if not horizons:
+            continue
+        fig, axes = plt.subplots(
+            1, len(horizons), figsize=(4.2 * len(horizons), 3.7), squeeze=False
+        )
+        title = "Endpoint updates" if workload == "endpoint" else "Trajectory queries"
+        fig.suptitle(f"{title} (host to host)" if host_to_host else title)
+        for ax, horizon in zip(axes[0], horizons, strict=True):
+            for name, result in workloads.items():
+                points = sorted(
+                    (int(batch), stats["median_ms"])
+                    for batch, row in result.get(workload, {}).items()
+                    if (stats := row.get(str(horizon), {})).get("median_ms") is not None
+                )
+                if points:
+                    batches, latencies = zip(*points, strict=True)
+                    ax.plot(batches, latencies, marker="o", label=name)
+            ax.set_xscale("log", base=2)
+            ax.set_yscale("log")
+            ax.set_title(f"Elapsed time {horizon:.4g}")
+            ax.set_xlabel("Cells per batch")
+            ax.set_ylabel("Median batch latency (ms)")
+            ax.grid(True, alpha=0.25)
+            if len(workloads) > 1:
+                ax.legend()
+        fig.tight_layout()
+        suffix = "_host_to_host" if host_to_host else ""
+        save_plot(
+            fig,
+            f"inference_{workload}{suffix}_latency",
+            config,
+            surr_name,
+            format="png",
+        )
+        plt.close(fig)
 
 
 def plot_error_percentiles_over_time(
@@ -231,7 +291,7 @@ def plot_dynamic_correlation(
     errors: np.ndarray,
     save: bool = False,
     show_title: bool = True,
-):
+) -> None:
     """
     Plot the correlation between the gradients of the data and the prediction errors.
 
@@ -829,7 +889,7 @@ def plot_uncertainty_vs_errors(
 
 
 def plot_surr_losses(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     conf: dict,
     timesteps: np.ndarray,
@@ -847,7 +907,7 @@ def plot_surr_losses(
     """
     training_id = conf["training_id"]
 
-    def load_losses(model_identifier: str):
+    def load_losses(model_identifier: str) -> tuple[np.ndarray, np.ndarray, int]:
         model.load(training_id, surr_name, model_identifier=model_identifier)
         train_loss = model.train_loss
         test_loss = model.test_loss
@@ -2682,7 +2742,7 @@ def plot_comparative_gradient_heatmaps(
     plt.close()
 
 
-def get_custom_palette(num_colors):
+def get_custom_palette(num_colors: int) -> np.ndarray:
     """
     Returns a list of colors sampled from a custom color palette.
 
@@ -2848,7 +2908,7 @@ def plot_all_generalization_errors(
         axes = [axes]
 
     # Helper: given a modality key, get the corresponding data dictionary.
-    def get_modality_data(modality):
+    def get_modality_data(modality: str) -> dict:
         return {
             "interpolation": interp_data,
             "extrapolation": extrap_data,

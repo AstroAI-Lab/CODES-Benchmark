@@ -52,6 +52,11 @@ All modality blocks are disabled if omitted. If `enabled: true`, the correspondi
 
 ## Evaluation switches
 
+Inference timing uses one unmeasured warm-up pass and five measured passes. CUDA and
+MPS work is synchronized around each measured forward call. Data-loader iteration
+is excluded from the timed intervals. Evaluation results record the timing method,
+repetition count, device, batch size, and number of predicted states.
+
 All switches default to `false` if omitted.
 
 | Key | Default | Notes |
@@ -75,6 +80,17 @@ All switches default to `false` if omitted.
 | `iterative.max_steps` | None | `fixed_step`: cap on the number of steps. |
 | `iterative.dynamic_span` | None | Also report errors separately for trajectories that change by at least this much, in the units of the `*_log` metrics. |
 | `iterative.example` | `"median_error"` | Plotted sample: `"median_error"`, `"dynamic"` or an index. |
+
+## Inference timing (optional)
+
+`run_eval.py` uses these settings when `timing: true`. `run_tuning.py` uses the endpoint workload for the second objective when `multi_objective: true`.
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `inference_timing.batch_sizes` | `[1, 8, 32, 128, 512, 2048, 8192]` | Evaluation. Number of independent cells per request. |
+| `inference_timing.host_to_host` | `true` | Evaluation. Measure the blocking physical-unit call from CPU inputs to CPU outputs for each workload. |
+| `inference_timing.batch_size` | `512` | Multi-objective tuning. Reference number of cells per endpoint request. |
+| `inference_timing.rollout_step` | None | Maximum autoregressive substep in dataset time units. Evaluation also accepts a mapping from surrogate names to durations. Without a step size CODES queries the surrogate directly. |
 
 ## Finetune block (optional)
 

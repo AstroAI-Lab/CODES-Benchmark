@@ -12,15 +12,103 @@ import yaml
 from optuna.trial import TrialState
 from tqdm import tqdm
 
-from codes.benchmark.bench_utils import (
-    get_model_config,
-    get_surrogate,
-    measure_inference_time,
-)
+from codes.benchmark import get_model_config, get_surrogate
+from codes.benchmark.workload_timing import time_endpoint_workload
 from codes.utils import check_and_load_data, make_description, set_random_seeds
 from codes.utils.data_utils import download_data
 
+from .pareto_pruning import assess_checkpoint, checkpoint_epochs, parse_pareto_pruning
+
 _inference_time_lock = threading.Lock()
+
+
+def endpoint_timing_protocol(config: dict | None = None) -> dict:
+    """Version the endpoint-workload study objective and its fixed settings."""
+    timing = (config or {}).get("inference_timing")
+    if timing is None:
+        timing = {}
+    if not isinstance(timing, dict):
+        raise ValueError("inference_timing must be a mapping")
+    unknown = set(timing) - {"batch_size", "rollout_step"}
+    if unknown:
+        raise ValueError(
+            f"Unknown inference_timing settings for tuning: {sorted(unknown)}"
+        )
+    batch_size = timing.get("batch_size", 512)
+    if (
+        isinstance(batch_size, bool)
+        or not isinstance(batch_size, int)
+        or batch_size < 1
+    ):
+        raise ValueError("inference_timing.batch_size must be a positive integer")
+    protocol = {
+        "protocol": "endpoint_workload_v1",
+        "batch_size": batch_size,
+    }
+    step = timing.get("rollout_step")
+    if step is not None:
+        if (
+            isinstance(step, bool)
+            or not isinstance(step, (int, float))
+            or not math.isfinite(step)
+            or step <= 0
+        ):
+            raise ValueError(
+                "inference_timing.rollout_step must be a finite positive duration"
+            )
+        protocol["rollout_step"] = float(step)
+    return protocol
+
+
+def ensure_study_timing(study: optuna.Study, config: dict | None = None) -> None:
+    """Freeze objective timing and checkpoint pruning across study resumes."""
+    protocol = endpoint_timing_protocol(config)
+    recorded = study.user_attrs.get("inference_timing")
+    trials = study.get_trials(deepcopy=False)
+    incompatible = recorded is not None and recorded != protocol
+    unknown_active = recorded is None and any(
+        trial.state == TrialState.RUNNING
+        or (trial.state == TrialState.COMPLETE and "exception" not in trial.user_attrs)
+        for trial in trials
+    )
+    mixed_completed = any(
+        trial.state == TrialState.COMPLETE
+        and "exception" not in trial.user_attrs
+        and trial.user_attrs.get("inference_timing") != protocol
+        for trial in trials
+    )
+    if incompatible or unknown_active or mixed_completed:
+        raise ValueError(
+            f"Study {study.study_name!r} contains legacy, unknown or incompatible "
+            "endpoint-workload timings. Use a new tuning_id/study name for synchronized "
+            "HPO; keep the existing study for historical analysis."
+        )
+    if recorded is None:
+        study.set_user_attr("inference_timing", protocol)
+
+    settings = parse_pareto_pruning(config or {})
+    pruning_protocol = None
+    if settings is not None:
+        pruning_protocol = {
+            "version": 1,
+            "settings": settings,
+            "epochs": config["epochs"],
+            "batch_size": config["batch_size"],
+            "dataset": config["dataset"],
+            "surrogate": config["surrogate"]["name"],
+            "target_percentile": config.get("target_percentile", 0.99),
+            "loss_cap": config.get("loss_cap", 20),
+            "time_pruning": config.get("time_pruning", False),
+        }
+    previous = study.user_attrs.get("multi_objective_pruning")
+    if previous != pruning_protocol:
+        if previous is not None or any(t.state != TrialState.WAITING for t in trials):
+            raise ValueError(
+                f"Study {study.study_name!r} has different multi-objective pruning "
+                "settings. Use a new tuning_id or study name."
+            )
+        study.set_user_attr("multi_objective_pruning", pruning_protocol)
+
 
 MODULE_REGISTRY: dict[str, type[nn.Module]] = {
     "relu": nn.ReLU,
@@ -40,10 +128,10 @@ MODULE_REGISTRY: dict[str, type[nn.Module]] = {
 
 
 class MaxValidTrialsCallback:
-    def __init__(self, target: int):
+    def __init__(self, target: int) -> None:
         self.target = target
 
-    def __call__(self, study: optuna.Study, trial: optuna.trial.FrozenTrial):
+    def __call__(self, study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
         # count only COMPLETE trials with no exception
         valid = [
             t
@@ -69,7 +157,9 @@ def load_yaml_config(config_path: str) -> dict:
         return yaml.safe_load(file)
 
 
-def _suggest_param(trial: optuna.Trial, name: str, opts: dict):
+def _suggest_param(
+    trial: optuna.Trial, name: str, opts: dict
+) -> int | float | str | bool | None:
     t = opts.get("type", "categorical")
     if t == "int":
         return trial.suggest_int(
@@ -178,7 +268,7 @@ def create_objective(
         function: Objective function for Optuna.
     """
 
-    def objective(trial):
+    def objective(trial: optuna.Trial) -> float | tuple[float, float]:
         device, slot_id = device_queue.get()
         try:
             try:
@@ -222,7 +312,7 @@ def training_run(
 ) -> float | tuple[float, float]:
     """
     Run the training for a single Optuna trial and return the loss.
-    In multi-objective mode, also returns the mean inference time.
+    In multi-objective mode, also returns endpoint-workload geomean latency.
 
     Args:
         trial (optuna.Trial): Optuna trial object.
@@ -233,7 +323,7 @@ def training_run(
 
     Returns:
         float: Loss value in single objective mode.
-        tuple[float, float]: (loss, mean_inference_time) in multi objective mode.
+        tuple[float, float]: (loss, endpoint workload geomean latency) in multi-objective mode.
     """
 
     download_data(config["dataset"]["name"], verbose=False)
@@ -289,7 +379,10 @@ def training_run(
     )
     model.to(device)
     model.normalisation = data_info
-    model.optuna_trial = trial
+    multi_objective = config.get("multi_objective", False)
+    pruning = parse_pareto_pruning(config)
+    if not multi_objective or config.get("time_pruning", pruning is None):
+        model.optuna_trial = trial
     model.trial_update_epochs = 10
 
     train_loader, test_loader, _ = model.prepare_data(
@@ -304,22 +397,73 @@ def training_run(
         dummy_timesteps=True,
     )
 
-    description = make_description("Optuna", device, str(trial.number), surr_name)
-    model.fit(
-        train_loader=train_loader,
-        test_loader=test_loader,
-        epochs=config["epochs"],
-        position=slot_id + 2,
-        description=description,
-        multi_objective=config.get("multi_objective", False),
-    )
+    timing_protocol = endpoint_timing_protocol(config) if multi_objective else None
+    percentile = 100.0 * float(config.get("target_percentile", 0.99))
+    loss_cap = config.get("loss_cap", 20)
 
-    preds, targets = model.predict(test_loader, leave_log=True)
-    abs_err = (preds - targets).abs().flatten()
-    q = float(config.get("target_percentile", 0.99))
-    # torch.quantile caps its input at 2**24 elements; numpy.percentile does not.
-    p99_dex = float(np.percentile(abs_err.detach().cpu().numpy(), 100.0 * q))
-    p99_dex = min(p99_dex, config.get("loss_cap", 20))
+    def accuracy() -> float:
+        preds, targets = model.predict(test_loader, leave_log=True)
+        errors = (preds - targets).abs().flatten().detach().cpu().numpy()
+        # torch.quantile caps the number of elements at 2**24.
+        return float(np.percentile(errors, percentile))
+
+    def endpoint_timing(*, include_references: bool) -> dict:
+        assert timing_protocol is not None
+        with _inference_time_lock:
+            return time_endpoint_workload(
+                model,
+                test_data[:, 0, :],
+                test_params,
+                timesteps,
+                batch_size=timing_protocol["batch_size"],
+                rollout_step=timing_protocol.get("rollout_step"),
+                reference_trajectories=test_data if include_references else None,
+            )
+
+    total_epochs = config["epochs"]
+    checkpoints = checkpoint_epochs(total_epochs, pruning) if pruning else ()
+    if checkpoints:
+
+        def on_epoch(epoch: int, optimizer: torch.optim.Optimizer) -> None:
+            if epoch not in checkpoints:
+                return
+            # Match final inference, including ScheduleFree's evaluation weights.
+            model.eval()
+            optimizer.eval()
+            try:
+                error = accuracy()
+                if not math.isfinite(error):
+                    return
+                error = min(error, loss_cap)
+                latency = endpoint_timing(include_references=False)[
+                    "geomean_objective_ms"
+                ]
+            finally:
+                optimizer.train()
+                model.train()
+            if assess_checkpoint(trial, epoch, total_epochs, error, latency, pruning):
+                raise optuna.TrialPruned(f"Checkpoint Pareto pruning at epoch {epoch}")
+
+        model.epoch_callback = on_epoch
+
+    description = make_description("Optuna", device, str(trial.number), surr_name)
+    try:
+        model.fit(
+            train_loader=train_loader,
+            test_loader=test_loader,
+            epochs=total_epochs,
+            position=slot_id + 2,
+            description=description,
+            multi_objective=multi_objective,
+        )
+    finally:
+        if checkpoints:
+            # Saving includes model attributes. The callback is local to this trial.
+            model.epoch_callback = None
+
+    if multi_objective:
+        model.eval()
+    p99_dex = min(accuracy(), loss_cap)
 
     parts = study_name.split("_")
     sname = "_".join(parts[:-1]) if len(parts) > 1 else study_name
@@ -329,10 +473,16 @@ def training_run(
     model_name = f"{surr_name.lower()}_{trial.number}"
     model.save(model_name=model_name, base_dir="", training_id=savepath)
 
-    if config.get("multi_objective", False):
-        with _inference_time_lock:
-            inference_times = measure_inference_time(model, test_loader)
-        return p99_dex, np.mean(inference_times)
+    if timing_protocol is not None:
+        timing_batch_size = timing_protocol["batch_size"]
+        timing = endpoint_timing(include_references=True)
+        trial.set_user_attr("inference_timing", timing_protocol)
+        trial.set_user_attr("inference_device", str(timing.get("device", device)))
+        trial.set_user_attr("inference_batch_size", timing_batch_size)
+        trial.set_user_attr("inference_horizons", timing["horizons"])
+        trial.set_user_attr("inference_timing_metadata", timing.get("metadata", {}))
+        trial.set_user_attr("inference_objective_ms", timing["geomean_objective_ms"])
+        return p99_dex, float(timing["geomean_objective_ms"]) / 1000.0
     else:
         return p99_dex
 
@@ -355,7 +505,7 @@ def maybe_set_runtime_threshold(
         wanted_states.add(TrialState.PRUNED)
 
     # skip any trial with an exception (e.g. OOM)
-    def is_bad(tr):
+    def is_bad(tr: optuna.trial.FrozenTrial) -> bool:
         return "exception" in tr.user_attrs
 
     trials_sorted = sorted(study.get_trials(deepcopy=False), key=lambda t: t.number)

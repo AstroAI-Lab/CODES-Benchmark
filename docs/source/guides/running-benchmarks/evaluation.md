@@ -1,6 +1,7 @@
 # Evaluation & Reporting
 
-`run_eval.py` replays your configuration against the saved checkpoints, executes whichever evaluation suites you enabled, and collates the results under `results/<training_id>/` and `plots/<training_id>/`. All accuracy metrics are reported in log-space (see :doc:`accuracy-metrics`) so the evaluations align with how models were trained and tuned.
+`run_eval.py` evaluates your saved checkpoints and writes metrics under `results/<training_id>/` and plots under `plots/<training_id>/`. The main accuracy metrics use the log-space conventions described in [Accuracy metrics](accuracy-metrics.md).
+
 
 ## Launching evaluations
 
@@ -25,11 +26,40 @@ python run_eval.py --config config.yaml
 | `losses` | Saves epoch-wise train/test loss plots. |
 | `iterative` | Runs multi-step rollouts to measure drift over time. Set to `true`, or to a block of options (see below). |
 | `gradients` | Correlates gradient norms with prediction errors. |
-| `timing` | Measures inference latency (multiple passes). |
+| `timing` | Measures device-resident and host-to-host endpoint and trajectory latency. |
 | `compute` | Records parameter counts and memory usage. |
 | `compare` | Builds cross-surrogate comparison tables/plots (requires ≥2 surrogates). |
 
-Leave switches off to skip expensive analyses and plotting functions. But compared to the training, eval is very lightweight: it only loads models and runs inference on the test set, and hence usually takes a few minutes at most. 
+Leave switches off to skip analyses you do not need. The inference timing sweep uses the configured batch sizes and can take longer for expensive trajectories or long autoregressive rollouts.
+
+## Inference workloads
+
+With `timing: true`, CODES loads each main checkpoint once and times two requests using validation initial states and parameters already resident on the selected device.
+
+- **Endpoint** returns one updated state per cell at the requested elapsed time. It also reports mean absolute error over finite predictions in normalized model coordinates and the fraction of nonfinite predictions.
+- **Trajectory** returns states at 16 equally spaced positive elapsed times ending at the requested horizon. A model can share computation across those queries. The recorded time grid maps physical elapsed times to the dummy time coordinate used during training.
+
+The same horizons are used for both requests. CODES selects the first positive elapsed time, the recorded elapsed time closest on a log scale to the geometric midpoint, and the full horizon. Short grids may produce fewer distinct horizons. Targets for endpoint error come from the stored validation trajectories. Large batches cycle through the validation initial states in order, so the requested batch sizes remain comparable even on small datasets.
+
+```yaml
+timing: true
+inference_timing:
+  batch_sizes: [1, 8, 32, 128, 512, 2048, 8192]
+  host_to_host: true
+  # Optional maximum autoregressive substep in dataset time units
+  # rollout_step:
+  #   FullyConnectedResidual: 0.01
+```
+
+Set `rollout_step` to a positive duration for all surrogates, or map surrogate names to durations. A requested interval is split into substeps of at most that duration, with the last step landing on the requested time. Each substep treats the previous prediction as a fresh initial state and maps its elapsed duration from the start of the training grid, as in fixed-step evaluation. Trajectory requests reuse the state from the previous requested time. Choose a substep suited to the checkpoint. Surrogates without a specified substep use their direct query interface. This setting is independent of `iterative`, which runs a separate accuracy analysis.
+
+The curves report median and p95 batch latency from five measured calls, cells per second, and additional CUDA peak allocated memory above the preloaded model and batch. The detailed values are in `timing.workloads` of each metrics YAML. A trajectory cell counts once in cells per second even though its request returns multiple states. The previous full-loader timing stays available for historical comparisons.
+
+### Host-to-host measurement
+
+This measures a blocking call from raw, CPU-resident validation states and parameters to updated states in a CPU output buffer in physical units. Each timed call packs and transforms the input using the dataset settings and saved normalization statistics, invokes the same endpoint or trajectory request, then converts the prediction back to physical units. On CUDA, the call uses reusable pinned buffers, copies inputs and outputs on the same stream as inference, and waits for an event after the output copy before converting the result. CPU evaluation measures the equivalent physical-unit call in memory. MPS uses ordinary host buffers and synchronizes before reading the result.
+
+Checkpoint loading, disk reads, and buffer setup happen before timing. This models a single blocking request, so a simulation integration can measure rank-level gathering, scattering, or pipelining separately. Results are saved under `timing.host_to_host` in the metrics YAML and in separate host-to-host endpoint and trajectory plots. Set `inference_timing.host_to_host: false` to skip this measurement.
 
 ## Iterative rollouts
 

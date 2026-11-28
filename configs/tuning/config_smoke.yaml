@@ -1,0 +1,29 @@
+tuning_id: codes_smoke_tuning
+seed: 42
+devices: [cpu]
+dataset:
+  name: lotka_volterra
+  log10_transform: false
+  normalise: minmax
+  subset_factor: 8
+  use_optimal_params: false
+prune: false
+time_pruning: false
+multi_objective: false
+surrogates:
+  - name: FullyConnected
+    batch_size: 64
+    epochs: 1
+    trials: 4
+    optuna_params:
+      hidden_size:
+        type: int
+        low: 8
+        high: 16
+slurm:
+  device: cpu
+  cpus_per_task: 1
+  mem: 2G
+  time: "00:10:00"
+  workers: 2
+  max_parallel: 2

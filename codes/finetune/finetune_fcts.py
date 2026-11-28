@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import copy
 import os
+from collections.abc import Callable, Sequence
 from time import perf_counter
 
 import numpy as np
@@ -9,6 +12,7 @@ import yaml
 from torch import nn
 
 from codes.benchmark.bench_utils import get_model_config, get_surrogate
+from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.tune import make_optuna_params
 from codes.utils import check_and_load_data, elapsed_to_dummy, nice_print
 
@@ -105,7 +109,9 @@ def load_finetune_data(conf: dict) -> dict:
     }
 
 
-def load_trained_model(surr_name: str, conf: dict, data: dict, device: str):
+def load_trained_model(
+    surr_name: str, conf: dict, data: dict, device: str
+) -> AbstractSurrogateModel:
     """
     Build a surrogate and load the main model of the configured training run.
 
@@ -134,7 +140,9 @@ def load_trained_model(surr_name: str, conf: dict, data: dict, device: str):
     return model.eval()
 
 
-def eval_step_sizes(dt_range, n: int, rng: np.random.Generator | None = None):
+def eval_step_sizes(
+    dt_range: Sequence[float], n: int, rng: np.random.Generator | None = None
+) -> np.ndarray:
     """
     Step sizes to score a model on, one per log spaced bin of dt_range.
 
@@ -156,13 +164,15 @@ def eval_step_sizes(dt_range, n: int, rng: np.random.Generator | None = None):
     return np.exp(rng.uniform(edges[:-1], edges[1:]))
 
 
-def _dummy_time(dt: float, timesteps: np.ndarray, device) -> torch.Tensor:
+def _dummy_time(
+    dt: float, timesteps: np.ndarray, device: str | torch.device
+) -> torch.Tensor:
     return torch.tensor(
         [float(elapsed_to_dummy(dt, timesteps))], dtype=torch.float32, device=device
     )
 
 
-def _interp_target(traj: torch.Tensor, timesteps: np.ndarray, t: float):
+def _interp_target(traj: torch.Tensor, timesteps: np.ndarray, t: float) -> torch.Tensor:
     """State at physical time t, interpolated in the stored index coordinate."""
     fi = float(np.interp(t, timesteps, np.arange(len(timesteps))))
     i0 = int(min(max(np.floor(fi), 0), len(timesteps) - 2))
@@ -171,7 +181,7 @@ def _interp_target(traj: torch.Tensor, timesteps: np.ndarray, t: float):
 
 
 def finetune_model(
-    model,
+    model: AbstractSurrogateModel,
     train: np.ndarray,
     train_params: np.ndarray | None,
     timesteps: np.ndarray,
@@ -295,7 +305,7 @@ def finetune_model(
 
 @torch.no_grad()
 def rollout_errors(
-    model,
+    model: AbstractSurrogateModel,
     data: np.ndarray,
     params: np.ndarray | None,
     timesteps: np.ndarray,
@@ -350,11 +360,11 @@ def rollout_errors(
 
 
 def rollout_score(
-    model,
+    model: AbstractSurrogateModel,
     data: np.ndarray,
     params: np.ndarray | None,
     timesteps: np.ndarray,
-    step_sizes,
+    step_sizes: Sequence[float] | np.ndarray,
     dynamic_span: float | None = None,
     batch_size: int = 1024,
 ) -> tuple[float, list[float]]:
@@ -444,12 +454,16 @@ def run_finetuning(conf: dict, device: str) -> dict:
     os.makedirs(os.path.join("trained", ft["training_id"]), exist_ok=True)
     os.makedirs(os.path.join("results", ft["training_id"]), exist_ok=True)
 
-    def score(model, step_sizes):
+    def score(
+        model: AbstractSurrogateModel, step_sizes: Sequence[float] | np.ndarray
+    ) -> tuple[float, list[float]]:
         return rollout_score(
             model, test, test_p, ts, step_sizes, ft["dynamic_span"], ft["batch_size"]
         )
 
-    def train_once(surr_name: str, hp: dict, seed: int):
+    def train_once(
+        surr_name: str, hp: dict, seed: int
+    ) -> tuple[AbstractSurrogateModel, list[dict]]:
         torch.manual_seed(seed)
         model = load_trained_model(surr_name, conf, data, device)
         history = finetune_model(
@@ -515,7 +529,15 @@ def run_finetuning(conf: dict, device: str) -> dict:
     return summary
 
 
-def _search(ft: dict, surr_name: str, train_once, score):
+def _search(
+    ft: dict,
+    surr_name: str,
+    train_once: Callable[[str, dict, int], tuple[AbstractSurrogateModel, list[dict]]],
+    score: Callable[
+        [AbstractSurrogateModel, Sequence[float] | np.ndarray],
+        tuple[float, list[float]],
+    ],
+) -> tuple[dict, int, dict, float | None]:
     """
     Optuna search over the finetune settings listed in finetune.optuna.params.
 
@@ -543,7 +565,7 @@ def _search(ft: dict, surr_name: str, train_once, score):
         sampler=optuna.samplers.TPESampler(seed=ft["seed"]),
     )
 
-    def objective(trial):
+    def objective(trial: optuna.Trial) -> float:
         hp = {**ft, **make_optuna_params(trial, opt.get("params", {}))}
         model, _ = train_once(surr_name, hp, ft["seed"] + trial.number)
         trial.set_user_attr("train_duration", model.fit_duration)

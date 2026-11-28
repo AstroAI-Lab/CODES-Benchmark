@@ -1,0 +1,237 @@
+tuning_id: codes-0.3.0-primordial
+seed: 42
+dataset:
+  name: primordial
+  log10_transform: true
+  log10_transform_params: true
+  normalise: minmax
+  normalise_per_species: true
+  log_timesteps: true
+  subset_factor: 1
+  tolerance: 1.0e-15
+  use_optimal_params: true
+devices:
+- cuda:0
+sampler: tpe
+multi_objective: true
+target_percentile: 0.99
+loss_cap: 20
+inference_timing:
+  batch_size: 512
+time_pruning: false
+multi_objective_pruning:
+  mode: prune
+  checkpoints:
+  - 0.2
+  - 0.4
+  - 0.7
+  peer_warmup: 8
+  error_gap: 0.02
+  latency_margin: 0.10
+  max_recent_error_improvement: 0.05
+storage:
+  backend: journal
+slurm:
+  device: cuda:0
+  gres: gpu:1
+  cpus_per_task: 2
+  workers: 1
+global_optuna_params:
+  learning_rate:
+    type: float
+    low: 1.0e-06
+    high: 0.01
+    log: true
+  regularization_factor:
+    type: float
+    low: 1.0e-06
+    high: 1.0
+    log: true
+  optimizer:
+    type: categorical
+    choices:
+    - AdamW
+    - SGD
+  momentum:
+    type: float
+    low: 0.0
+    high: 0.99
+    step: 0.01
+  scheduler:
+    type: categorical
+    choices:
+    - cosine
+    - poly
+    - schedulefree
+  poly_power:
+    type: float
+    low: 0.5
+    high: 2.0
+    step: 0.1
+  eta_min:
+    type: float
+    low: 0.001
+    high: 1.0
+    log: true
+  activation:
+    type: categorical
+    choices:
+    - ReLU
+    - LeakyReLU
+    - PReLU
+    - Tanh
+    - GELU
+    - Mish
+    - SiLU
+    - ELU
+  loss_function:
+    type: categorical
+    choices:
+    - mse
+    - smoothl1
+  beta:
+    type: float
+    low: 0.1
+    high: 10.0
+    log: true
+surrogates:
+- name: FullyConnected
+  batch_size: 4096
+  epochs: 4000
+  trials: 180
+  optuna_params:
+    hidden_size:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    num_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+- name: FullyConnectedResidual
+  batch_size: 4096
+  epochs: 4000
+  trials: 180
+  optuna_params:
+    hidden_size:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    num_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+- name: MultiONet
+  batch_size: 4096
+  epochs: 4000
+  trials: 210
+  optuna_params:
+    branch_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+    hidden_size:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    output_factor:
+      type: int
+      low: 1
+      high: 100
+    trunk_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+- name: MultiONetResidual
+  batch_size: 16384
+  epochs: 4000
+  trials: 210
+  optuna_params:
+    branch_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+    hidden_size:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    output_factor:
+      type: int
+      low: 1
+      high: 100
+    trunk_hidden_layers:
+      type: int
+      low: 1
+      high: 10
+- name: LatentPoly
+  batch_size: 768
+  epochs: 4000
+  trials: 255
+  optuna_params:
+    degree:
+      type: int
+      low: 1
+      high: 10
+    latent_features:
+      type: int
+      low: 1
+      high: 10
+    coder_layers:
+      type: int
+      low: 1
+      high: 10
+    coder_width:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    coeff_network:
+      type: categorical
+      choices:
+      - 'True'
+      - 'False'
+    coeff_width:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    coeff_layers:
+      type: int
+      low: 1
+      high: 5
+- name: LatentNeuralODE
+  batch_size: 768
+  epochs: 4000
+  trials: 240
+  optuna_params:
+    latent_features:
+      type: int
+      low: 1
+      high: 10
+    coder_layers:
+      type: int
+      low: 1
+      high: 10
+    coder_width:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    ode_tanh_reg:
+      type: categorical
+      choices:
+      - 'True'
+      - 'False'
+    ode_width:
+      type: int
+      low: 10
+      high: 700
+      step: 10
+    ode_layers:
+      type: int
+      low: 1
+      high: 10

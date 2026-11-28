@@ -137,7 +137,12 @@ def test_time_inference(monkeypatch):
     conf = {"training_id": "TID"}
     # call
     result = bf.time_inference(
-        model, surr, test_loader="L", conf=conf, n_test_samples=2, n_runs=3
+        model,
+        surr,
+        test_loader=torch.utils.data.DataLoader([1, 2], batch_size=2),
+        conf=conf,
+        n_test_samples=2,
+        n_runs=3,
     )
     assert result["mean_inference_time_per_run"] == pytest.approx(3.0)
     assert result["std_inference_time_per_run"] == pytest.approx(
@@ -145,6 +150,23 @@ def test_time_inference(monkeypatch):
     )
     assert result["num_predictions"] == 2
     assert result["mean_inference_time_per_prediction"] == pytest.approx(3.0 / 2)
+    assert result["timing_method"] == "synchronized_forward_wall_time"
+    assert result["warmup_runs"] == 1
+    assert result["n_runs"] == 3
+    assert result["batch_size"] == 2
+
+
+def test_time_inference_records_prebatched_multionet_size(monkeypatch):
+    from codes.surrogates.DeepONet.don_utils import FlatBatchIterable
+
+    values = torch.zeros((7, 2))
+    dataset = FlatBatchIterable(values, values, values, batch_size=3, shuffle=False)
+    loader = torch.utils.data.DataLoader(dataset, batch_size=None)
+    monkeypatch.setattr(
+        bf, "measure_inference_time", lambda model, loader, n_runs: [1.0]
+    )
+    result = bf.time_inference(FakeModel(), "SurrA", loader, {"training_id": "TID"}, 7)
+    assert result["batch_size"] == 3
 
 
 def test_evaluate_compute_cpu_path(monkeypatch):

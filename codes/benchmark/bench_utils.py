@@ -6,14 +6,36 @@ import os
 import time
 from copy import deepcopy
 from dataclasses import asdict
+from typing import Any
 
 import numpy as np
 import torch
 import yaml
 from torch.utils.data import DataLoader
 
-from codes.surrogates import SurrogateModel, surrogate_classes
+from codes.surrogates import AbstractSurrogateModel, surrogate_classes
 from codes.utils import determine_batch_size, get_version_info, read_yaml_config
+
+INFERENCE_TIMING_RUNS = 5
+
+
+def inference_timing_metadata(
+    n_runs: int = INFERENCE_TIMING_RUNS,
+) -> dict[str, str | int]:
+    """Identify the inference timing protocol shared by evaluation and tuning."""
+    return {
+        "timing_method": "synchronized_forward_wall_time",
+        "warmup_runs": 1,
+        "n_runs": n_runs,
+    }
+
+
+def inference_batch_size(loader: DataLoader) -> int | None:
+    """Return the batch size of a standard or pre-batched inference loader."""
+    size = loader.batch_size
+    if size is None:
+        size = getattr(loader.dataset, "bs", None)
+    return size
 
 
 def check_surrogate(surrogate: str, conf: dict) -> None:
@@ -225,7 +247,7 @@ def get_required_models_list(surrogate: str, conf: dict) -> list:
 
 
 def load_model(
-    model, training_id: str, surr_name: str, model_identifier: str
+    model: torch.nn.Module, training_id: str, surr_name: str, model_identifier: str
 ) -> torch.nn.Module:
     """
     Load a trained surrogate model.
@@ -339,7 +361,7 @@ def measure_memory_footprint(
     return memory_usage, model
 
 
-def convert_to_standard_types(data):
+def convert_to_standard_types(data: Any) -> Any:
     """
     Recursively convert data to standard types that can be serialized to YAML.
 
@@ -467,7 +489,7 @@ def write_metrics_to_yaml(surr_name: str, conf: dict, metrics: dict) -> None:
         yaml.dump(write_metrics, f, sort_keys=False)
 
 
-def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
+def get_surrogate(surrogate_name: str) -> type[AbstractSurrogateModel] | None:
     """
     Check if the surrogate model exists.
 
@@ -475,7 +497,7 @@ def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
         surrogate_name (str): The name of the surrogate model.
 
     Returns:
-        SurrogateModel | None: The surrogate model class if it exists, otherwise None.
+        type[AbstractSurrogateModel] | None: The surrogate model class, or None.
     """
     for surrogate in surrogate_classes:
         if surrogate_name == surrogate.__name__:
@@ -484,7 +506,7 @@ def get_surrogate(surrogate_name: str) -> SurrogateModel | None:
     return None
 
 
-def format_time(mean_time, std_time):
+def format_time(mean_time: float, std_time: float) -> str:
     """
     Format mean and std time consistently in ns, µs, ms, or s.
 
@@ -744,29 +766,40 @@ def get_model_config(surr_name: str, config: dict) -> dict:
 
 
 def measure_inference_time(
-    model,
+    model: AbstractSurrogateModel,
     test_loader: DataLoader,
-    n_runs: int = 5,
+    n_runs: int = INFERENCE_TIMING_RUNS,
 ) -> list[float]:
-    """
-    Measure total inference time over a DataLoader across multiple runs.
+    """Measure forward-call wall time over a loader after an unmeasured warm-up.
 
-    Args:
-        model: Model instance with a `.forward()` method.
-        test_loader (DataLoader): Loader with test data.
-        n_runs (int): Number of repeated runs for averaging.
-
-    Returns:
-        list[float]: List of total inference times per run (in seconds).
+    Data loading is excluded from the measured intervals. Accelerator work is
+    synchronized immediately before and after each forward call.
     """
+    if isinstance(n_runs, bool) or not isinstance(n_runs, int) or n_runs <= 0:
+        raise ValueError("n_runs must be a positive integer")
+
+    device = torch.device(getattr(model, "device", None) or "cpu")
+
+    def wait_for_device() -> None:
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        elif device.type == "mps":
+            torch.mps.synchronize()
+
+    with torch.inference_mode():
+        for inputs in test_loader:
+            model.forward(inputs)
+    wait_for_device()
+
     inference_times = []
     for _ in range(n_runs):
-        total_time = 0
+        total_time = 0.0
         with torch.inference_mode():
             for inputs in test_loader:
+                wait_for_device()
                 start_time = time.perf_counter()
-                _, _ = model.forward(inputs)
-                end_time = time.perf_counter()
-                total_time += end_time - start_time
+                model.forward(inputs)
+                wait_for_device()
+                total_time += time.perf_counter() - start_time
         inference_times.append(total_time)
     return inference_times

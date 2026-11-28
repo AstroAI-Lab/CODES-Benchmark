@@ -2,6 +2,8 @@
 
 `run_training.py` converts your benchmark config into a concrete list of training jobs, executes them sequentially or in parallel, and saves everything under `trained/<training_id>/`. All surrogates share the same pipeline: they learn trajectories represented at fixed timesteps, but the models learn to predict the state at any continuous time within the training horizon given an initial condition (and optional physical parameters).
 
+For a first run, follow [Getting Started](../../getting-started.md) to install CODES, stage the Lotka–Volterra dataset, and run the CPU example locally or on Slurm.
+
 ## From config to task list
 
 1. **Ordered surrogates** — the entries under `surrogates`, `batch_size`, and `epochs` must align. The `i`‑th surrogate uses `batch_size[i]` and `epochs[i]`.
@@ -12,7 +14,7 @@
 ## Local execution
 
 ```bash
-python run_training.py --config config.yaml
+uv run run_training.py --config configs/train_eval/config_minimal.yaml
 ```
 
 - **Devices** — `config.devices` defines concurrent worker slots. A single entry (e.g., `["cuda:0"]` or `"cpu"`) runs one task at a time. Multiple entries allow that many concurrent tasks. Each task gets a fresh spawned process, including in sequential runs. Repeated entries deliberately share a device, for example `["cpu", "cpu"]`; allow enough CPU or GPU memory for every concurrent task.
@@ -40,32 +42,94 @@ Retries append to the corresponding task log. A custom `fit` that uses
 output is forwarded to the parent and saved in the task log. Direct model fitting
 and tuning retain their existing progress behavior.
 
-## Running inside a Slurm allocation
+(slurm-training-array)=
+## Training with a Slurm array
 
-The local runner can execute inside one Slurm job. It does not submit jobs or distribute tasks across nodes. Use the logical CUDA indices visible within the allocation, without replacing Slurm's `CUDA_VISIBLE_DEVICES`. For a single allocated GPU:
+Submit from the root of a workspace visible at the same path on every node.
+Use a fresh `training_id` and {ref}`stage the dataset <stage-dataset>`
+at `datasets/<name>/data.hdf5` before submitting. CODES saves the training config
+and assigns a fixed, zero-based index to each model, modality, and ensemble member.
+
+(slurm-submit-config)=
+### Submit from the training config
+
+Add a top-level `slurm` block to the training YAML. This example uses one CPU
+thread per assignment and runs at most two assignments at a time.
 
 ```yaml
-devices: ["cuda:0"]
-cpu_threads: 4
+cpu_threads: 1
+slurm:
+  time: "00:10:00"
+  cpus_per_task: 1
+  mem: 2G
+  max_parallel: 2
+  device: cpu
 ```
 
-An illustrative submission script, after installing and activating the environment:
+```bash
+uv run run_training.py --slurm submit --config config.yaml
+uv run run_training.py --slurm status --config config.yaml
+```
+
+`submit` prepares `trained/<training_id>/manifest.json`, submits the unfinished
+indices, and prints the Slurm job ID and manifest path. The job name defaults to
+`codes-train-<training_id>`. Set `slurm.job_name` to choose a custom name. Logs default to
+`slurm-logs/` beside the manifest. Once the array has stopped, rerun `submit`
+with the same config to retry unfinished assignments. Pass `--manifest` to
+use a different path, including an existing manifest.
+
+The worker uses the Python interpreter that ran `submit`. For a GPU job set
+`gres: 'gpu:1'` and `device: 'cuda:0'`. Other optional Slurm settings include
+`qos`, `partition`, `account`, `constraint`, `nodelist`, `reservation`, `job_name`,
+and `log_dir`. Use `launcher` to name a site-local batch script that accepts a
+Python entry point and its arguments. CODES sets `CODES_PYTHON` for that launcher
+unless you supply it in the submission environment.
+
+### Prepare and submit an array manually
+
+```bash
+uv run run_training.py --slurm prepare --config config.yaml --manifest training.json
+mkdir -p logs
+```
+
+Save this launcher as `array-worker.sbatch`. Activate the project environment
+before submitting, or set `CODES_PYTHON` to its Python interpreter.
 
 ```bash
 #!/bin/bash
-#SBATCH --ntasks=1
-#SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=4
-#SBATCH --time=02:00:00
-
 set -euo pipefail
-cd /path/to/CODES-Benchmark
-srun python run_training.py --config configs/train_eval/my_run.yaml
+exec "${CODES_PYTHON:-python3}" "$@"
 ```
 
-Adjust the resource requests, account, partition, time limit, paths and environment for your cluster. A multi-GPU allocation can use multiple visible indices in `devices`, with corresponding CPU and memory resources.
+Use the indices printed by `prepare`. This example runs six assignments with
+at most two jobs active and one GPU per worker. Set the account, partition, QoS,
+memory, and wall time for your cluster and workload. [Slurm job arrays](https://slurm.schedmd.com/job_array.html)
 
-The single-task executor, `codes.train.tasks.execute_training_task`, is separate from local scheduling. It trains and saves one task without changing the parent's pending-task list or completion marker. This provides the execution boundary for future Slurm array workers; immutable manifests and independent-job coordination are not implemented yet. Tuning still uses its existing execution and storage mechanisms.
+```bash
+sbatch --chdir="$PWD" --array=0-5%2 --ntasks=1 --gres=gpu:1 \
+    --cpus-per-task=4 --time=02:00:00 --output='logs/train-%A_%a.log' \
+    array-worker.sbatch run_training.py --slurm worker --manifest training.json --device cuda:0
+```
+
+`cuda:0` selects the first GPU visible to the allocation. Use `--device cpu`
+for a CPU job and allocate at least the number of threads set by `cpu_threads`
+in the training config. Each worker takes its assignment from
+`SLURM_ARRAY_TASK_ID` and saves its checkpoint before recording completion.
+The shared filesystem must support POSIX file locking across nodes.
+
+```bash
+uv run run_training.py --slurm status --manifest training.json
+```
+
+After the running array has stopped, use the reported retry indices in a new
+`sbatch --array` submission with the original manifest. Unfinished assignments
+start from the beginning. A repeated completed assignment exits successfully
+when its checkpoint and metadata still exist. The run ID is owned by the
+manifest and can be evaluated with the usual `run_eval.py` workflow.
+
+To use local multiprocessing inside a single allocation, submit
+`run_training.py --config config.yaml` with a separate run ID and configure
+`devices` for the number of slots in that allocation.
 
 ## Modalities vs. evaluation switches
 

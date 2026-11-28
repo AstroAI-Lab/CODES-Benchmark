@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 import torch
 import torchode as to
@@ -5,7 +7,7 @@ from torch import Tensor, nn
 from torch.utils.data import DataLoader
 
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
-from codes.surrogates.training import fit_standard
+from codes.surrogates.training import Batch, Criterion, fit_standard
 from codes.utils import time_execution
 
 from .latent_neural_ode_config import LatentNeuralODEBaseConfig
@@ -35,7 +37,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
         training_id: str | None = None,
         config: dict | None = None,
         dtype: torch.dtype = torch.float32,
-    ):
+    ) -> None:
         super().__init__(
             device=device,
             n_quantities=n_quantities,
@@ -55,7 +57,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
         ).to(device)
         self.dtype = dtype
 
-    def forward(self, inputs):
+    def forward(self, inputs: Batch) -> tuple[Tensor, Tensor]:
         """
         Forward pass through the model.
         Expects inputs to be either (data, timesteps) or (data, timesteps, params).
@@ -72,6 +74,17 @@ class LatentNeuralODE(AbstractSurrogateModel):
         x0 = x[:, 0, :]
         latent_prediction = self.model(x0, t_range, params)
         return latent_prediction, x
+
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Roll out an initial state at requested dummy-time coordinates."""
+        state = state.to(self.device, dtype=self.dtype)
+        times = times.to(self.device, dtype=self.dtype)
+        params = (
+            params.to(self.device, dtype=self.dtype) if params is not None else None
+        )
+        return self.model.forward_from_state(state, times, params)
 
     def prepare_data(
         self,
@@ -138,7 +151,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
         dataset_params: np.ndarray | None,
         num_workers: int = 0,
         pin_memory: bool = True,
-    ):
+    ) -> DataLoader:
         if pin_memory and "cuda" not in self.device:
             pin_memory = False
 
@@ -194,7 +207,7 @@ class LatentNeuralODE(AbstractSurrogateModel):
             loss_fn=self.training_loss,
         )
 
-    def training_loss(self, batch, criterion):
+    def training_loss(self, batch: Batch, criterion: Criterion) -> Tensor:
         """Compute the trajectory and auxiliary losses for one sequence batch."""
         batch = tuple(
             x.to(device=self.device, non_blocking=True) if isinstance(x, Tensor) else x
@@ -228,14 +241,14 @@ class ModelWrapper(nn.Module):
 
     def __init__(
         self,
-        config,
+        config: LatentNeuralODEBaseConfig,
         n_quantities: int,
         n_parameters: int = 0,
         n_timesteps: int = 101,
         dtype: torch.dtype = torch.float64,
         use_pid: bool = False,  # switch from Integral to PID
         adjoint_type: str = "autodiff",  # "autodiff" | "backsolve" | "joint_backsolve"
-    ):
+    ) -> None:
         super().__init__()
         self.config = config
         self.n_parameters = n_parameters
@@ -351,7 +364,14 @@ class ModelWrapper(nn.Module):
                 dtype=dtype,
             )
 
-    def forward(self, x0: Tensor, t_range: Tensor, params: Tensor = None):
+    def forward(
+        self,
+        x0: Tensor,
+        t_range: Tensor,
+        params: Tensor = None,
+        *,
+        t_start: Tensor | None = None,
+    ) -> Tensor:
         # encode initial state
         if self.n_parameters > 0 and self.config.encode_params:
             assert params is not None
@@ -371,12 +391,25 @@ class ModelWrapper(nn.Module):
         assert z0.dtype == torch.float64, f"z0 dtype {z0.dtype}"
         assert t_eval.dtype == torch.float64, f"t_eval dtype {t_eval.dtype}"
 
-        sol = self.solver.solve(to.InitialValueProblem(y0=z0, t_eval=t_eval))
+        problem = to.InitialValueProblem(y0=z0, t_start=t_start, t_eval=t_eval)
+        sol = self.solver.solve(problem)
 
         latent_traj = sol.ys  # [timesteps, batch, latent_dim]
 
         # decode
         return self.decoder(latent_traj.to(self.dtype))
+
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Device-resident rollout; the ODE must always start at coordinate zero."""
+        if times.ndim != 1 or times.numel() == 0:
+            raise ValueError("times must be a non-empty one-dimensional tensor")
+        # Native forward handles encoding, parameter injection, solver execution,
+        # and decoding. Explicit t_start fixes the integration origin even when
+        # the first requested observation is a positive endpoint.
+        t_start = times.new_zeros(state.shape[0], dtype=torch.float64)
+        return self.forward(state, times, params, t_start=t_start)
 
     def total_loss(
         self,
@@ -384,7 +417,7 @@ class ModelWrapper(nn.Module):
         x_pred: Tensor,
         params: Tensor = None,
         criterion: nn.Module = nn.MSELoss(),
-    ):
+    ) -> torch.Tensor:
         """
         Total loss: weighted sum of trajectory reconstruction, identity, first derivative,
         and second derivative losses. All terms remain in the computation graph.
@@ -410,7 +443,7 @@ class ModelWrapper(nn.Module):
 
         return w0 * traj_loss + w1 * identity + w2 * deriv_loss + w3 * deriv2_loss
 
-    def first_derivative(self, x: Tensor):
+    def first_derivative(self, x: Tensor) -> torch.Tensor:
         # x: [B, T, F]
         h = 1.0 / self.n_timesteps
         # central differences for interior
@@ -421,7 +454,7 @@ class ModelWrapper(nn.Module):
         derivative = torch.cat([d_first, d_center, d_last], dim=1)  # [B,T,F]
         return derivative
 
-    def second_derivative(self, x: Tensor):
+    def second_derivative(self, x: Tensor) -> torch.Tensor:
         # x: [B, T, F]
         h = 1.0 / self.n_timesteps
         # standard second derivative central
@@ -440,7 +473,7 @@ class ModelWrapper(nn.Module):
         d2 = torch.cat([d2_first, d2_center, d2_last], dim=1)  # [B,T,F]
         return d2
 
-    def identity_loss(self, x_true: Tensor, params: Tensor = None):
+    def identity_loss(self, x_true: Tensor, params: Tensor = None) -> torch.Tensor:
         """
         Calculate the identity loss (Encoder -> Decoder) on the initial state x0.
 
@@ -476,8 +509,8 @@ class ODE(nn.Module):
         ode_layers: int,
         ode_width: int,
         tanh_reg: bool,
-        dtype=torch.float64,
-    ):
+        dtype: torch.dtype = torch.float64,
+    ) -> None:
         super().__init__()
         self.tanh_reg = tanh_reg
         self.reg_factor = nn.Parameter(torch.tensor(1.0))
@@ -492,7 +525,7 @@ class ODE(nn.Module):
         layers.append(nn.Linear(ode_width, output_shape, dtype=dtype))
         self.mlp = nn.Sequential(*layers)
 
-    def forward(self, t, x):
+    def forward(self, t: torch.Tensor, x: torch.Tensor) -> torch.Tensor:
         # Expect solver to always pass float64 state
         if x.dtype != torch.float64:
             raise RuntimeError(
@@ -522,14 +555,14 @@ class ODEWithParams(nn.Module):
     but ODEWithParams.forward will concatenate y with p to compute dy/dt.
     """
 
-    def __init__(self, base_ode: nn.Module, n_parameters: int, latent_dim: int):
+    def __init__(self, base_ode: nn.Module, n_parameters: int, latent_dim: int) -> None:
         super().__init__()
         self.base_ode = base_ode
         self.latent_dim = latent_dim
         self.n_parameters = n_parameters
         self.p_const: Tensor | None = None
 
-    def set_params(self, params: Tensor):
+    def set_params(self, params: Tensor) -> None:
         # params: [batch, n_parameters]
         self.p_const = params
 
@@ -555,8 +588,8 @@ class Encoder(nn.Module):
         coder_layers: int = 3,
         coder_width: int = 32,
         activation: nn.Module = nn.ReLU(),
-        dtype=torch.float64,
-    ):
+        dtype: torch.dtype = torch.float64,
+    ) -> None:
         super().__init__()
         layers = []
         layers.append(nn.Linear(in_features, coder_width, dtype=dtype))
@@ -584,8 +617,8 @@ class Decoder(nn.Module):
         coder_layers: int = 3,
         coder_width: int = 32,
         activation: nn.Module = nn.ReLU(),
-        dtype=torch.float64,
-    ):
+        dtype: torch.dtype = torch.float64,
+    ) -> None:
         super().__init__()
         layers = []
         layers.append(nn.Linear(latent_features, coder_width, dtype=dtype))
@@ -613,7 +646,7 @@ class OldEncoder(nn.Module):
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
         dtype: torch.dtype = torch.float64,
-    ):
+    ) -> None:
         super().__init__()
         # Example: coder_layers = [4, 2, 1] scaled by layers_factor.
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]
@@ -628,7 +661,7 @@ class OldEncoder(nn.Module):
         layers.append(nn.Tanh())
         self.mlp = nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.mlp(x)
 
 
@@ -644,7 +677,7 @@ class OldDecoder(nn.Module):
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
         dtype: torch.dtype = torch.float64,
-    ):
+    ) -> None:
         super().__init__()
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]
         # Reverse the order for the decoder.
@@ -660,7 +693,7 @@ class OldDecoder(nn.Module):
         layers.append(nn.Tanh())
         self.mlp = nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.mlp(x)
 
 

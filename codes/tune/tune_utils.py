@@ -1,12 +1,41 @@
 import copy
+import math
 import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
 
 import optuna
+from optuna.trial import FrozenTrial, TrialState
 
 from codes.utils.utils import read_yaml_config
+
+from .optuna_fcts import endpoint_timing_protocol
+from .pareto_pruning import PARETO_PRUNED_ATTR, parse_pareto_pruning
+
+SAMPLER_ATTR = "codes_sampler"
+
+
+def sampler_name(config: dict) -> str:
+    """Resolve configured sampler, retaining the historical objective-based default."""
+    name = config.get("sampler")
+    if name is None:
+        name = "nsgaii" if config.get("multi_objective", False) else "tpe"
+    name = str(name).lower()
+    if name not in {"nsgaii", "tpe"}:
+        raise ValueError("sampler must be 'nsgaii' or 'tpe'")
+    if name == "nsgaii" and not config.get("multi_objective", False):
+        raise ValueError("NSGA-II requires multi_objective: true")
+    return name
+
+
+def create_sampler(config: dict, seed: int) -> optuna.samplers.BaseSampler:
+    """Build the selected sampler for either objective type."""
+    if sampler_name(config) == "nsgaii":
+        return optuna.samplers.NSGAIISampler(
+            seed=seed, population_size=config.get("population_size", 50)
+        )
+    return optuna.samplers.TPESampler(seed=seed)
 
 
 def yes_no(prompt: str, default: bool = False) -> bool:
@@ -107,17 +136,50 @@ def apply_tuning_defaults(config: dict) -> dict:
     cfg.setdefault("multi_objective", False)
     cfg.setdefault("target_percentile", 0.99)
     cfg.setdefault("loss_cap", 20)
+    time_pruning_explicit = "time_pruning" in cfg
     cfg.setdefault("time_pruning", True)
     cfg.setdefault("population_size", 50)
     cfg.setdefault("optuna_logging", False)
     cfg.setdefault("use_optimal_params", True)
     cfg.setdefault("prune", True)
     cfg.setdefault("trials", 50)
+    cfg["multi_objective_pruning"] = parse_pareto_pruning(cfg)
+    if cfg["multi_objective_pruning"] is not None and not time_pruning_explicit:
+        cfg["time_pruning"] = False
+    if cfg.get("multi_objective", False):
+        timing = endpoint_timing_protocol(cfg)
+        timing.pop("protocol")
+        cfg["inference_timing"] = timing
 
     return cfg
 
 
-def delete_studies_if_requested(config: dict, main_study_name: str, db_url: str):
+def is_valid_complete(trial: FrozenTrial) -> bool:
+    return (
+        trial.state == TrialState.COMPLETE
+        and "exception" not in trial.user_attrs
+        and trial.values is not None
+        and all(math.isfinite(value) for value in trial.values)
+    )
+
+
+def is_pareto_pruned(trial: FrozenTrial) -> bool:
+    return (
+        trial.state == TrialState.PRUNED
+        and trial.user_attrs.get(PARETO_PRUNED_ATTR) is True
+    )
+
+
+def count_tuning_trials(study: optuna.Study) -> int:
+    return sum(
+        is_valid_complete(trial) or is_pareto_pruned(trial)
+        for trial in study.get_trials(deepcopy=False)
+    )
+
+
+def delete_studies_if_requested(
+    config: dict, main_study_name: str, db_url: str
+) -> None:
     """Delete studies if user overwrote run folder."""
     if not config.get("_overwrite_run", False):
         return

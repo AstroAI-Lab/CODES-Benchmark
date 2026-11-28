@@ -25,6 +25,7 @@ dist/
 *.egg-info/
 data.hdf5
 .venv
+/.env
 .pytest_cache
 .ruff_cache/
 *.egg-info

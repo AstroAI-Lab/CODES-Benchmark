@@ -15,6 +15,7 @@ from scipy.stats import pearsonr
 from tabulate import tabulate
 from torch.utils.data import DataLoader
 
+from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
 from codes.utils import (
     batch_factor_to_float,
     check_and_load_data,
@@ -40,6 +41,7 @@ from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; p
     plot_example_predictions_with_uncertainty,
     plot_generalization_error_comparison,
     plot_gradients_heatmap,
+    plot_inference_workloads,
     plot_loss_comparison,
     plot_loss_comparison_equal,
     plot_loss_comparison_train_duration,
@@ -49,23 +51,30 @@ from .bench_plots import (  # plot_generalization_errors,; rel_errors_and_uq,; p
     plot_uncertainty_over_time_comparison,
 )
 from .bench_utils import (
+    INFERENCE_TIMING_RUNS,
     count_trainable_parameters,
     format_seconds,
     format_time,
     format_value,
     get_model_config,
     get_surrogate,
+    inference_batch_size,
+    inference_timing_metadata,
     make_comparison_csv,
     measure_inference_time,
     measure_memory_footprint,
     save_table_csv,
     write_metrics_to_yaml,
 )
+from .host_io import load_physical_validation_inputs
+from .workload_timing import time_host_to_host_workloads, time_inference_workloads
 
 TITLE = True
 
 
-def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]:
+def run_benchmark(
+    surr_name: str, surrogate_class: type[AbstractSurrogateModel], conf: dict
+) -> dict[str, Any]:
     """
     Run benchmarks for a given surrogate model.
 
@@ -92,7 +101,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         (train_params, test_params, val_params),
         timesteps,
         n_train_samples,
-        _,
+        data_info,
         labels,
     ) = check_and_load_data(
         dataset_conf["name"],
@@ -166,6 +175,56 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
         metrics["timing"] = time_inference(
             model, surr_name, val_loader, conf, n_test_samples
         )
+        timing_conf = conf.get("inference_timing", {})
+        if not isinstance(timing_conf, dict):
+            raise ValueError("inference_timing must be a mapping")
+        host_to_host = timing_conf.get("host_to_host", True)
+        if not isinstance(host_to_host, bool):
+            raise ValueError("inference_timing.host_to_host must be a boolean")
+        rollout_step = timing_conf.get("rollout_step")
+        if isinstance(rollout_step, dict):
+            rollout_step = rollout_step.get(surr_name)
+        options = {"rollout_step": rollout_step}
+        if "batch_sizes" in timing_conf:
+            options["batch_sizes"] = timing_conf["batch_sizes"]
+        try:
+            workloads = time_inference_workloads(
+                model,
+                val_data[:, 0, :],
+                val_params,
+                timesteps,
+                reference_trajectories=val_data,
+                **options,
+            )
+        except NotImplementedError as exc:
+            workloads = {"status": "unsupported", "reason": str(exc)}
+        metrics["timing"]["workloads"] = workloads
+        plot_inference_workloads({surr_name: workloads}, conf, surr_name=surr_name)
+        if host_to_host and workloads.get("status") != "unsupported":
+            raw_states, raw_params = load_physical_validation_inputs(
+                dataset_conf["name"]
+            )
+            normalisation = model.normalisation or data_info
+            host_workloads = time_host_to_host_workloads(
+                model,
+                raw_states,
+                raw_params,
+                timesteps,
+                normalisation=normalisation,
+                log=normalisation.get(
+                    "log10_transform", dataset_conf.get("log10_transform", True)
+                ),
+                log_params=dataset_conf.get("log10_transform_params", True),
+                tolerance=dataset_conf.get("tolerance"),
+                **options,
+            )
+            metrics["timing"]["host_to_host"] = host_workloads
+            plot_inference_workloads(
+                {surr_name: host_workloads},
+                conf,
+                surr_name=surr_name,
+                host_to_host=True,
+            )
 
     # Compute (resources) benchmark
     if conf.get("compute", False):
@@ -228,7 +287,7 @@ def run_benchmark(surr_name: str, surrogate_class, conf: dict) -> dict[str, Any]
 
 
 def evaluate_accuracy(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     timesteps: np.ndarray,
     test_loader: DataLoader,
@@ -362,7 +421,7 @@ def evaluate_accuracy(
 
 
 def fixed_step_rollout(
-    model,
+    model: AbstractSurrogateModel,
     targets: np.ndarray,
     full_preds: np.ndarray,
     timesteps: np.ndarray,
@@ -441,7 +500,7 @@ def fixed_step_rollout(
 
 
 def evaluate_iterative_predictions(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     timesteps: np.ndarray,
     val_loader: DataLoader,
@@ -671,7 +730,7 @@ def evaluate_iterative_predictions(
 
 
 def evaluate_gradients(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     conf: dict,
@@ -751,12 +810,12 @@ def evaluate_gradients(
 
 
 def time_inference(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     conf: dict,
     n_test_samples: int,
-    n_runs: int = 5,
+    n_runs: int = INFERENCE_TIMING_RUNS,
 ) -> dict[str, Any]:
     """
     Time the inference of the surrogate model (full version with metrics).
@@ -784,13 +843,16 @@ def time_inference(
         "mean_inference_time_per_run": mean_inference_time,
         "std_inference_time_per_run": std_inference_time,
         "num_predictions": n_test_samples,
+        "device": str(getattr(model, "device", "cpu")),
+        "batch_size": inference_batch_size(test_loader),
         "mean_inference_time_per_prediction": mean_inference_time / n_test_samples,
         "std_inference_time_per_prediction": std_inference_time / n_test_samples,
+        **inference_timing_metadata(n_runs),
     }
 
 
 def evaluate_compute(
-    model, surr_name: str, test_loader: DataLoader, conf: dict
+    model: AbstractSurrogateModel, surr_name: str, test_loader: DataLoader, conf: dict
 ) -> dict[str, Any]:
     """
     Evaluate the computational resource requirements of the surrogate model.
@@ -880,7 +942,7 @@ def _mode_dummy_timesteps(n_timesteps: int, mode: str, metric: int) -> np.ndarra
 
 
 def _mode_loader(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     conf: dict,
     val_data: np.ndarray,
@@ -918,7 +980,7 @@ def _mode_loader(
 
 
 def evaluate_interpolation(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1037,7 +1099,7 @@ def evaluate_interpolation(
 
 
 def evaluate_extrapolation(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1154,7 +1216,7 @@ def evaluate_extrapolation(
 
 
 def evaluate_sparse(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1239,7 +1301,7 @@ def evaluate_sparse(
 
 
 def evaluate_batchsize(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1340,7 +1402,7 @@ def evaluate_batchsize(
 
 
 def evaluate_UQ(
-    model,
+    model: AbstractSurrogateModel,
     surr_name: str,
     test_loader: DataLoader,
     timesteps: np.ndarray,
@@ -1451,7 +1513,7 @@ def evaluate_UQ(
     return uq_metrics
 
 
-def compare_models(metrics: dict, config: dict):
+def compare_models(metrics: dict, config: dict) -> None:
     """
     Aggregate surrogate-level metrics into comparison plots and CSV summaries.
 
@@ -1545,7 +1607,7 @@ def compare_main_losses(metrics: dict, config: dict) -> None:
             config=model_config,
         )
 
-        def load_losses(model_identifier: str):
+        def load_losses(model_identifier: str) -> tuple[np.ndarray, np.ndarray]:
             model.load(training_id, surr_name, model_identifier=model_identifier)
             return model.train_loss, model.test_loss
 
@@ -1673,6 +1735,16 @@ def compare_inference_time(
     stds = list(std_inference_times.values())
 
     inference_time_bar_plot(surrogates, means, stds, config, save, show_title=TITLE)
+    if save:
+        for key in ("workloads", "host_to_host"):
+            plot_inference_workloads(
+                {
+                    name: entry.get("timing", {}).get(key, {})
+                    for name, entry in metrics.items()
+                },
+                config,
+                host_to_host=key == "host_to_host",
+            )
 
 
 def compare_gradients(metrics: dict, config: dict) -> None:

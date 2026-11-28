@@ -19,9 +19,8 @@ authors:
     orcid: "https://orcid.org/0000-0002-6064-1964"
   - family-names: Möschter
     given-names: Gianluca
-version: 0.2.0
-doi: "10.5281/zenodo.23810177"
-date-released: "2026-10-30"
+version: 0.3.0
+date-released: "2026-11-27"
 license: GPL-3.0
 repository-code: "https://github.com/AstroAI-Lab/CODES-Benchmark"
 url: "https://astroai-lab.de/CODES-Benchmark/"

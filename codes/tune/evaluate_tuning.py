@@ -1,19 +1,19 @@
+from __future__ import annotations
+
 import argparse
 import math
 import os
-import subprocess
 import sys
-import time
+from collections.abc import Sequence
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import optuna
-import psycopg2
 import torch
+from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FormatStrFormatter
-from optuna.trial import TrialState
-from psycopg2 import sql
 
 # add codes directory to path
 sys.path.append(
@@ -21,6 +21,8 @@ sys.path.append(
 )
 
 from codes.tune import load_yaml_config
+from codes.tune.storage import create_optuna_storage
+from codes.tune.tune_utils import is_valid_complete
 from codes.utils import nice_print
 
 os.environ.setdefault("PGCONNECT_TIMEOUT", "3")
@@ -87,7 +89,7 @@ def hypervolume_2d(pareto_points: np.ndarray, reference: np.ndarray) -> float:
 
 def compute_hypervolume_over_time(
     study: optuna.Study, ref_slack: float = 1.1, ignore_last_n: int = 10
-):
+) -> tuple[list[float], np.ndarray | None]:
     """
     Compute the 2D hypervolume curve over time while excluding the last N trials
     from the Pareto calculation (by completion time). This prevents unreliable
@@ -95,9 +97,7 @@ def compute_hypervolume_over_time(
 
     Returns (hypervolumes, reference_point).
     """
-    from optuna.trial import TrialState
-
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         return [], None
 
@@ -181,10 +181,10 @@ def compute_pareto_plot_data(
     suffix: str,
     ignore_last_n: int = 10,
     chosen_trial_number: int | None = None,
-):
+) -> dict | None:
     if len(study.directions) != 2:
         return None
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         print(f"Skipping Pareto plot for {suffix}: no completed trials.")
         return None
@@ -235,7 +235,7 @@ def compute_pareto_plot_data(
     }
 
 
-def summarize_pareto_tradeoff(data: dict):
+def summarize_pareto_tradeoff(data: dict) -> None:
     suffix = data["suffix"]
     best_point = data["best_point"]
     chosen_point = data["chosen_point"]
@@ -283,13 +283,13 @@ def summarize_pareto_tradeoff(data: dict):
 
 
 def _render_pareto_scatter(
-    ax,
-    data,
+    ax: Axes,
+    data: dict,
     show_xlabel: bool,
     show_ylabel: bool,
     title: str | None,
     hide_xticklabels: bool = False,
-):
+) -> None:
     pts = data["points"]
     mask = data["mask"]
     best_point = data["best_point"]
@@ -359,7 +359,7 @@ def _render_pareto_scatter(
     ax.yaxis.set_major_formatter(FormatStrFormatter("%.3f"))
 
 
-def save_individual_pareto_plot(data, out_dir: str):
+def save_individual_pareto_plot(data: dict, out_dir: str) -> None:
     fig, ax = plt.subplots(figsize=(5, 3))
     _render_pareto_scatter(
         ax, data, show_xlabel=True, show_ylabel=True, title=data["suffix"]
@@ -375,7 +375,7 @@ def save_individual_pareto_plot(data, out_dir: str):
     )
 
 
-def save_pareto_front_grid(datasets: list[dict], out_dir: str):
+def save_pareto_front_grid(datasets: list[dict], out_dir: str) -> None:
     if not datasets:
         return
     n_cols = 2
@@ -419,7 +419,7 @@ def save_pareto_front_grid(datasets: list[dict], out_dir: str):
     )
 
 
-def save_relative_hv_grid(datasets: list[dict], out_dir: str):
+def save_relative_hv_grid(datasets: list[dict], out_dir: str) -> None:
     if not datasets:
         return
     n_cols = 2
@@ -459,14 +459,14 @@ def save_relative_hv_grid(datasets: list[dict], out_dir: str):
     )
 
 
-def save_relative_hv_combined(datasets: list[dict], out_dir: str):
+def save_relative_hv_combined(datasets: list[dict], out_dir: str) -> None:
     if len(datasets) < 2:
         return
     fig, ax = plt.subplots(figsize=(6, 4))
     color_palette = plt.cm.viridis(np.linspace(0, 0.95, len(SURROGATE_ORDER)))
     order_index = {name: idx for idx, name in enumerate(SURROGATE_ORDER)}
 
-    def color_for(name: str):
+    def color_for(name: str) -> tuple | np.ndarray:
         key = name.lower()
         idx = order_index.get(key)
         if idx is not None:
@@ -554,8 +554,14 @@ def load_loss_history(model_path: str) -> tuple[np.ndarray, np.ndarray, int]:
 
 
 def plot_losses(
-    loss_histories, epochs, labels, title="Losses", save=False, out_dir=None, mode=""
-):
+    loss_histories: Sequence,
+    epochs: int | Sequence[int],
+    labels: Sequence[str],
+    title: str = "Losses",
+    save: bool = False,
+    out_dir: str | None = None,
+    mode: str = "",
+) -> None:
     """
     Plot multiple loss trajectories on a log scale.
     """
@@ -602,7 +608,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
     Single-objective: lowest value.
     Multi-objective: Pareto front; if fewer than top_n, pad with closest-to-origin among the rest.
     """
-    completed = [t for t in study.trials if t.state == TrialState.COMPLETE]
+    completed = [t for t in study.trials if is_valid_complete(t)]
     if not completed:
         return []
     # Single-objective
@@ -611,7 +617,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
         return [t.number for t in sorted_trials[:top_n]]
 
     # Multi-objective
-    def dominated(a, b):
+    def dominated(a: Sequence[float], b: Sequence[float]) -> bool:
         return all(bi <= ai for ai, bi in zip(a, b)) and any(
             bi < ai for ai, bi in zip(a, b)
         )
@@ -648,7 +654,7 @@ def get_best_trials(study: optuna.Study, top_n: int) -> list[int]:
 def evaluate_tuning(
     study_prefix: str,
     top_n: int = 10,
-    storage_name: str = "optuna_db",
+    storage_name: str | None = None,
     ignore_last_n: int = 10,
     chosen_indices: list[int] | None = None,
 ) -> None:
@@ -663,58 +669,24 @@ def evaluate_tuning(
         return
     config = load_yaml_config(config_path)
 
-    # Ensure Postgres server
-    pg = config.get("postgres_config", {})
-    try:
-        psycopg2.connect(
-            dbname="postgres",
-            user=pg.get("user"),
-            password=pg.get("password"),
-            host=pg.get("host"),
-            port=pg.get("port"),
-            connect_timeout=5,
-        ).close()
-    except Exception:
-        if str(pg.get("host", "localhost")) not in ("localhost", "127.0.0.1", "::1"):
-            raise  # don’t try to start a local server if host isn't local
-        pg_data = pg.get("data_dir", os.path.expanduser("~/postgres/data"))
-        pg_ctl = os.path.join(
-            pg.get("database_folder", os.path.expanduser("~/postgres")), "bin", "pg_ctl"
-        )
-        subprocess.run(
-            [pg_ctl, "-D", pg_data, "-l", pg.get("log_file", "/tmp/pg.log"), "start"],
-            check=True,
-        )
-        time.sleep(2)
-    # Create DB if absent
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user=pg.get("user"),
-        password=pg.get("password"),
-        host=pg.get("host"),
-        port=pg.get("port"),
+    # Slurm workspaces written before storage metadata always used PostgreSQL.
+    if "storage" not in config and any(Path(config_path).parent.glob("*.slurm.json")):
+        config["storage"] = {"backend": "postgres"}
+    storage, _ = create_optuna_storage(
+        config, study_prefix, create=False, postgres_database=storage_name
     )
-    conn.autocommit = True
-    cur = conn.cursor()
-    cur.execute(sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [study_prefix])
-    if not cur.fetchone():
-        cur.execute(sql.SQL("CREATE DATABASE {};").format(sql.Identifier(study_prefix)))
-    cur.close()
-    conn.close()
-
-    # Build storage URL (hard-coded prefix)
-    db_prefix = "postgresql://optuna_user:your_password@localhost:5432/"
-    storage_url = f"{db_prefix}{storage_name}"
 
     # Discover all studies with this prefix
     from optuna.study import get_all_study_summaries
 
-    summaries = get_all_study_summaries(storage=storage_url)
+    summaries = get_all_study_summaries(storage=storage)
     study_names_all = [
         s.study_name for s in summaries if s.study_name.startswith(f"{study_prefix}_")
     ]
     if not study_names_all:
-        print(f"No studies found with prefix '{study_prefix}_' in {storage_url}")
+        print(
+            f"No studies found with prefix '{study_prefix}_' in the configured storage"
+        )
         return
 
         # Output directory: directly in main study folder
@@ -759,7 +731,7 @@ def evaluate_tuning(
         suffix = full_name[len(study_prefix) + 1 :]
         print(f"--- Evaluating study {full_name} -> surrogate '{suffix}' ---")
         try:
-            study = optuna.load_study(study_name=full_name, storage=storage_url)
+            study = optuna.load_study(study_name=full_name, storage=storage)
         except KeyError:
             print(f"Could not load study '{full_name}'")
             continue
@@ -896,7 +868,7 @@ def evaluate_tuning(
     save_relative_hv_combined(hypervolume_datasets, save_dir)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="Plot top-N tuning losses for all surrogate studies."
     )
@@ -909,8 +881,7 @@ def parse_args():
     p.add_argument(
         "--storage_name",
         type=str,
-        default="primordial_final",
-        help="Main study prefix (e.g. lvparams5)",
+        help="Override the database name for legacy PostgreSQL configs",
     )
     p.add_argument(
         "--top_n",
@@ -941,7 +912,7 @@ def parse_args():
     return p.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     chosen_list = None
     if args.chosen_indices:

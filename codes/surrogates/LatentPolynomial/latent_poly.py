@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 import torch
 from torch import Tensor, nn
@@ -9,7 +11,7 @@ from codes.surrogates import Decoder as NewDecoder
 from codes.surrogates import Encoder as NewEncoder
 from codes.surrogates import FlatSeqBatchIterable
 from codes.surrogates.AbstractSurrogate import AbstractSurrogateModel
-from codes.surrogates.training import fit_standard
+from codes.surrogates.training import Batch, Criterion, fit_standard
 from codes.utils import time_execution
 
 from .latent_poly_config import LatentPolynomialBaseConfig
@@ -36,7 +38,7 @@ class LatentPoly(AbstractSurrogateModel):
         n_parameters: int = 0,
         training_id: str | None = None,
         config: dict | None = None,
-    ):
+    ) -> None:
         super().__init__(
             device=device,
             n_quantities=n_quantities,
@@ -68,7 +70,7 @@ class LatentPoly(AbstractSurrogateModel):
             n_timesteps=n_timesteps,
         )
 
-    def forward(self, inputs) -> tuple[Tensor, Tensor]:
+    def forward(self, inputs: Batch) -> tuple[Tensor, Tensor]:
         """
         Perform a forward pass through the model.
 
@@ -86,6 +88,19 @@ class LatentPoly(AbstractSurrogateModel):
         x, t_range, params = inputs
         return self.model(x, t_range, params), x
 
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        """Predict a trajectory directly from initial states on this model's device."""
+        state = state.to(self.device, non_blocking=True)
+        times = times.to(self.device, dtype=state.dtype, non_blocking=True)
+        params = (
+            params.to(self.device, dtype=state.dtype, non_blocking=True)
+            if params is not None
+            else None
+        )
+        return self.model.forward_from_state(state, times, params)
+
     def create_dataloader(
         self,
         data: np.ndarray,  # (N, T, Q)
@@ -95,7 +110,7 @@ class LatentPoly(AbstractSurrogateModel):
         dataset_params: np.ndarray | None,
         num_workers: int = 0,
         pin_memory: bool = True,
-    ):
+    ) -> DataLoader:
         if pin_memory and "cuda" not in self.device:
             pin_memory = False
 
@@ -131,7 +146,7 @@ class LatentPoly(AbstractSurrogateModel):
         dataset_train_params: np.ndarray | None = None,
         dataset_test_params: np.ndarray | None = None,
         dataset_val_params: np.ndarray | None = None,
-    ):
+    ) -> tuple[DataLoader, DataLoader | None, DataLoader | None]:
         if dummy_timesteps:
             timesteps = np.linspace(0, 1, dataset_train.shape[1])
 
@@ -208,7 +223,7 @@ class LatentPoly(AbstractSurrogateModel):
             gradient_clip=0.0,  # Preserve this model's existing training behavior.
         )
 
-    def training_loss(self, batch, criterion):
+    def training_loss(self, batch: Batch, criterion: Criterion) -> Tensor:
         """Compute the trajectory and auxiliary losses for one sequence batch."""
         x_true, _, params = batch
         x_pred, x_true = self(batch)
@@ -233,7 +248,13 @@ class PolynomialModelWrapper(nn.Module):
         coefficient_net (Module | None): The coefficient network (if config.coeff_network is True).
     """
 
-    def __init__(self, config, device, n_parameters: int = 0, n_timesteps: int = 101):
+    def __init__(
+        self,
+        config: LatentPolynomialBaseConfig,
+        device: str | torch.device,
+        n_parameters: int = 0,
+        n_timesteps: int = 101,
+    ) -> None:
         super().__init__()
         self.config = config
         self.loss_weights = getattr(config, "loss_weights", [100.0, 1.0, 1.0, 1.0])
@@ -320,7 +341,9 @@ class PolynomialModelWrapper(nn.Module):
         else:
             self.coefficient_net = None
 
-    def forward(self, x, t_range, params=None):
+    def forward(
+        self, x: torch.Tensor, t_range: torch.Tensor, params: torch.Tensor | None = None
+    ) -> Tensor:
         """
         Forward pass through the model.
 
@@ -357,13 +380,23 @@ class PolynomialModelWrapper(nn.Module):
         z_pred = poly_out + z0.unsqueeze(1)
         return self.decoder(z_pred)
 
+    def forward_from_state(
+        self, state: Tensor, times: Tensor, params: Tensor | None = None
+    ) -> Tensor:
+        if times.ndim != 1 or times.numel() == 0:
+            raise ValueError("times must be a non-empty one-dimensional tensor")
+        # forward expects a sequence but only consumes its first state. Expand
+        # without copying so parameter and polynomial paths remain identical.
+        x = state.unsqueeze(1)
+        return self.forward(x, times, params)
+
     def total_loss(
         self,
         x_true: Tensor,
         x_pred: Tensor,
         params: Tensor = None,
         criterion: nn.Module = nn.MSELoss(),
-    ):
+    ) -> torch.Tensor:
         """
         Total loss: weighted sum of trajectory reconstruction, identity, first derivative,
         and second derivative losses. All terms remain in the computation graph.
@@ -389,7 +422,7 @@ class PolynomialModelWrapper(nn.Module):
 
         return w0 * traj_loss + w1 * identity + w2 * deriv_loss + w3 * deriv2_loss
 
-    def first_derivative(self, x: Tensor):
+    def first_derivative(self, x: Tensor) -> torch.Tensor:
         # x: [B, T, F]
         h = 1.0 / self.n_timesteps
         # central differences for interior
@@ -400,7 +433,7 @@ class PolynomialModelWrapper(nn.Module):
         derivative = torch.cat([d_first, d_center, d_last], dim=1)  # [B,T,F]
         return derivative
 
-    def second_derivative(self, x: Tensor):
+    def second_derivative(self, x: Tensor) -> torch.Tensor:
         # x: [B, T, F]
         h = 1.0 / self.n_timesteps
         # standard second derivative central
@@ -419,7 +452,7 @@ class PolynomialModelWrapper(nn.Module):
         d2 = torch.cat([d2_first, d2_center, d2_last], dim=1)  # [B,T,F]
         return d2
 
-    def identity_loss(self, x_true: Tensor, params: Tensor = None):
+    def identity_loss(self, x_true: Tensor, params: Tensor = None) -> torch.Tensor:
         """
         Calculate the identity loss (Encoder -> Decoder) on the initial state x0.
 
@@ -454,7 +487,7 @@ class Polynomial(nn.Module):
         t_matrix (Tensor): Time matrix for polynomial evaluation.
     """
 
-    def __init__(self, degree: int, dimension: int):
+    def __init__(self, degree: int, dimension: int) -> None:
         super().__init__()
         self.degree = degree
         self.dimension = dimension
@@ -463,7 +496,7 @@ class Polynomial(nn.Module):
         )
         self.t_matrix = None
 
-    def forward(self, t: Tensor):
+    def forward(self, t: Tensor) -> torch.Tensor:
         """
         Evaluate the polynomial at given timesteps.
 
@@ -475,7 +508,7 @@ class Polynomial(nn.Module):
         """
         return self.coef(self._prepare_t(t))
 
-    def _prepare_t(self, t: Tensor):
+    def _prepare_t(self, t: Tensor) -> torch.Tensor:
         """
         Prepare time values in a matrix form.
 
@@ -506,7 +539,7 @@ class OldEncoder(nn.Module):
         latent_features: int = 5,
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
-    ):
+    ) -> None:
         super().__init__()
         # Compute the hidden layer widths: [4, 2, 1] scaled by layers_factor.
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]
@@ -543,7 +576,7 @@ class OldDecoder(nn.Module):
         latent_features: int = 5,
         layers_factor: int = 8,
         activation: nn.Module = nn.ReLU(),
-    ):
+    ) -> None:
         super().__init__()
         # Compute the hidden layer widths and reverse the order for decoding.
         coder_layers = [4 * layers_factor, 2 * layers_factor, 1 * layers_factor]

@@ -1,5 +1,9 @@
-import warnings
+from __future__ import annotations
 
+import warnings
+from collections.abc import Iterator
+
+import numpy as np
 import torch
 
 from codes.utils import make_shuffle_generator
@@ -13,7 +17,13 @@ class ChemDataset(torch.utils.data.Dataset):
     Deprecated: use FlatSeqBatchIterable for pre-batched sequence data.
     """
 
-    def __init__(self, raw_data, timesteps, device, parameters):
+    def __init__(
+        self,
+        raw_data: np.ndarray | torch.Tensor,
+        timesteps: np.ndarray | torch.Tensor,
+        device: str | torch.device,
+        parameters: np.ndarray | torch.Tensor | None,
+    ) -> None:
         warnings.warn(
             "ChemDataset is deprecated and will be removed in a future release; "
             "use FlatSeqBatchIterable for pre-batched sequence data.",
@@ -34,18 +44,25 @@ class ChemDataset(torch.utils.data.Dataset):
         else:
             self.parameters = None
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> tuple[torch.Tensor, ...]:
         if self.parameters is not None:
             return self.data[index, :, :], self.timesteps, self.parameters[index]
         else:
             return self.data[index, :, :], self.timesteps
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.length
 
 
 class FlatSeqBatchIterable(torch.utils.data.IterableDataset):
-    def __init__(self, data_t, timesteps_t, params_t, batch_size, shuffle: bool):
+    def __init__(
+        self,
+        data_t: torch.Tensor,
+        timesteps_t: torch.Tensor,
+        params_t: torch.Tensor | None,
+        batch_size: int,
+        shuffle: bool,
+    ) -> None:
         self.data = data_t
         self.t = timesteps_t
         self.params = params_t
@@ -54,7 +71,9 @@ class FlatSeqBatchIterable(torch.utils.data.IterableDataset):
         self.shuffle = shuffle
         self.generator = make_shuffle_generator() if shuffle else None
 
-    def __iter__(self):
+    def __iter__(
+        self,
+    ) -> Iterator[tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]]:
         perm = (
             torch.randperm(self.N, generator=self.generator)
             if self.shuffle
@@ -68,5 +87,5 @@ class FlatSeqBatchIterable(torch.utils.data.IterableDataset):
                 None if self.params is None else self.params[idx],
             )
 
-    def __len__(self):
+    def __len__(self) -> int:
         return (self.N + self.bs - 1) // self.bs

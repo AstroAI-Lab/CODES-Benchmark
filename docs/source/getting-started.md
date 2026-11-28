@@ -1,79 +1,64 @@
 # Getting Started
 
-CODES Benchmark helps you compare surrogate models for coupled ODE systems by running consistent training, evaluation, and reporting pipelines. This page summarizes the minimum you need to install the project, configure a run, and validate that everything is wired correctly.
-
-## Prerequisites
-
-- Python 3.11 or newer with `pip` (we recommend `uv` for faster installs, but plain pip works)
-- (Optional) CUDA-capable GPU if you want to reproduce the default configurations
-- Enough disk space to store downloaded datasets and the checkpoints created under `trained/` and `results/`
+The smoke examples train a small FullyConnected model on Lotka–Volterra trajectories and tune one hyperparameter over four trials. Both run on CPU and use a subset of the training trajectories.
 
 ## Installation
 
-We recommend [`uv`](https://docs.astral.sh/uv/) because the repository already ships with `pyproject.toml` + `uv.lock`. Cloning and syncing is enough—`uv run` will automatically create/update the environment the first time you execute a command.
-
-**uv workflow (recommended)**
+From the root of your clone, use [uv](https://docs.astral.sh/uv/) and the project's lockfile. The repo pins the Python 3.11 series for uv and requires Python 3.11.5 or newer. If your site manages Python through environment modules, load a supported Python before syncing.
 
 ```bash
-git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
 cd CODES-Benchmark
-uv sync            # creates .venv using uv.lock
-uv run python -c "import codes; print('CODES ready!')"  # optional smoke test
+uv sync --locked
+uv run python -c 'import codes; print("CODES ready")'
 ```
 
-After this, you can prefix any command with `uv run` (for example `uv run python run_training.py --config config.yaml`) and uv will ensure dependencies are in place.
+If you use pip, create an environment with Python 3.11.5 or newer and install with `python -m pip install -e .`. In that activated environment, use `python` in place of `uv run` for the Python scripts below.
 
-**pip / virtualenv fallback**
+(stage-dataset)=
+## Download the dataset
 
 ```bash
-git clone https://github.com/AstroAI-Lab/CODES-Benchmark.git
-cd CODES-Benchmark
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-pip install -r requirements.txt
+uv run python -c 'from codes import download_data; download_data("lotka_volterra")'
 ```
 
-Both approaches expose the `codes` package locally so scripts such as `run_training.py` and `run_eval.py` can import it without extra path hacks. Installing the pinned requirements ensures feature parity with CI and the documentation build.
+Run this from the repository root on a host that can reach Zenodo. It caches the 4.9 MB [Lotka–Volterra dataset](https://zenodo.org/records/14703867) at `datasets/lotka_volterra/data.hdf5`. If the cluster blocks outbound access, download `data.hdf5` from the same record and copy it to that path on the shared filesystem. See the [dataset catalog](reference/datasets.md) for other options.
 
-## Configure a run
+## First run on one machine
 
-Benchmarks usually follow the pattern: **hyperparameter tuning → full training → evaluation/reporting**. Before diving into the advanced knobs, start from the minimal configuration we ship in `config.yaml`:
-
-```yaml
-training_id: "my_first_benchmark"
-surrogates: ["MultiONet"]
-batch_size: [65536]
-epochs: [200]
-dataset:
-  name: "osu2008"
-devices: ["cuda:0"] # or ["cpu"] if you lack a GPU
+```bash
+uv run run_training.py --config configs/train_eval/config_smoke.yaml
+uv run run_eval.py --config configs/train_eval/config_smoke.yaml
+uv run run_tuning.py --config configs/tuning/config_smoke.yaml
 ```
 
-1. Copy `config.yaml` (or `config_full.yaml` for inspiration) to a new name inside the repo.
-2. Update the surrogate list, dataset, devices, and optional study switches such as `interpolation`, `extrapolation`, `sparse`, `batch_scaling`, or `uncertainty`.
-3. Keep the file under version control so you can trace results.
+The training example fits two one-epoch models under `trained/codes_smoke_training/`. Evaluation writes metrics under `results/codes_smoke_training/`. Tuning writes its Optuna study and trial checkpoints under `tuned/codes_smoke_tuning/`.
 
-See the [configuration reference](reference/configuration.md) for a complete list of keys, defaults, and tips.
+(first-run-on-slurm)=
+## First run on Slurm
 
-## Run your first benchmark
+Clone and sync the environment on a filesystem shared with the compute nodes. The checkout, Python interpreter and its dependencies, staged dataset, and output directories must be readable at the same paths from the submit host and the workers. Workers need write access to the run directories. Submit from the repository root on the cluster's submission host.
 
-Use the minimal configuration above (or a copy of it) to perform a smoke test:
+Copy the smoke configs and add your site's scheduler values under `slurm` in each copy. The examples already request CPU, one thread, 2 GB of memory, and ten minutes per task. Check which `partition`, `account`, or `qos` your site requires. For these CPU examples, use a CPU-capable partition.
 
-1. **Train** the requested surrogate (creates `trained/<training_id>`):
-   ```bash
-   python run_training.py --config path/to/your_config.yaml
-   ```
-2. **Evaluate / benchmark** everything that was trained:
-   ```bash
-   python run_eval.py --config path/to/your_config.yaml
-   ```
-3. Inspect the generated tables under `results/<training_id>` and the plots inside `plots/<training_id>`.
+```bash
+cp configs/train_eval/config_smoke.yaml train-smoke.yaml
+cp configs/tuning/config_smoke.yaml tune-smoke.yaml
+```
 
-Every CLI script honours the `--config` flag and logs progress to the console.
+If you already ran the local commands, change `training_id` and `tuning_id` in the copies before submitting. Use a new ID whenever you want an independent run.
 
-## Where to go next
+```bash
+uv run run_training.py --slurm submit --config train-smoke.yaml
+uv run run_tuning.py --slurm submit --config tune-smoke.yaml
+```
 
-- [Running benchmarks](guides/running-benchmarks/index.md): deep-dive into the workflow, multi-device execution, and troubleshooting.
-- [Configuration reference](reference/configuration.md): every knob explained.
-- [Dataset catalog](reference/datasets.md): discover the bundled datasets and download URLs.
-- [Tutorials](tutorials/index.md): notebooks that demonstrate data loading, custom analysis, and plotting pipelines.
+Each command prints its Slurm job ID and manifest path. The training array has two assignments and the tuning array starts two workers that share one Optuna journal. Check Slurm with `squeue -j JOB_ID` while an array runs and inspect `slurm-logs/` beside the manifest for worker output. After the jobs end, check the application results.
+
+```bash
+uv run run_training.py --slurm status --config train-smoke.yaml
+uv run run_tuning.py --slurm status --config tune-smoke.yaml
+```
+
+Training should report `Completed: 2/2`. Tuning should report at least four `valid` trials. If workers fail, start with their Slurm logs. Check that the dataset and interpreter paths resolve on the workers. If your site requires environment modules, load them from a {ref}`launcher script <slurm-submit-config>`. Re-submit the same config once the earlier array has stopped to continue an unfinished run.
+
+See the [training guide](guides/running-benchmarks/training.md) for GPU resources and the [tuning guide](guides/running-benchmarks/tuning.md) for storage options, including an existing PostgreSQL service. For a larger run, copy `configs/train_eval/config_minimal.yaml` or `configs/train_eval/config_full.yaml` and choose the appropriate dataset, models, and devices. The [configuration reference](reference/configuration.md) lists the available settings.

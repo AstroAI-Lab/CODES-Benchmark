@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import argparse
 import os
 import sys
+from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -15,8 +18,10 @@ from optuna.visualization import (
     plot_param_importances,
 )
 
+from codes.tune.tune_utils import is_valid_complete
 
-def parse_arguments():
+
+def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
 
     parser = argparse.ArgumentParser(
@@ -39,9 +44,27 @@ def load_study_config(study_name: str) -> dict:
     Load the YAML config used by the study (optuna_config.yaml).
     """
 
-    config_path = os.path.join("tuned", "studies", study_name, "optuna_config.yaml")
-    with open(config_path) as file:
-        return yaml.safe_load(file)
+    legacy_path = Path("tuned") / "studies" / study_name / "optuna_config.yaml"
+    if legacy_path.exists():
+        with legacy_path.open(encoding="utf-8") as handle:
+            return yaml.safe_load(handle)
+
+    prefix, separator, model = study_name.rpartition("_")
+    config_path = (
+        Path("tuned") / (prefix if separator else study_name) / "optuna_config.yaml"
+    )
+    with config_path.open(encoding="utf-8") as handle:
+        config = yaml.safe_load(handle)
+    if "surrogates" in config:
+        matches = [
+            item
+            for item in config["surrogates"]
+            if item["name"].lower() == model.lower()
+        ]
+        if len(matches) != 1:
+            raise ValueError(f"Cannot identify surrogate for study {study_name!r}")
+        config["surrogate"] = {"name": matches[0]["name"]}
+    return config
 
 
 def load_model_test_losses(model_path: str) -> np.ndarray:
@@ -121,7 +144,7 @@ def plot_test_losses(
     plt.close()
 
 
-def main():
+def main() -> None:
     """
     Main function to evaluate an Optuna study and its top models.
     Usually, viewing the study database with Optuna Dashboard is more informative.
@@ -137,8 +160,17 @@ def main():
 
     # Print best trial
     print(f"Best trial parameters for study '{study_name}':")
-    best_trial = study.best_trial
-    for key, value in best_trial.params.items():
+    if len(study.directions) != 1:
+        raise ValueError("evaluate_study supports single-objective studies only")
+    valid_trials = [trial for trial in study.trials if is_valid_complete(trial)]
+    if not valid_trials:
+        print(f"No valid completed trials in study '{study_name}'.")
+        return
+    valid_trials.sort(
+        key=lambda trial: trial.value,
+        reverse=study.direction == optuna.study.StudyDirection.MAXIMIZE,
+    )
+    for key, value in valid_trials[0].params.items():
         print(f"  {key}: {value}")
 
     # Print total number of runs
@@ -166,17 +198,13 @@ def main():
     config = load_study_config(study_name)
     surrogate_name = config["surrogate"]["name"]
 
-    # Filter out None-value trials
-    completed_trials = [t for t in study.trials if t.value is not None]
-    best_trials = sorted(completed_trials, key=lambda t: t.value)[:top_n]
-
     test_losses = []
     labels = []
 
     # Models are stored:
     #   tuned/studies/<study_name>/models/<ClassName>/<model_name>.pth
     # where <model_name> might be something like "fullyconnected_3.pth"
-    for trial in best_trials:
+    for trial in valid_trials[:top_n]:
         model_filename = f"{surrogate_name.lower()}_{trial.number}.pth"
         model_path = os.path.join(
             "tuned",
