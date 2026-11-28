@@ -129,6 +129,12 @@ affecting results".
   normal `fit` call with `torch.profiler` for profiling.
 - Unused file/path and wall-clock seeding utilities in `DeepONet.don_utils`.
 
+### Security
+
+- Updated the locked versions of filelock to 4.2.1 and Soup Sieve to 4.0 to
+  address high-severity advisories. The patched Soup Sieve requires Python
+  3.11.5 or newer, which is now the minimum supported version.
+
 ## [0.2.0] - 2026-10-23
 
 This release fixes bugs that affect benchmark results, including those of the A&A paper

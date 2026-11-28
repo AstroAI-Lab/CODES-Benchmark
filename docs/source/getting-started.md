@@ -4,7 +4,7 @@ The smoke examples train a small FullyConnected model on Lotka–Volterra trajec
 
 ## Installation
 
-From the root of your clone, use [uv](https://docs.astral.sh/uv/) and the project's lockfile. The repo pins Python 3.11 for uv. If your site manages Python through environment modules, load a supported Python before syncing.
+From the root of your clone, use [uv](https://docs.astral.sh/uv/) and the project's lockfile. The repo pins the Python 3.11 series for uv and requires Python 3.11.5 or newer. If your site manages Python through environment modules, load a supported Python before syncing.
 
 ```bash
 cd CODES-Benchmark
@@ -12,7 +12,7 @@ uv sync --locked
 uv run python -c 'import codes; print("CODES ready")'
 ```
 
-If you use pip, create an environment with Python 3.11 or newer and install with `python -m pip install -e .`. In that activated environment, use `python` in place of `uv run` for the Python scripts below.
+If you use pip, create an environment with Python 3.11.5 or newer and install with `python -m pip install -e .`. In that activated environment, use `python` in place of `uv run` for the Python scripts below.
 
 (stage-dataset)=
 ## Download the dataset

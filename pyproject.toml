@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.11.5"
 dependencies = [
     "h5py>=3.14.0",
     "matplotlib>=3.10.3",
